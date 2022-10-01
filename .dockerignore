@@ -11,7 +11,8 @@
 !LICENSE
 !ftest.sh
 !site_scons
-
+!cache
+!cache_tgz
 # Now disallow extra files which may be present but are not required.
 # Include the rdb repo as well.
 **/.git

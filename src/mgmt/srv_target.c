@@ -1098,8 +1098,10 @@ ds_mgmt_tgt_map_update_pre_forward(crt_rpc_t *rpc, void *arg)
 	rc = crt_group_version(NULL /* grp */, &version);
 	D_ASSERTF(rc == 0, "%d\n", rc);
 	D_DEBUG(DB_MGMT, "in=%u current=%u\n", in->tm_map_version, version);
-	if (in->tm_map_version <= version)
+	if (in->tm_map_version <= version){
+    D_INFO("Network_Crt in_version < current_version");
 		return 0;
+  }
 
 	rc = ds_mgmt_group_update(CRT_GROUP_MOD_OP_REPLACE,
 				  in->tm_servers.ca_arrays,

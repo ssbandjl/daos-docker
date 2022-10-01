@@ -593,7 +593,7 @@ server_init(int argc, char *argv[])
 	rc = daos_debug_init(DAOS_LOG_DEFAULT);
 	if (rc != 0)
 		return rc;
-
+  D_DEBUG(DB_ALL, "dss_hostname:%s, dss_instance_idx:%d", dss_hostname, dss_instance_idx);
 	rc = d_tm_init(dss_instance_idx, D_TM_SHARED_MEMORY_SIZE,
 		       D_TM_SERVER_PROCESS);
 	if (rc != 0)
@@ -636,6 +636,9 @@ server_init(int argc, char *argv[])
 
 	/* initialize the network layer */
 	ctx_nr = dss_ctx_nr_get();
+  // daos_sysname:daos_server,server:1, ctx_nr:3
+  D_DEBUG(DB_ALL, "daos_sysname:%s,server_enable:%d, ctx_nr:%d",daos_sysname,
+    CRT_FLAG_BIT_SERVER, ctx_nr);
 	rc = crt_init_opt(daos_sysname,
 			  CRT_FLAG_BIT_SERVER,
 			  daos_crt_init_opt_get(true, ctx_nr));
@@ -1089,7 +1092,7 @@ main(int argc, char **argv)
 	if (rc)
 		exit(EXIT_FAILURE);
 
-	/** block all possible signals but faults */
+	/** block all possible signals but faults 初始化并填充信号集 */
 	sigfillset(&set);
 	sigdelset(&set, SIGILL);
 	sigdelset(&set, SIGFPE);
@@ -1098,7 +1101,7 @@ main(int argc, char **argv)
 	/** also allow abort()/assert() to trigger */
 	sigdelset(&set, SIGABRT);
 
-	rc = pthread_sigmask(SIG_BLOCK, &set, NULL);
+	rc = pthread_sigmask(SIG_BLOCK, &set, NULL); // 检查和更改阻塞信号的掩码
 	if (rc) {
 		perror("failed to mask signals");
 		exit(EXIT_FAILURE);
@@ -1208,6 +1211,7 @@ main(int argc, char **argv)
 	}
 
 	/** shutdown */
+  D_ERROR("server_fini");
 	server_fini(true);
 
 	exit(EXIT_SUCCESS);

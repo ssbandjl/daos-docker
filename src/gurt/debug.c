@@ -547,6 +547,7 @@ out:
 	return rc;
 }
 
+// 确保默认购物车日志已初始化。 该例程根据 D_LOG_MASK 和 D_LOG_FILE 环境变量首次调用 d_log_open。 它保持引用计数，因此所有调用者都必须调用 d_log_fini 以释放调用 d_log_close() 如果没有此机制，则很难使用来自另一个库的购物车日志记录机制，因为 clog 不允许多个日志文件。 无论如何，最好将同一过程中的事物共享。
 int
 d_log_init(void)
 {

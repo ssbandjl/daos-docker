@@ -141,7 +141,7 @@ struct crt_event_cb_priv {
 # define CRT_CALLBACKS_NUM		(4)	/* start number of CBs */
 #endif
 
-/* structure of global fault tolerance data */
+/* structure of global fault tolerance data 全局故障容忍数据 */
 struct crt_plugin_gdata {
 	/* list of progress callbacks */
 	size_t				 cpg_prog_size[CRT_SRV_CONTEXT_NUM];

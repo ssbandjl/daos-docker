@@ -57,3 +57,12 @@ src/client/java/daos-java/src/main/native/include/io_daos_DaosClient.h
 src/client/java/daos-java/src/main/native/include/io_daos_dfs_DaosFsClient.h
 src/client/java/hadoop-daos/target/
 src/client/java/daos-java/build/
+cache
+cache_tgz
+test/
+src/rdb
+swim.log
+trace.log
+.vscode
+src/rdb/raft
+*.patch

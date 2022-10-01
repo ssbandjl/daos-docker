@@ -590,6 +590,7 @@ ctl_init()
 	int			 num_ranks;
 	int			 rc = 0;
 
+  // 默认不保存配置
 	if (ctl_gdata.cg_save_cfg) {
 		rc = crt_group_config_path_set(ctl_gdata.cg_cfg_path);
 		D_ASSERTF(rc == 0, "crt_group_config_path_set() failed, "
@@ -610,7 +611,7 @@ ctl_init()
 	 * 5 - ping timeout
 	 * 150 - total timeout
 	 */
-	if (!ctl_gdata.cg_no_wait_for_ranks) {
+	if (!ctl_gdata.cg_no_wait_for_ranks) { //默认执行
 		rc = crtu_wait_for_ranks(ctl_gdata.cg_crt_ctx, grp, rank_list,
 					 0, 1, 5, 150);
 		if (rc != 0) {
@@ -647,6 +648,7 @@ ctl_init()
 			return rc;
 	}
 
+  D_DEBUG(DB_ALL, "num_ranks:%d", num_ranks);
 	for (i = 0; i < num_ranks; i++) {
 		ep.ep_grp = grp;
 		ep.ep_rank = ranks_to_send[i];
@@ -734,8 +736,13 @@ main(int argc, char **argv)
 
 	d_log_init();
 
+  D_DEBUG(DB_ALL, "argc:%d, argv:%p", argc, argv);
 	rc = parse_args(argc, argv);
-	D_ASSERTF(rc == 0, "parse_args() failed. rc %d\n", rc);
+	// D_ASSERTF(rc == 0, "parse_args() failed. rc %d\n", rc);
+	if(rc != 0){
+    D_DEBUG(DB_ALL, "parse_args() failed. rc %d\n", rc);
+    return 1;
+  }
 
 	/* rank, num_attach_retries, is_server, assert_on_error */
 	crtu_test_init(0, 40, false, false);
@@ -747,7 +754,7 @@ main(int argc, char **argv)
 			return rc;
 		}
 	}
-
+  D_DEBUG(DB_ALL, "ctl_init");
 	rc = ctl_init();
 	if (rc)
 		D_ERROR("ctl_init() failed, rc "DF_RC"\n", DP_RC(rc));

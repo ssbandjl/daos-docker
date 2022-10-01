@@ -452,6 +452,7 @@ rsvc_step_up_cb(struct rdb *db, uint64_t term, void *arg)
 		svc->s_term);
 
 	if (rsvc_class(svc->s_class)->sc_map_dist != NULL) {
+    D_INFO("Network_Crt init_map_distd");
 		rc = init_map_distd(svc);
 		if (rc != 0)
 			goto out_mutex;
@@ -605,7 +606,7 @@ map_distd(void *arg)
 {
 	struct ds_rsvc *svc = arg;
 
-	D_DEBUG(DB_MD, "%s: start\n", svc->s_name);
+	D_DEBUG(DB_MD, "%s: start\n", svc->s_name);  // daos_server: start
 	for (;;) {
 		bool	stop;
 		int	rc;
@@ -750,7 +751,7 @@ ds_rsvc_start_nodb(enum ds_rsvc_class_id class, d_iov_t *id, uuid_t db_uuid)
 	if (entry != NULL) {
 		svc = rsvc_obj(entry);
 		D_DEBUG(DB_MD, "%s: found: stop=%d\n", svc->s_name,
-			svc->s_stop);
+			svc->s_stop);  // daos_server: found: stop=0
 		if (svc->s_stop)
 			rc = -DER_CANCELED;
 		else
@@ -773,6 +774,7 @@ ds_rsvc_start_nodb(enum ds_rsvc_class_id class, d_iov_t *id, uuid_t db_uuid)
 	}
 
 	if (rsvc_class(svc->s_class)->sc_map_dist != NULL) {
+    D_INFO("Network_Crt init_map_distd");
 		rc = init_map_distd(svc);
 		if (rc != 0)
 			goto err_svc;

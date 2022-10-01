@@ -8,6 +8,8 @@
 
 #include "swim_internal.h"
 #include <assert.h>
+#include<time.h>
+#include<sys/time.h>
 
 static const char *SWIM_STATUS_STR[] = {
 	[SWIM_MEMBER_ALIVE]	= "ALIVE",
@@ -19,6 +21,26 @@ static const char *SWIM_STATUS_STR[] = {
 static uint64_t swim_prot_period_len;
 static uint64_t swim_suspect_timeout;
 static uint64_t swim_ping_timeout;
+static uint64_t swim_ping_start_time;
+
+static const uint64_t swim_debug_time=300000; //300s
+
+static inline char *
+swim_context_state_str(enum swim_context_state state)
+{
+  switch (state) {
+	case SCS_BEGIN:
+		return "SCS_BEGIN";
+	case SCS_PINGED:
+		return "SCS_PINGED";
+	case SCS_TIMEDOUT:
+		return "SCS_TIMEDOUT";
+	case SCS_SELECT:
+		return "SCS_SELECT";
+	default:
+		return "UNKNOWN";
+	}
+}
 
 static inline uint64_t
 swim_prot_period_len_default(void)
@@ -28,6 +50,20 @@ swim_prot_period_len_default(void)
 	d_getenv_int("SWIM_PROTOCOL_PERIOD_LEN", &val);
 	return val;
 }
+
+
+static inline void
+get_time_want(char *time_in, size_t len, uint64_t sec_add){
+  time_t t = time(NULL);
+  if (sec_add > 0)
+    t += sec_add;
+  struct tm tm = *localtime(&t);
+  struct timeval tv;
+  (void)gettimeofday(&tv, 0);
+  snprintf(time_in, len, "%02d/%02d-%02d:%02d:%02d.%02ld\n",
+    tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec, (long int)tv.tv_usec / 10000);
+}
+
 
 static inline uint64_t
 swim_suspect_timeout_default(void)
@@ -97,7 +133,7 @@ swim_dump_updates(swim_id_t self_id, swim_id_t from_id, swim_id_t to_id,
 
 	if (!D_LOG_ENABLED(DLOG_DBG))
 		return;
-
+  // 通过流, 将{1 I 0} {0 A 914599042663579648}写入msg
 	fp = open_memstream(&msg, &msg_size);
 	if (fp != NULL) {
 		for (i = 0; i < nupds; i++) {
@@ -111,6 +147,7 @@ swim_dump_updates(swim_id_t self_id, swim_id_t from_id, swim_id_t to_id,
 		fclose(fp);
 		/* msg and msg_size will be set after fclose(fp) only */
 		if (msg_size > 0)
+      // 0 => 1: {1 I 0} {0 A 914599042663579648}
 			SWIM_INFO("%lu %s %lu:%s\n", self_id,
 				  self_id == from_id ? "=>" : "<=",
 				  self_id == from_id ? to_id : from_id, msg);
@@ -372,7 +409,7 @@ update:
 		}
 	}
 
-	SWIM_ERROR("member %lu is DEAD\n", id);
+	SWIM_ERROR("%lu mark member %lu is DEAD\n", from, id);
 	id_state.sms_incarnation = nr;
 	id_state.sms_status = SWIM_MEMBER_DEAD;
 	rc = swim_updates_notify(ctx, from, id, &id_state, 0);
@@ -740,16 +777,21 @@ swim_init(swim_id_t self_id, struct swim_ops *swim_ops, void *data)
 	ctx->sc_piggyback_tx_max = SWIM_PIGGYBACK_TX_COUNT;
 	/* force to choose next target first */
 	ctx->sc_target = SWIM_ID_INVALID;
+  D_DEBUG(DB_ALL, "SWIM_ID_INVALID:%lu, sc_piggyback_tx_max:%d", SWIM_ID_INVALID, SWIM_PIGGYBACK_TX_COUNT);
 
 	/* set global tunable defaults */
 	swim_prot_period_len = swim_prot_period_len_default();
 	swim_suspect_timeout = swim_suspect_timeout_default();
 	swim_ping_timeout    = swim_ping_timeout_default();
+  swim_ping_start_time = swim_now_ms();
 
 	ctx->sc_default_ping_timeout = swim_ping_timeout;
-
 	/* delay the first ping until all things will be initialized */
 	ctx->sc_next_tick_time = swim_now_ms() + 3 * swim_prot_period_len;
+  char next_tick_times[18];
+  get_time_want(next_tick_times, 18, 3 * swim_prot_period_len / 1000);
+  D_DEBUG(DB_ALL, "self_id:%lu, swim_prot_period_len:%lu,swim_suspect_timeout:%lu,swim_ping_timeout:%lu,sc_next_tick_time:%lu(%s),now(uptime):%lu", 
+    self_id, swim_prot_period_len, swim_suspect_timeout,swim_ping_timeout,ctx->sc_next_tick_time, next_tick_times, swim_ping_start_time);
 out:
 	return ctx;
 }
@@ -860,23 +902,34 @@ swim_progress(struct swim_context *ctx, int64_t timeout_us)
 	now = swim_now_ms();
 	if (timeout_us > 0)
 		end = now + timeout_us / 1000; /* timeout in us */
-	ctx->sc_next_event = now + swim_period_get();
+	ctx->sc_next_event = now + swim_period_get(); // 每次进入progress, 设置下次事件时间为当前时间后移一个周期1s或2s
 
+  // 第1次: now:2101986, end:0, timeout_us:0, sc_next_event:2103986, sc_expect_progress_time:0, period:2000, net_glitch_delay:0,ctx_state:SCS_TIMEDOUT,sc_next_tick_time:2102185, now-next_tick:-199
+  // 第2次: now:2115399, end:2115400, timeout_us:1000, sc_next_event:2117399, sc_expect_progress_time:2103986, period:2000, net_glitch_delay:0,ctx_state:SCS_TIMEDOUT,sc_next_tick_time:2102185, now-next_tick:13214
+  // if (now - swim_ping_start_time <= swim_debug_time)
+  //   D_DEBUG(DB_ALL, "now:%lu, end:%lu, timeout_us:%lu, sc_next_event:%lu, sc_expect_progress_time:%lu, period:%lu, net_glitch_delay:%lu,ctx_state:%s,"
+  //     "sc_next_tick_time:%lu, now-next_tick:%ld", 
+  //     now, end, timeout_us, ctx->sc_next_event,ctx->sc_expect_progress_time, swim_period_get(), net_glitch_delay, swim_context_state_str(ctx_state), 
+  //     ctx->sc_next_tick_time, (int64_t)now - (int64_t)ctx->sc_next_tick_time);
+
+  // 第1次, sc_expect_progress_time=0
+  // 第2次, 打印网路故障延迟: The progress callback was not called for too long: 11413 ms after expected, now:2115399, sc_expect_progress_time:2103986
 	if (now > ctx->sc_expect_progress_time &&
 	    0  != ctx->sc_expect_progress_time) {
-		net_glitch_delay = now - ctx->sc_expect_progress_time;
+		net_glitch_delay = now - ctx->sc_expect_progress_time;  // 网络故障延迟=当前时间-期望处理时间
 		SWIM_ERROR("The progress callback was not called for too long: "
-			   "%lu ms after expected.\n", net_glitch_delay);
+			   "%lu ms after expected, now:%lu, sc_expect_progress_time:%lu.\n", net_glitch_delay, now, ctx->sc_expect_progress_time);
 	}
-
+  // 第1次, SCS_TIMEDOUT满足条件,进入循环
+  // 第2次, 两个条件都满足, 进入循环
 	for (; now <= end || ctx_state == SCS_TIMEDOUT; now = swim_now_ms()) {
-		rc = swim_member_update_suspected(ctx, now, net_glitch_delay);
+		rc = swim_member_update_suspected(ctx, now, net_glitch_delay); // 默认无质疑(链表为空)
 		if (rc) {
 			SWIM_ERROR("swim_member_update_suspected(): "DF_RC"\n", DP_RC(rc));
 			D_GOTO(out, rc);
 		}
 
-		rc = swim_ipings_update(ctx, now, net_glitch_delay);
+		rc = swim_ipings_update(ctx, now, net_glitch_delay); // 默认无ping
 		if (rc) {
 			SWIM_ERROR("swim_ipings_update(): "DF_RC"\n", DP_RC(rc));
 			D_GOTO(out, rc);
@@ -885,6 +938,7 @@ swim_progress(struct swim_context *ctx, int64_t timeout_us)
 		swim_ctx_lock(ctx);
 		ctx_state = SCS_SELECT;
 		if (ctx->sc_target != SWIM_ID_INVALID) {
+      // D_DEBUG(DB_ALL, "sc_target:%lu", ctx->sc_target);
 			rc = ctx->sc_ops->get_member_state(ctx, ctx->sc_target,
 							   &target_state);
 			if (rc) {
@@ -901,6 +955,11 @@ swim_progress(struct swim_context *ctx, int64_t timeout_us)
 			}
 		}
 
+    // if (now - swim_ping_start_time <= swim_debug_time)
+    //   D_DEBUG(DB_ALL, "ctx_state:%s, now:%lu, end:%lu, sc_next_tick_time:%lu, sc_subgroup_empty:%d, now-next_tick:%ld, sc_target:%lu, now-start:%ld", 
+    //     swim_context_state_str(ctx_state), now, end, ctx->sc_next_tick_time, TAILQ_EMPTY(&ctx->sc_subgroup), 
+    //     (int64_t)(now-ctx->sc_next_tick_time), ctx->sc_target, (int64_t)(now - swim_ping_start_time));
+
 		switch (ctx_state) {
 		case SCS_BEGIN:
 			if (now > ctx->sc_next_tick_time) {
@@ -915,6 +974,7 @@ swim_progress(struct swim_context *ctx, int64_t timeout_us)
 					target_id = ctx->sc_target;
 					sendto_id = ctx->sc_target;
 					send_updates = true;
+          // dping 0 => {1 I 0} delay: 0 ms, timeout: 1800 ms
 					SWIM_INFO("%lu: dping %lu => {%lu %c %lu} "
 						  "delay: %u ms, timeout: %lu ms\n",
 						  ctx->sc_self, ctx->sc_self, sendto_id,
@@ -1009,12 +1069,12 @@ swim_progress(struct swim_context *ctx, int64_t timeout_us)
 					if (state.sms_status != SWIM_MEMBER_INACTIVE)
 						goto done_item;
 
-					SWIM_INFO("%lu: dping  %lu => {%lu %c %lu} "
-						  "delay: %u ms\n",
+					SWIM_INFO("self %lu: dping  %lu => {%lu %c %lu} "
+						  "delay: %u ms, subgroup_empty:%d\n",
 						  ctx->sc_self, ctx->sc_self, sendto_id,
 						  SWIM_STATUS_CHARS[state.sms_status],
 								    state.sms_incarnation,
-								    state.sms_delay);
+								    state.sms_delay, TAILQ_EMPTY(&ctx->sc_subgroup));
 				}
 
 				send_updates = true;
@@ -1028,7 +1088,7 @@ done_item:
 			/* fall through to select a next target */
 		case SCS_SELECT:
 			ctx->sc_target = ctx->sc_ops->get_dping_target(ctx);
-			if (ctx->sc_target == SWIM_ID_INVALID) {
+			if (ctx->sc_target == SWIM_ID_INVALID) {  // 第一次未获取到目标, 走out
 				swim_ctx_unlock(ctx);
 				D_GOTO(out, rc = -DER_SHUTDOWN);
 			}
@@ -1051,12 +1111,12 @@ done_item:
 			}
 			send_updates = false;
 		} else if (now + 100 < ctx->sc_next_event) {
-			break; /* break loop if need to wait more than 100 ms. */
+			break; /* break loop if need to wait more than 100 ms. 如果还需要再等待时间超过100ms,则跳出for循环*/
 		}
 	}
 	rc = (now > end) ? -DER_TIMEDOUT : -DER_CANCELED;
 out:
-	ctx->sc_expect_progress_time = now + swim_period_get();
+	ctx->sc_expect_progress_time = now + swim_period_get(); // 期望处理时间=now+1个周期
 out_err:
 	return rc;
 }

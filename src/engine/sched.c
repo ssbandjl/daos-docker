@@ -910,6 +910,7 @@ process_all(struct dss_xstream *dx)
 	}
 
 	prune_purge_list(dx);
+  D_DEBUG(DB_ALL, "Network_Crt process_all dx:%p", dx);
 	rc = d_hash_table_traverse(info->si_pool_hash, process_pool_cb, dx);
 	if (rc)
 		D_ERROR("XS(%d) traverse pool hash error. "DF_RC"\n",
@@ -952,6 +953,7 @@ req_enqueue(struct dss_xstream *dx, struct sched_request *req)
 		D_ASSERT(policy_ops[sched_policy].enqueue_io != NULL);
 		policy_ops[sched_policy].enqueue_io(dx, req, NULL);
 	} else {
+    D_DEBUG(DB_ALL, "Network_Crt enqueue sri_req_list dx:%p", dx);
 		d_list_add_tail(&req->sr_link, &sri->sri_req_list);
 	}
 	req->sr_enqueue_ts = info->si_cur_ts;
@@ -967,8 +969,10 @@ sched_req_enqueue(struct dss_xstream *dx, struct sched_req_attr *attr,
 {
 	struct sched_request	*req;
 
-	if (!should_enqueue_req(dx, attr))
+	if (!should_enqueue_req(dx, attr)){
+    D_DEBUG(DB_ALL, "Network_Crt should_enqueue dx:%p", dx);
 		return req_kickoff_internal(dx, attr, func, arg);
+  }
 
 	D_ASSERT(attr->sra_type < SCHED_REQ_MAX);
 	req = req_get(dx, attr, func, arg, ABT_THREAD_NULL, false);

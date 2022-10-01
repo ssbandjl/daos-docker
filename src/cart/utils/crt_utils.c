@@ -40,10 +40,10 @@ crtu_test_init(d_rank_t rank, int num_attach_retries, bool is_server,
 	       bool assert_on_error)
 {
 	opts.is_initialized	= true;
-	opts.self_rank		= rank;
+	opts.self_rank		= rank;  // rank0
 	opts.mypid		= getpid();
 	opts.is_server		= is_server;
-	opts.num_attach_retries	= num_attach_retries;
+	opts.num_attach_retries	= num_attach_retries; // 40
 	opts.assert_on_error	= assert_on_error;
 	opts.shutdown		= 0;
 	opts.is_swim_enabled	= false;
@@ -168,12 +168,16 @@ ctl_client_cb(const struct crt_cb_info *info)
 		wfrs->num_ctx = out_ls_args->cel_ctx_num;
 		wfrs->rc = out_ls_args->cel_rc;
 
-		D_DEBUG(DB_TEST, "ctx_num: %d\n",
+		// D_DEBUG(DB_TEST, "ctx_num: %d\n",
+		// 	out_ls_args->cel_ctx_num);
+		D_WARN("ctx_num: %d\n",
 			out_ls_args->cel_ctx_num);
 		addr_str = out_ls_args->cel_addr_str.iov_buf;
 		for (i = 0; i < out_ls_args->cel_ctx_num; i++) {
-			D_DEBUG(DB_TEST, "    %s\n", addr_str);
+			D_WARN("    %s\n", addr_str);
 				addr_str += (strlen(addr_str) + 1);
+			// D_DEBUG(DB_TEST, "    %s\n", addr_str);
+			// 	addr_str += (strlen(addr_str) + 1);
 		}
 	} else {
 		wfrs->rc = info->cci_rc;
@@ -224,7 +228,7 @@ crtu_wait_for_ranks(crt_context_t ctx, crt_group_t *grp,
 
 	server_ep.ep_tag = tag;
 	server_ep.ep_grp = grp;
-
+  D_DEBUG(DB_ALL, "rl_nr:%d", rank_list->rl_nr);
 	for (i = 0; i < rank_list->rl_nr; i++) {
 		rank = rank_list->rl_ranks[i];
 		server_ep.ep_rank = rank;
@@ -248,7 +252,7 @@ crtu_wait_for_ranks(crt_context_t ctx, crt_group_t *grp,
 			crtu_sync_timedwait(&ws, 120, __LINE__);
 		else
 			ws.rc = rc;
-
+    D_WARN("rc:%d, ws.rc:%d", rc, ws.rc); // ws.rc:0, 默认不走下边的逻辑
 		while (ws.rc != 0 && time_s < total_timeout) {
 			rc = crt_req_create(ctx, &server_ep,
 					    CRT_OPC_CTL_LS, &rpc);
@@ -367,6 +371,7 @@ crtu_dc_mgmt_net_cfg_rank_add(const char *name, crt_group_t *group,
 	for (i = 0; i < crt_net_cfg_resp->n_rank_uris; i++) {
 		rank_uri = crt_net_cfg_resp->rank_uris[i];
 
+    D_WARN("rank:%d, uri:%s", rank_uri->rank, rank_uri->uri);
 		rc = crt_group_primary_rank_add(context, group,
 						rank_uri->rank,
 						rank_uri->uri);
@@ -442,6 +447,7 @@ crtu_dc_mgmt_net_cfg_setenv(const char *name)
 
 	/* Allow client env overrides for these three */
 	crt_timeout = getenv("CRT_TIMEOUT");
+  // printf("crt_timeout:%s\n", crt_timeout);
 	if (!crt_timeout) {
 		sprintf(buf, "%d", crt_net_cfg_info.crt_timeout);
 		rc = setenv("CRT_TIMEOUT", buf, 1);
@@ -474,13 +480,19 @@ crtu_dc_mgmt_net_cfg_setenv(const char *name)
 			"Using client provided OFI_DOMAIN: %s\n", ofi_domain);
 	}
 
-	D_DEBUG(DB_MGMT,
-		"CaRT initialization with:\n"
+	D_WARN("CaRT initialization with:\n"
 		"\tOFI_INTERFACE=%s, OFI_DOMAIN: %s, CRT_PHY_ADDR_STR: %s, "
 		"CRT_CTX_SHARE_ADDR: %s, CRT_TIMEOUT: %s\n",
 		getenv("OFI_INTERFACE"), getenv("OFI_DOMAIN"),
 		getenv("CRT_PHY_ADDR_STR"),
 		getenv("CRT_CTX_SHARE_ADDR"), getenv("CRT_TIMEOUT"));
+	// D_DEBUG(DB_MGMT,
+	// 	"CaRT initialization with:\n"
+	// 	"\tOFI_INTERFACE=%s, OFI_DOMAIN: %s, CRT_PHY_ADDR_STR: %s, "
+	// 	"CRT_CTX_SHARE_ADDR: %s, CRT_TIMEOUT: %s\n",
+	// 	getenv("OFI_INTERFACE"), getenv("OFI_DOMAIN"),
+	// 	getenv("CRT_PHY_ADDR_STR"),
+	// 	getenv("CRT_CTX_SHARE_ADDR"), getenv("CRT_TIMEOUT"));
 
 cleanup:
 	dc_put_attach_info(&crt_net_cfg_info, crt_net_cfg_resp);
@@ -571,7 +583,7 @@ crtu_cli_start_basic(char *local_group_name, char *srv_group_name,
 					  "crtu_load_group_from_file failed;"
 					  "rc=%d\n", rc);
 		}
-	} else {
+	} else { // 默认执行
 		rc = crt_group_view_create(srv_group_name, grp);
 		if (!*grp || rc != 0) {
 			D_ERROR("Failed to create group view; rc=%d\n", rc);

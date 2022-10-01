@@ -119,6 +119,7 @@ struct crt_corpc_info {
 	int			 co_rc;
 };
 
+// cart rpc私有数据
 struct crt_rpc_priv {
 	crt_rpc_t		crp_pub; /* public part */
 	/* link to crt_ep_inflight::epi_req_q/::epi_req_waitq */
@@ -198,6 +199,11 @@ struct crt_rpc_priv {
  * TODO: CRT_OPC_CTL_LS should be in the ctl protocol however cart_ctl uses
  * this to ping the server waiting for start so needs to work before
  * proto_query() can be called.
+ * 内部 RPCS 的列表形式为：
+操作码、标志、FMT、处理程序、corpc_hdlr、
+TODO：CRT_OPC_CTL_LS 应该在 ctl 协议中，但是 cart_ctl 使用
+这是为了 ping 服务器等待启动，所以需要先工作
+proto_query() 可以被调用。
  */
 #define CRT_INTERNAL_RPCS_LIST						\
 	X(CRT_OPC_URI_LOOKUP,						\
@@ -289,7 +295,7 @@ struct crt_rpc_priv {
 enum {
 	__FIRST_INTERNAL  = CRT_PROTO_OPC(CRT_OPC_INTERNAL_BASE,
 					  CRT_PROTO_INTERNAL_VERSION, 0) - 1,
-	CRT_INTERNAL_RPCS_LIST
+	CRT_INTERNAL_RPCS_LIST 
 };
 
 /* CRT fault injection opcode definitions, must be 0xFF00xxxx.*/

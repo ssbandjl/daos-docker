@@ -1279,6 +1279,7 @@ crt_req_send_internal(struct crt_rpc_priv *rpc_priv)
 		}
 
 		if (rpc_priv->crp_hg_addr != NULL) {
+      // D_DEBUG(DB_ALL, "crp_hg_addr != NULL");
 			/* send the RPC if the local cache has the HG_Addr */
 			rc = crt_req_send_immediately(rpc_priv);
 		} else if (uri_exists == true) {
@@ -1364,8 +1365,9 @@ crt_req_send(crt_rpc_t *req, crt_cb_t complete_cb, void *arg)
 
 	rpc_priv->crp_complete_cb = complete_cb;
 	rpc_priv->crp_arg = arg;
-
+  // 集体RPC(非默认)
 	if (rpc_priv->crp_coll) {
+    D_DEBUG(DB_ALL, "crt_corpc_req_hdlr");
 		rc = crt_corpc_req_hdlr(rpc_priv);
 		if (rc != 0)
 			RPC_ERROR(rpc_priv,
@@ -1380,7 +1382,7 @@ crt_req_send(crt_rpc_t *req, crt_cb_t complete_cb, void *arg)
 		}
 	}
 
-	RPC_TRACE(DB_TRACE, rpc_priv, "submitted.\n");
+	RPC_TRACE(DB_TRACE, rpc_priv, "submitted crp_coll:%d\n", rpc_priv->crp_coll);
 
 	rc = crt_context_req_track(rpc_priv);
 	if (rc == CRT_REQ_TRACK_IN_INFLIGHQ) {
@@ -1394,6 +1396,7 @@ crt_req_send(crt_rpc_t *req, crt_cb_t complete_cb, void *arg)
 		}
 	} else if (rc == CRT_REQ_TRACK_IN_WAITQ) {
 		/* queued in crt_hg_context::dhc_req_q */
+    D_ERROR("rpc in waitq CRT_REQ_TRACK_IN_WAITQ");
 		rc = 0;
 	} else {
 		RPC_ERROR(rpc_priv,

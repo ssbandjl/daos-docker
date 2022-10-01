@@ -1380,6 +1380,7 @@ crt_group_rank_s2p(crt_group_t *subgrp, d_rank_t rank_in, d_rank_t *rank_out);
 /**
  * Create collective RPC request. Can reuse the crt_req_send to broadcast it.
  * Can only be called on the server side.
+ * 创建集体 RPC 请求。 可以重用 crt_req_send 来广播它。 只能在服务器端调用。
  *
  * \param[in] crt_ctx          CRT context
  * \param[in] grp              CRT group for the collective RPC

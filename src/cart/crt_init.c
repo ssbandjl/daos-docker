@@ -97,8 +97,8 @@ prov_data_init(struct crt_prov_gdata *prov_data, int provider,
 	prov_data->cpg_max_exp_size = max_exp_size;
 	prov_data->cpg_max_unexp_size = max_unexp_size;
 
-	D_DEBUG(DB_ALL, "Provider (%d), sep_mode (%d), sizes (%d/%d)\n",
-		provider, sep_mode, max_exp_size, max_unexp_size);
+	D_DEBUG(DB_ALL, "Provider (%s), sep_mode (%d), sizes (%d/%d), cpg_ctx_max_num:(%d)\n",
+		crt_na_dict[provider].nad_str, sep_mode, max_exp_size, max_unexp_size, max_ctx_num);
 
 	D_INIT_LIST_HEAD(&prov_data->cpg_ctx_list);
 }
@@ -382,10 +382,10 @@ crt_init_opt(crt_group_id_t grpid, uint32_t flags, crt_init_options_t *opt)
 		crt_gdata.cg_server = server;
 		crt_gdata.cg_auto_swim_disable =
 			(flags & CRT_FLAG_BIT_AUTO_SWIM_DISABLE) ? 1 : 0;
-
+    // 默认启动监听
 		D_DEBUG(DB_ALL, "Server bit set to %d\n", server);
 		D_DEBUG(DB_ALL, "Swim auto disable set to %d\n",
-			crt_gdata.cg_auto_swim_disable);
+			crt_gdata.cg_auto_swim_disable);  // self_test默认关闭心跳
 
 		path = getenv("CRT_ATTACH_INFO_PATH");
 		if (path != NULL && strlen(path) > 0) {
@@ -406,7 +406,7 @@ crt_init_opt(crt_group_id_t grpid, uint32_t flags, crt_init_options_t *opt)
 			goto do_init;
 		} else{
 			D_DEBUG(DB_ALL, "EVN %s: %s.\n", CRT_PHY_ADDR_ENV,
-				addr_env);
+				addr_env);  // EVN CRT_PHY_ADDR_STR: ofi+sockets
 		}
 
 		provider_found = false;
@@ -506,7 +506,7 @@ do_init:
 			D_ERROR("crt_hg_init() failed, "DF_RC"\n", DP_RC(rc));
 			D_GOTO(cleanup, rc);
 		}
-
+    D_DEBUG(DB_ALL, "grpid:%s", grpid);  // crt_self_test
 		rc = crt_grp_init(grpid);
 		if (rc != 0) {
 			D_ERROR("crt_grp_init() failed, "DF_RC"\n",

@@ -25,6 +25,7 @@ dc_agent_init()
 		return -DER_NOMEM;
 
 	dc_agent_sockpath = path;
+  D_DEBUG(DB_ALL, "dc_agent_sock path:%s", dc_agent_sockpath);
 	return 0;
 }
 

@@ -157,7 +157,7 @@ ds_mgmt_drpc_set_rank(Drpc__Call *drpc_req, Drpc__Response *drpc_resp)
 	}
 
 	D_INFO("Received request to set rank to %u\n", req->rank);
-
+  // D_DEBUG(DB_ALL, "crt_rank_self_set rank:%d", req->rank);
 	rc = crt_rank_self_set(req->rank);
 	if (rc != 0)
 		D_ERROR("Failed to set self rank %u: "DF_RC"\n", req->rank,
@@ -189,8 +189,8 @@ ds_mgmt_drpc_group_update(Drpc__Call *drpc_req, Drpc__Response *drpc_resp)
 		return;
 	}
 
-	D_INFO("Received request to update group map with %zu ranks.\n",
-	       req->n_engines);
+	D_INFO("Received request to update group map with %zu ranks, map_version:%d.\n",
+	       req->n_engines, req->map_version);
 
 	D_ALLOC_ARRAY(in.gui_servers, req->n_engines);
 	if (in.gui_servers == NULL) {
@@ -201,6 +201,7 @@ ds_mgmt_drpc_group_update(Drpc__Call *drpc_req, Drpc__Response *drpc_resp)
 	for (i = 0; i < req->n_engines; i++) {
 		in.gui_servers[i].se_rank = req->engines[i]->rank;
 		in.gui_servers[i].se_uri = req->engines[i]->uri;
+    D_DEBUG(DB_ALL, "set mgmt_grp_up_in rank:%d, uri:%s", req->engines[i]->rank, req->engines[i]->uri);
 	}
 	in.gui_n_servers = req->n_engines;
 	in.gui_map_version = req->map_version;

@@ -191,7 +191,8 @@ crt_context_provider_create(crt_context_t *crt_ctx, int provider)
 	sep_mode = crt_provider_is_sep(provider);
 	cur_ctx_num = crt_provider_get_cur_ctx_num(provider);
 	max_ctx_num = crt_provider_get_max_ctx_num(provider);
-
+  D_DEBUG(DB_ALL, "crt_ctx:%p, sep_mode:%d, cur_ctx_num:%d, max_ctx_num:%d", 
+    crt_ctx,sep_mode, cur_ctx_num, max_ctx_num);
 	if (sep_mode &&
 	    cur_ctx_num >= max_ctx_num) {
 		D_ERROR("Number of active contexts (%d) reached limit (%d).\n",
@@ -220,9 +221,10 @@ crt_context_provider_create(crt_context_t *crt_ctx, int provider)
 		crt_context_destroy(ctx, true);
 		D_GOTO(out, rc);
 	}
-
+  // D_DEBUG(DB_ALL, "ctx->cc_self_uri:%s", ctx->cc_self_uri);
 	rc = crt_hg_get_addr(ctx->cc_hg_ctx.chc_hgcla,
 			     ctx->cc_self_uri, &uri_len);
+  D_DEBUG(DB_ALL, "ctx->cc_self_uri:%s", ctx->cc_self_uri); // ofi+sockets://172.17.0.2:37531
 	if (rc != 0) {
 		D_ERROR("ctx_hg_get_addr() failed; rc: %d.\n", rc);
 		D_RWLOCK_UNLOCK(&crt_gdata.cg_rwlock);
@@ -240,11 +242,13 @@ crt_context_provider_create(crt_context_t *crt_ctx, int provider)
 	D_RWLOCK_UNLOCK(&crt_gdata.cg_rwlock);
 
 	/** initialize sensors */
+  D_DEBUG(DB_ALL, "cg_use_sensors:%d", crt_gdata.cg_use_sensors);
 	if (crt_gdata.cg_use_sensors) {
 		int	ret;
 		char	*prov;
 
 		prov = crt_provider_name_get(ctx->cc_hg_ctx.chc_provider);
+    D_DEBUG(DB_ALL, "prov:%s", prov);
 		ret = d_tm_add_metric(&ctx->cc_timedout, D_TM_COUNTER,
 				      "Total number of timed out RPC requests",
 				      "reqs", "net/%s/req_timeout/ctx_%u",
@@ -275,6 +279,7 @@ crt_context_provider_create(crt_context_t *crt_ctx, int provider)
 	if (crt_is_service() &&
 	    crt_gdata.cg_auto_swim_disable == 0 &&
 	    ctx->cc_idx == crt_gdata.cg_swim_crt_idx) {
+    D_DEBUG(DB_ALL, "crt_swim_init cg_swim_crt_idx:%d", ctx->cc_idx); // swim crt上下文索引为1
 		rc = crt_swim_init(crt_gdata.cg_swim_crt_idx);
 		if (rc) {
 			D_ERROR("crt_swim_init() failed rc: %d.\n", rc);
@@ -758,6 +763,7 @@ crt_req_timeout_untrack(struct crt_rpc_priv *rpc_priv)
 	}
 }
 
+// 执行超时回调
 static void
 crt_exec_timeout_cb(struct crt_rpc_priv *rpc_priv)
 {
@@ -777,9 +783,11 @@ crt_exec_timeout_cb(struct crt_rpc_priv *rpc_priv)
 		cb_func = cbs_timeout[i].ctcp_func;
 		cb_args = cbs_timeout[i].ctcp_args;
 		/* check for and execute timeout callbacks here */
-		if (cb_func != NULL)
+		if (cb_func != NULL){
+      D_INFO("Network_Crt exec_timeout_cb");
 			cb_func(rpc_priv->crp_pub.cr_ctx, &rpc_priv->crp_pub,
 				cb_args);
+    }
 	}
 }
 
@@ -832,6 +840,7 @@ crt_req_timeout_reset(struct crt_rpc_priv *rpc_priv)
 	return true;
 }
 
+// 超时请求控制器
 static inline void
 crt_req_timeout_hdlr(struct crt_rpc_priv *rpc_priv)
 {
@@ -909,15 +918,19 @@ crt_req_timeout_hdlr(struct crt_rpc_priv *rpc_priv)
 				  grp_priv->gp_pub.cg_grpid,
 				  tgt_ep->ep_rank, rpc_priv->crp_tgt_uri);
 			rc = crt_req_abort(&rpc_priv->crp_pub);
-			if (rc)
+			if (rc){
+        D_INFO("Network_Crt abort_failed rc:%d",rc);
 				crt_context_req_untrack(rpc_priv);
+      }else{
+        D_INFO("Network_Crt abort_ok rc:%d",rc);
+      }
 		}
 		break;
 	}
 }
 
 static void
-crt_context_timeout_check(struct crt_context *crt_ctx)
+c(struct crt_context *crt_ctx)
 {
 	struct crt_rpc_priv		*rpc_priv;
 	struct d_binheap_node		*bh_node;
@@ -1045,7 +1058,8 @@ crt_context_req_track(struct crt_rpc_priv *rpc_priv)
 	if (crt_gdata.cg_credit_ep_ctx != 0 &&
 	    (epi->epi_req_num - epi->epi_reply_num) >=
 	     crt_gdata.cg_credit_ep_ctx) {
-
+    D_DEBUG(DB_ALL, "add rpc to waitq cg_credit_ep_ctx:%u, epi_req_num:%ld, epi_reply_num:%ld, cg_credit_ep_ctx:%u", 
+      crt_gdata.cg_credit_ep_ctx, epi->epi_req_num, epi->epi_reply_num, crt_gdata.cg_credit_ep_ctx);
 		if (rpc_priv->crp_opc_info->coi_queue_front) {
 			d_list_add(&rpc_priv->crp_epi_link,
 					&epi->epi_req_waitq);

@@ -44,7 +44,7 @@ do_shard_update_req_cb(crt_rpc_t *req, struct obj_remote_cb_arg *arg, int rc)
 	struct obj_rw_in		*orw_parent = crt_req_get(parent_req);
 	struct dtx_leader_handle	*dlh = arg->dlh;
 	int				rc1 = 0;
-
+  D_INFO("Network_Crt req:%p", req);
 	if (orw_parent->orw_map_ver < orwo->orw_map_version) {
 		D_DEBUG(DB_IO, DF_UOID": map_ver stale (%d < %d).\n",
 			DP_UOID(orw_parent->orw_oid), orw_parent->orw_map_ver,
@@ -116,6 +116,7 @@ ds_obj_remote_update(struct dtx_leader_handle *dlh, void *data, int idx,
 
 	rc = obj_req_create(dss_get_module_info()->dmi_ctx, &tgt_ep,
 			    DAOS_OBJ_RPC_TGT_UPDATE, &req);
+  D_INFO("Network_Crt obj_update create req:%p, opc:DAOS_OBJ_RPC_TGT_UPDATE", req);
 	if (rc != 0) {
 		D_ERROR("crt_req_create failed, rc "DF_RC"\n", DP_RC(rc));
 		D_GOTO(out, rc);

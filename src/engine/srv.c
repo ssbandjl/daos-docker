@@ -255,7 +255,8 @@ dss_rpc_hdlr(crt_context_t *ctx, void *hdlr_arg,
 	} else {
 		attr.sra_type = SCHED_REQ_ANONYM;
 	}
-
+  D_DEBUG(DB_ALL, "Network_Crt req_enqueue dx:%p, rpc:%p", 
+    dx, rpc);
 	return sched_req_enqueue(dx, &attr, real_rpc_hdlr, rpc);
 }
 
@@ -359,6 +360,7 @@ dss_srv_handler(void *arg)
 	(void)pthread_setname_np(pthread_self(), dx->dx_name);
 
 	if (dx->dx_comm) {
+    D_DEBUG(DB_ALL, "Network_Crt dx_comm:%d,dx->dx_name:%s", dx->dx_comm, dx->dx_name);  // daos_sys_0, daos_sys_1, daos_io_0
 		/* create private transport context */
 		rc = crt_context_create(&dmi->dmi_ctx);
 		if (rc != 0) {
@@ -367,6 +369,7 @@ dss_srv_handler(void *arg)
 			goto tls_fini;
 		}
 
+    D_DEBUG(DB_ALL, "Network_Crt register_rpc_process_cb dss_rpc_hdlr");
 		rc = crt_context_register_rpc_task(dmi->dmi_ctx, dss_rpc_hdlr,
 						   dss_iv_resp_hdlr, dx);
 		if (rc != 0) {
@@ -377,6 +380,7 @@ dss_srv_handler(void *arg)
 
 		/** Get context index from cart */
 		rc = crt_context_idx(dmi->dmi_ctx, &dmi->dmi_ctx_id);
+    D_DEBUG(DB_ALL, "dmi_ctx_id:%d", dmi->dmi_ctx_id);
 		if (rc != 0) {
 			D_ERROR("failed to get xtream index: rc "DF_RC"\n",
 				DP_RC(rc));
@@ -480,6 +484,7 @@ dss_srv_handler(void *arg)
 	ABT_mutex_unlock(xstream_data.xd_mutex);
 
 	signal_caller = false;
+  D_DEBUG(DB_ALL, "Network_Crt dmi->dmi_ctx:%p, dx->dx_timeout:%d ms", dmi->dmi_ctx, dx->dx_timeout); // 0ms
 	/* main service progress loop */
 	for (;;) {
 		if (dx->dx_comm) {
@@ -717,7 +722,7 @@ dss_start_one_xstream(hwloc_cpuset_t cpus, int xs_id)
 	xstream_data.xd_xs_ptrs[xs_id] = dx;
 	ABT_mutex_unlock(xstream_data.xd_mutex);
 	ABT_thread_attr_free(&attr);
-
+  // server DBUG src/engine/srv.c:725 dss_start_one_xstream() created xstream name(daos_sys_0)xs_id(0)/tgt_id(-1)/ctx_id(0)/comm(1)/is_main_xs(0)
 	D_DEBUG(DB_TRACE, "created xstream name(%s)xs_id(%d)/tgt_id(%d)/"
 		"ctx_id(%d)/comm(%d)/is_main_xs(%d).\n",
 		dx->dx_name, dx->dx_xs_id, dx->dx_tgt_id, dx->dx_ctx_id,
@@ -897,7 +902,7 @@ dss_xstreams_init(void)
 	int	i, xs_id;
 
 	D_ASSERT(dss_tgt_nr >= 1);
-
+  D_DEBUG(DB_ALL, "Number of target (XS set) per engine:%d", dss_tgt_nr);
 	d_getenv_bool("DAOS_SCHED_PRIO_DISABLED", &sched_prio_disabled);
 	if (sched_prio_disabled)
 		D_INFO("ULT prioritizing is disabled.\n");
@@ -947,6 +952,7 @@ dss_xstreams_init(void)
 	}
 
 	xstream_data.xd_xs_nr = DSS_XS_NR_TOTAL;
+  D_DEBUG(DB_ALL, "dss_sys_xs_nr:%d, DSS_XS_NR_TOTAL:%d", dss_sys_xs_nr, DSS_XS_NR_TOTAL); // dss_sys_xs_nr:3, DSS_XS_NR_TOTAL:4
 	/* start system service XS */
 	for (i = 0; i < dss_sys_xs_nr; i++) {
 		xs_id = i;
@@ -1195,6 +1201,7 @@ dss_srv_init(void)
 	xstream_data.xd_ult_signal = false;
 
 	D_ALLOC_ARRAY(xstream_data.xd_xs_ptrs, DSS_XS_NR_TOTAL);
+  D_DEBUG(DB_ALL, "DSS_XS_NR_TOTAL:%d", DSS_XS_NR_TOTAL); // DSS_XS_NR_TOTAL:4
 	if (xstream_data.xd_xs_ptrs == NULL)
 		D_GOTO(failed, rc = -DER_NOMEM);
 	xstream_data.xd_xs_nr = 0;

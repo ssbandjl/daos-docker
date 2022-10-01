@@ -1586,6 +1586,7 @@ d_tm_record_timestamp(struct d_tm_node_t *metric)
 
 	d_tm_node_lock(metric);
 	metric->dtn_metric->dtm_data.value = (uint64_t)time(NULL);
+  D_DEBUG(DB_ALL, "time_stamp:%ld", metric->dtn_metric->dtm_data.value);
 	d_tm_node_unlock(metric);
 }
 

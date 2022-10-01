@@ -437,6 +437,7 @@ static int crt_swim_send_request(struct swim_context *ctx, swim_id_t id,
 		D_GOTO(out, rc = -DER_UNINIT);
 
 	crt_ctx = crt_context_lookup(ctx_idx);
+  // D_DEBUG(DB_ALL, "crt_context_lookup id:%lu, ctx_idx:%d", id, ctx_idx);  // ctx_idx:1
 	if (crt_ctx == CRT_CONTEXT_NULL) {
 		D_ERROR("crt_context_lookup(%d) failed\n", ctx_idx);
 		D_GOTO(out, rc = -DER_UNINIT);
@@ -580,7 +581,7 @@ out:
 			self_id, id, SWIM_STATUS_CHARS[csm->csm_target->cst_state.sms_status],
 			csm->csm_target->cst_state.sms_incarnation);
 	else
-		D_DEBUG(DB_TRACE, "there is no dping target\n");
+		D_DEBUG(DB_ALL, "there is no dping target,id:%lu\n", id);
 	return id;
 }
 
@@ -866,21 +867,23 @@ int crt_swim_init(int crt_ctx_idx)
 	 * crt_swim_rank_add.
 	 */
 	csm->csm_incarnation = hlc;
+  D_DEBUG(DB_ALL, "csm_incarnation:%lu,self_id:%lu, crt_ctx_idx:%d", csm->csm_incarnation, SWIM_ID_INVALID, crt_ctx_idx);
 	csm->csm_ctx = swim_init(SWIM_ID_INVALID, &crt_swim_ops, NULL);
 	if (csm->csm_ctx == NULL) {
 		D_ERROR("swim_init() failed for self=%u, crt_ctx_idx=%d\n",
 			self, crt_ctx_idx);
 		D_GOTO(out, rc = -DER_NOMEM);
 	}
-
+  
 	crt_gdata.cg_swim_inited = 1;
+  D_DEBUG(DB_ALL, "self:%d, grp_membs:%p, gp_size:%d",self, grp_membs, grp_priv->gp_size);
 	if (self != CRT_NO_RANK && grp_membs != NULL) {
+    D_DEBUG(DB_ALL, "self:%u, grp_membs:%p, size:%d\n", self, grp_membs, grp_priv->gp_size);
 		if (grp_membs->rl_nr != grp_priv->gp_size) {
 			D_ERROR("Mismatch in group size. Expected %d got %d\n",
 				grp_membs->rl_nr, grp_priv->gp_size);
 			D_GOTO(cleanup, rc = -DER_INVAL);
 		}
-
 		for (i = 0; i < grp_priv->gp_size; i++) {
 			rc = crt_swim_rank_add(grp_priv,
 					       grp_membs->rl_ranks[i]);
@@ -970,6 +973,7 @@ int crt_swim_enable(struct crt_grp_priv *grp_priv, int crt_ctx_idx)
 	if (csm->csm_crt_ctx_idx != crt_ctx_idx)
 		old_ctx_idx = csm->csm_crt_ctx_idx;
 	csm->csm_crt_ctx_idx = crt_ctx_idx;
+  D_DEBUG(DB_ALL, "csm_crt_ctx_idx:%d", crt_ctx_idx);
 	self_id = swim_self_get(csm->csm_ctx);
 	if (self_id != (swim_id_t)self)
 		swim_self_set(csm->csm_ctx, (swim_id_t)self);
@@ -1144,7 +1148,7 @@ int crt_swim_rank_add(struct crt_grp_priv *grp_priv, d_rank_t rank)
 	D_ALLOC_PTR(cst);
 	if (cst == NULL)
 		D_GOTO(out, rc = -DER_NOMEM);
-
+  D_DEBUG(DB_ALL, "self:%d,rank:%d", self, rank);
 	crt_swim_csm_lock(csm);
 	if (D_CIRCLEQ_EMPTY(&csm->csm_head)) {
 		cst->cst_id = (swim_id_t)self;

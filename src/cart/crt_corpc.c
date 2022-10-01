@@ -355,6 +355,7 @@ crt_corpc_req_create(crt_context_t crt_ctx, crt_group_t *grp,
 		D_ERROR("invalid parameter of tree_topo: %#x.\n", tree_topo);
 		D_GOTO(out, rc = -DER_INVAL);
 	}
+  // D_INFO("Network_Crt tree_topo:%d", tree_topo);
 
 	grp_gdata = crt_gdata.cg_grp;
 	D_ASSERT(grp_gdata != NULL);
@@ -395,6 +396,7 @@ crt_corpc_req_create(crt_context_t crt_ctx, crt_group_t *grp,
 	rc = d_rank_in_rank_list(filter_ranks, pri_root);
 	filter_invert = flags & CRT_RPC_FLAG_FILTER_INVERT;
 	if ((filter_invert && !rc) || (!filter_invert && rc)) {
+    D_INFO("Network_Crt rc:%d filter_invert:%d", rc, filter_invert);
 		rc = d_rank_list_dup(&tobe_filter_ranks, filter_ranks);
 		if (rc != 0)
 			D_GOTO(out, rc);
@@ -422,7 +424,7 @@ crt_corpc_req_create(crt_context_t crt_ctx, crt_group_t *grp,
 	grp_ver = grp_priv->gp_membs_ver;
 	D_RWLOCK_UNLOCK(&grp_priv->gp_rwlock);
 
-	rc = crt_corpc_info_init(rpc_priv, grp_priv, false, tobe_filter_ranks,
+	rc = crt_corpc_info_init(rpc_priv, grp_priv, false /* grp_ref_taken */, tobe_filter_ranks /* filter_ranks */,
 				 grp_ver /* grp_ver */, co_bulk_hdl, priv,
 				 flags, tree_topo, grp_root,
 				 true /* init_hdr */, root_excluded);
@@ -802,12 +804,12 @@ crt_corpc_req_hdlr(struct crt_rpc_priv *rpc_priv)
 		crt_corpc_fail_parent_rpc(rpc_priv, rc);
 		D_GOTO(forward_done, rc);
 	}
-
-	rc = crt_tree_get_children(co_info->co_grp_priv, co_info->co_grp_ver,
+  D_INFO("Network_Crt crt_tree_get_children");
+	rc = crt_tree_get_children(co_info->co_grp_priv /*grp_priv*/, co_info->co_grp_ver /*grp_ver*/,
 				   rpc_priv->crp_flags &
-				   CRT_RPC_FLAG_FILTER_INVERT,
-				   co_info->co_filter_ranks,
-				   co_info->co_tree_topo, co_info->co_root,
+				   CRT_RPC_FLAG_FILTER_INVERT /*filter_invert*/,
+				   co_info->co_filter_ranks /*filter_ranks*/,
+				   co_info->co_tree_topo, co_info->co_root /*grp_root*/,
 				   co_info->co_grp_priv->gp_self,
 				   &children_rank_list, &ver_match);
 
@@ -823,9 +825,9 @@ crt_corpc_req_hdlr(struct crt_rpc_priv *rpc_priv)
 				children_rank_list->rl_nr;
 	co_info->co_child_ack_num = 0;
 
-	D_DEBUG(DB_TRACE, "group %s grp_rank %d, co_info->co_child_num: %d.\n",
+	D_DEBUG(DB_TRACE, "group %s grp_rank self %d, co_info->co_child_num: %d ver_match %d.\n",
 		co_info->co_grp_priv->gp_pub.cg_grpid,
-		co_info->co_grp_priv->gp_self, co_info->co_child_num);
+		co_info->co_grp_priv->gp_self, co_info->co_child_num, ver_match);
 
 	if (!ver_match) {
 		D_INFO("parent version and local version mismatch.\n");
@@ -843,7 +845,7 @@ crt_corpc_req_hdlr(struct crt_rpc_priv *rpc_priv)
 		tgt_ep.ep_rank = children_rank_list->rl_ranks[i];
 		tgt_ep.ep_tag = rpc_priv->crp_pub.cr_ep.ep_tag;
 		tgt_ep.ep_grp = &co_info->co_grp_priv->gp_pub;
-
+    RPC_TRACE(DB_ALL, rpc_priv, "Network_Crt create_collect_req tgt_ep %d:%d", tgt_ep.ep_rank, tgt_ep.ep_tag);
 		rc = crt_req_create_internal(rpc_priv->crp_pub.cr_ctx, &tgt_ep,
 					     rpc_priv->crp_pub.cr_opc,
 					     true /* forward */, &child_rpc);
@@ -866,7 +868,7 @@ crt_corpc_req_hdlr(struct crt_rpc_priv *rpc_priv)
 		child_rpc_priv = container_of(child_rpc, struct crt_rpc_priv,
 					      crp_pub);
 
-		corpc_add_child_rpc(rpc_priv, child_rpc_priv);
+		corpc_add_child_rpc(rpc_priv /*parent_rpc_priv*/, child_rpc_priv);
 
 		child_rpc_priv->crp_grp_priv = co_info->co_grp_priv;
 

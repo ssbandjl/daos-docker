@@ -81,7 +81,7 @@ out:
 	return rc;
 }
 
-
+// 检查树参数
 #define CRT_TREE_PARAMETER_CHECKING(grp_priv, tree_topo, root, self)	\
 	do {								\
 									\
@@ -198,6 +198,7 @@ crt_tree_get_children(struct crt_grp_priv *grp_priv, uint32_t grp_ver,
 	}
 
 	CRT_TREE_PARAMETER_CHECKING(grp_priv, tree_topo, root, self);
+  D_INFO("Netwrok_Crt tree_topo:%d", tree_topo);
 	if (children_rank_list == NULL) {
 		D_ERROR("invalid parameter of NULL children_rank_list.\n");
 		D_GOTO(out, rc = -DER_INVAL);

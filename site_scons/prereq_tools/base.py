@@ -36,6 +36,7 @@ import time
 import sys
 import errno
 import shutil
+from pathlib import Path
 from build_info import BuildInfo
 from SCons.Variables import PathVariable
 from SCons.Variables import EnumVariable
@@ -69,6 +70,10 @@ if sys.version_info < (3, 0):
 # pylint: enable=import-error
 else:
     import configparser as ConfigParser
+
+# cache_dir = '/home/daos/pre/cache'
+# cache_dir = '/home/daos/docker/daos/cache'
+cache_dir = '/home/daos/docker/cache'
 
 class DownloadFailure(Exception):
     """Exception raised when source can't be downloaded
@@ -289,7 +294,8 @@ class Runner():
                 print('Would RUN: %s' % command)
                 retval = True
             else:
-                print('RUN: %s' % command)
+                # print('RUN: %s' % command)
+                print(f'\x1b[6;30;42mcommand:{command}\x1b[0m')
                 if subprocess.call(command, shell=True,   # nosec
                                    env=self.env['ENV']) != 0:
                     retval = False
@@ -367,10 +373,23 @@ No commit_versions entry in utils/build.config for
 build with random upstream changes.
 *********************** ERROR ************************\n""" % comp)
             raise DownloadFailure(self.url, subdir)
-
-        commands = ['git clone %s %s' % (self.url, subdir)]
+        dir_name = subdir.split('/')[-1]
+        parent_path = Path(subdir)
+        parent_dir = parent_path.parent.absolute()
+        dir_name_cache = "%s/%s" %(cache_dir, dir_name)
+        commands=None
+        if os.path.isdir(dir_name_cache):
+          commands = ['cp -r %s %s' %(dir_name_cache,subdir)]
+          print("dir_name_cache:%s, url:%s, subdir:%s, parent_dir:%s" %(dir_name_cache, self.url, subdir, parent_dir))
+        else:
+          commands = ['git clone %s %s' % (self.url, subdir)]
         if not RUNNER.run_commands(commands):
             raise DownloadFailure(self.url, subdir)
+        if not os.path.isdir(subdir):
+            print("cp failed, %s" % commands)
+            commands = ['git clone %s %s' % (self.url, subdir)]
+            if not RUNNER.run_commands(commands):
+              raise DownloadFailure(self.url, subdir)
         self.get_specific(subdir, **kw)
 
     def get_specific(self, subdir, **kw):
@@ -1036,6 +1055,7 @@ class PreReqComponent():
         # Go ahead and prebuild some components
 
         prebuild = kw.get("prebuild", [])
+        print('prebuild:%s' %prebuild)
         for comp in prebuild:
             env = self.__env.Clone()
             self.require(env, comp)
@@ -1120,6 +1140,7 @@ class PreReqComponent():
                 needed_libs = None
             else:
                 needed_libs = kw.get('%s_libs' % comp, comp_def.libs)
+            # print('%s needed_libs %s, ' %(comp,needed_libs))
             if comp in self.__required:
                 if GetOption('help'):
                     continue
@@ -1134,6 +1155,7 @@ class PreReqComponent():
             if comp_def.is_installed(needed_libs):
                 continue
             try:
+                # print('configure %s' %comp)
                 comp_def.configure()
                 if comp_def.build(env, needed_libs):
                     self.__required[comp] = False
@@ -1376,9 +1398,15 @@ class _Component():
                 patches.append(raw)
                 continue
             patch_name = "%s_patch_%03d" % (self.name, patchnum)
+            patch_name_cache = "%s/patch/%s" %(cache_dir, patch_name)
+            command = None
             patch_path = os.path.join(self.patch_path, patch_name)
             patchnum += 1
-            command = ['rm -f %s' % patch_path,
+            if os.path.isfile(patch_name_cache):
+              print(f'\x1b[6;30;42m\npatch_name_cache:{patch_name_cache}\x1b[0m')
+              command = ['cp %s %s' %(patch_name_cache, patch_path)]
+            else:
+              command = ['rm -f %s' % patch_path,
                        'curl -sSfL --retry 10 --retry-max-time 60 -o %s %s'
                        % (patch_path, raw)]
             if not RUNNER.run_commands(command):
@@ -1408,7 +1436,7 @@ class _Component():
         if not self.prereqs.download_deps:
             raise DownloadRequired(self.name)
 
-        print('Downloading source for %s' % self.name)
+        print('Downloading source for %s, crc_file %s' % (self.name, self.crc_file))
         self._delete_old_file(self.crc_file)
         patches = self.resolve_patches()
         self.retriever.get(self.src_path, commit_sha=commit_sha,
@@ -1484,6 +1512,10 @@ class _Component():
     # pylint: disable=too-many-return-statements
     def has_missing_targets(self, env):
         """Check for expected build targets (e.g. libraries or headers)"""
+        # print(self.name, self.package, self.__dict__)
+        # print(env.__dict__)
+        # if self.name == 'argobots':
+        #   return False
         if self.targets_found:
             return False
 
@@ -1505,6 +1537,7 @@ class _Component():
             return True
 
         config = Configure(env)
+        # print(env.__dict__)
         if self.config_cb:
             if not self.config_cb(config):
                 config.Finish()
@@ -1524,8 +1557,9 @@ class _Component():
                 config.Finish()
                 if self.__check_only:
                     env.SetOption('no_exec', True)
+                print('not config.CheckHeader')
                 return True
-
+        # print('self.libs: %s\n' %(self.libs))
         for lib in self.libs:
             old_cc = env.subst('$CC')
             if self.libs_cc:
@@ -1539,6 +1573,7 @@ class _Component():
                 config.Finish()
                 if self.__check_only:
                     env.SetOption('no_exec', True)
+                print('not find %s' %lib)
                 return True
 
         config.Finish()
@@ -1664,7 +1699,19 @@ class _Component():
 
     def _has_changes(self):
         """check for changes"""
+        # print(self.__dict__)
+        # print('%s build_cmd:%s' %(self.name, ' '.join(self.build_commands)))
+        # 返回True表示已变化, 需要编译
+        if self.name == 'mercury':
+          # return True
+          return False
+        # if self.name == 'ofi':
+        #   return True
+        #   return False
+        # if self.name == 'argobots':
+        #   return False
         has_changes = self.prereqs.build_deps
+        # print('%s, has_changes:%s' %(self.name, has_changes))
         if "all" in self.prereqs.installed:
             has_changes = False
         if self.name in self.prereqs.installed:
@@ -1754,9 +1801,9 @@ class _Component():
         # Default to has_changes = True which will cause all deps
         # to be built first time scons is invoked.
         has_changes = self._has_changes()
-
-        if has_changes or self.has_missing_targets(envcopy):
-
+        has_miss_tgt = self.has_missing_targets(envcopy)
+        if has_changes or has_miss_tgt:
+            print('rebuild %s for change %s,has_miss_tgt:%s' %(self.name,has_changes,has_miss_tgt))
             self._check_prereqs_build_deps()
 
             if not self.src_exists():

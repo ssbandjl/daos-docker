@@ -22,6 +22,12 @@ ARG CB0
 # GPG key it provides must be installed.
 ARG REPO_URL
 ARG REPO_DISTRO
+
+ENV TZ="Asia/Shanghai"
+RUN ls /usr/share/zoneinfo && \
+cp /usr/share/zoneinfo/Europe/Brussels /etc/localtime && \
+echo "Asia/Shanghai" >  /etc/timezone && \
+
 RUN if [ -n "$REPO_DISTRO" ]; then                              \
       rpm --import /etc/pki/rpm-gpg/*;                          \
       MY_REPO="${REPO_URL}${REPO_DISTRO}/";                     \
@@ -152,7 +158,11 @@ RUN dnf -y install deltarpm && \
         sg3_utils \
         sudo \
         valgrind-devel \
+        vim \
+        wget \
+        openssl \
         yasm && \
+        openssh-server && \
     dnf clean all
 
 ARG UID=1000
@@ -207,6 +217,9 @@ WORKDIR /home/daos/pre
 COPY SConstruct .
 COPY site_scons site_scons
 COPY utils/build.config utils/
+COPY cache_tgz cache_tgz
+RUN tar -zxvf cache_tgz -C . >/dev/null 2>&1
+RUN rm -f cache_tgz
 RUN chown -R daos_server.daos_server /home/daos
 USER daos_server:daos_server
 
@@ -214,23 +227,25 @@ USER daos_server:daos_server
 # ease-of-use for users, however in CI everything is turned off and then
 # selectively enabled.  Turning off any step disables all future steps.
 ARG DAOS_DEPS_BUILD=yes
-ARG DAOS_KEEP_BUILD=no
-ARG DAOS_TARGET_TYPE=release
+ARG DAOS_KEEP_BUILD=yes
+# ARG DAOS_TARGET_TYPE=release
+ARG DAOS_TARGET_TYPE=debug
 
 # Now do an update to ensure software is up to date for the deps build.  If the
 # src hasn't changed then this won't do anything, but if it has then we want to
 # ensure that latest dependencies are used.
 USER root:root
-RUN [ "$DAOS_DEPS_BUILD" != "yes" ] || \
-    { dnf -y upgrade \
-          --exclude=spdk,spdk-devel,dpdk-devel,dpdk,mercury-devel,mercury && \
-    dnf clean all; }
+# RUN [ "$DAOS_DEPS_BUILD" != "yes" ] || \
+#     { dnf -y upgrade \
+#           --exclude=spdk,spdk-devel,dpdk-devel,dpdk,mercury-devel,mercury && \
+#     dnf clean all; }
 USER daos_server:daos_server
 
 ARG DEPS_JOBS=1
 
+# build deps only scons-3 --build-deps=yes --jobs $DEPS_JOBS PREFIX=/opt/daos
 RUN [ "$DAOS_DEPS_BUILD" != "yes" ] || \
-    { scons-3 --build-deps=yes --jobs $DEPS_JOBS PREFIX=/opt/daos \
+    { scons-3 --build-deps=yes --jobs 1 PREFIX=/opt/daos TARGET_TYPE=debug --deps-only \
       TARGET_TYPE=$DAOS_TARGET_TYPE --deps-only && \
     ([ "$DAOS_KEEP_BUILD" != "no" ] || /bin/rm -rf build *.gz); }
 
@@ -261,16 +276,17 @@ ARG JOBS=$DEPS_JOBS
 ARG DAOS_BUILD_TYPE=$DAOS_TARGET_TYPE
 ARG DAOS_BUILD=$DAOS_DEPS_BUILD
 
-# Build DAOS
+# Build DAOS scons-3 --jobs 1 install PREFIX=/opt/daos BUILD_TYPE=debug TARGET_TYPE=debug
 RUN [ "$DAOS_BUILD" != "yes" ] || \
     { scons-3 --jobs $JOBS install PREFIX=/opt/daos COMPILER=$COMPILER \
       BUILD_TYPE=$DAOS_BUILD_TYPE TARGET_TYPE=$DAOS_TARGET_TYPE && \
-    /bin/rm -rf build && go clean -cache && \
+    # /bin/rm -rf build && go clean -cache && \
     cp -r utils/config/examples /opt/daos; }
 
 # Set environment variables
 ENV PATH=/opt/daos/bin:$PATH
 ENV FI_SOCKETS_MAX_CONN_RETRY=1
+
 
 USER root:root
 LABEL DAOS=true
@@ -295,8 +311,11 @@ ARG DAOS_JAVA_BUILD=$DAOS_BUILD
 
 RUN [ "$DAOS_JAVA_BUILD" != "yes" ] || \
     mvn clean install -T 1C -DskipITs -Dgpg.skip -Ddaos.install.path=/opt/daos
+
+EXPOSE 22
+USER root:root
 WORKDIR /home/daos
 
-ARG DAOS_KEEP_SRC=no
-# Remove local copy
-RUN [ "$DAOS_KEEP_SRC" != "no" ] || rm -rf /home/daos/*
+# ARG DAOS_KEEP_SRC=yes
+# # Remove local copy
+# RUN [ "$DAOS_KEEP_SRC" != "no" ] || rm -rf /home/daos/*

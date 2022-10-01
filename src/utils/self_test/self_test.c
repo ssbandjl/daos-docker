@@ -94,10 +94,11 @@ static int self_test_init(char *dest_name, crt_context_t *crt_ctx,
 	int		 i;
 	d_rank_t	 max_rank = 0;
 	int		 ret;
-
+  printf("dest_name:%s, listen:%d, attach_info_path:%s, use_daos_agent_vars:%d\n", 
+    dest_name, listen, attach_info_path, use_daos_agent_vars);
 	/* rank, num_attach_retries, is_server, assert_on_error */
 	crtu_test_init(0, attach_retries, false, false);
-
+  // 默认使用代理
 	if (use_daos_agent_vars) {
 		ret = dc_agent_init();
 		if (ret != 0) {
@@ -110,16 +111,21 @@ static int self_test_init(char *dest_name, crt_context_t *crt_ctx,
 			return ret;
 		}
 	}
-
-
+  
+  /*
+  0000 0000
+  0000 0001
+  0000 0010
+  */
 	if (listen)
-		init_flags |= (CRT_FLAG_BIT_SERVER | CRT_FLAG_BIT_AUTO_SWIM_DISABLE);
+		init_flags |= (CRT_FLAG_BIT_SERVER | CRT_FLAG_BIT_AUTO_SWIM_DISABLE);   
+  printf("listen:%d, init_flags:%d\n", listen, init_flags);
 	ret = crt_init(CRT_SELF_TEST_GROUP_NAME, init_flags);
 	if (ret != 0) {
 		D_ERROR("crt_init failed; ret = %d\n", ret);
 		return ret;
 	}
-
+  // 默认不执行
 	if (attach_info_path) {
 		ret = crt_group_config_path_set(attach_info_path);
 		D_ASSERTF(ret == 0,
@@ -208,7 +214,7 @@ static int self_test_init(char *dest_name, crt_context_t *crt_ctx,
 	}
 
 	d_rank_list_free(rank_list);
-
+  D_DEBUG(DB_ALL, "max_rank:%d, self:%d", max_rank, max_rank+1); // st max_rank:0
 	ret = crt_rank_self_set(max_rank+1);
 	if (ret != 0) {
 		D_ERROR("crt_rank_self_set failed; ret = %d\n", ret);
@@ -542,6 +548,7 @@ static int test_msg_size(crt_context_t crt_ctx,
 	 * Launch self-test 1:many sessions on each master endpoint
 	 * as simultaneously as possible (don't wait for acknowledgment)
 	 */
+  // printf("num_ms_endpts:%d\n", num_ms_endpts);
 	for (m_idx = 0; m_idx < num_ms_endpts; m_idx++) {
 		crt_endpoint_t *endpt = &ms_endpts[m_idx].endpt;
 
@@ -832,6 +839,7 @@ static int run_self_test(struct st_size_params all_params[],
 	crt_endpoint_t		  self_endpt;
 
 	/* Sanity checks that would indicate bugs */
+  // 可以指示错误的健全性检查
 	D_ASSERT(endpts != NULL && num_endpts > 0);
 	D_ASSERT((ms_endpts_in == NULL && num_ms_endpts_in == 0) ||
 		 (ms_endpts_in != NULL && num_ms_endpts_in > 0));
@@ -839,7 +847,9 @@ static int run_self_test(struct st_size_params all_params[],
 	/* will send TEST_START RPC to self, so listen for incoming requests */
 	if (ms_endpts_in == NULL)
 		listen = true;
+  D_DEBUG(DB_ALL, "ms_endpts_in:%p, listen:%d", ms_endpts_in, listen);
 	/* Initialize CART */
+  // 初始化传输层cart
 	ret = self_test_init(dest_name, &crt_ctx, &srv_grp, &tid,
 			     attach_info_path, listen /* run as server */,
 			     use_daos_agent_vars);
@@ -849,11 +859,14 @@ static int run_self_test(struct st_size_params all_params[],
 	}
 
 	/* Get the group/rank/tag for this application (self_endpt) */
+  // 获取自己所在的组
 	ret = crt_group_rank(NULL, &self_endpt.ep_rank);
+  D_DEBUG(DB_ALL, "self_rank:%u", self_endpt.ep_rank);  // ep_rank:3
 	if (ret != 0) {
 		D_ERROR("crt_group_rank failed; ret = %d\n", ret);
 		D_GOTO(cleanup, ret);
 	}
+  // 查找一个组 ID（子组或主组）的组句柄。 可以使用传递给 crt_init 的组 ID 查询主组。 一些特殊情况： 1) if (grp_id == NULL)，表示默认的primary group ID CRT_DEFAULT_GRPID
 	self_endpt.ep_grp = crt_group_lookup(CRT_SELF_TEST_GROUP_NAME);
 	if (self_endpt.ep_grp == NULL) {
 		D_ERROR("crt_group_lookup failed for group %s\n",
@@ -866,6 +879,7 @@ static int run_self_test(struct st_size_params all_params[],
 	 * Allocate a new list of unique master endpoints, each with a
 	 * crt_endpoint_t and additional metadata
 	 */
+  //  如果没有master端点, 分配并设置为自己
 	if (ms_endpts_in == NULL) {
 		/*
 		 * If no master endpoints were specified, allocate just one and
@@ -942,6 +956,7 @@ static int run_self_test(struct st_size_params all_params[],
 		}
 	}
 
+  printf("num_ms_endpts:%d\n", num_ms_endpts); // 1
 	/* Allocate latency lists for each 1:many session */
 	D_ALLOC_ARRAY(latencies, num_ms_endpts);
 	if (latencies == NULL)
@@ -971,6 +986,7 @@ static int run_self_test(struct st_size_params all_params[],
 			&latencies_iov[m_idx];
 		latencies_sg_list[m_idx].sg_nr = 1;
 
+    D_DEBUG(DB_ALL, "crt_bulk_create");
 		ret = crt_bulk_create(crt_ctx, &latencies_sg_list[m_idx],
 				      CRT_BULK_RW,
 				      &latencies_bulk_hdl[m_idx]);
@@ -985,7 +1001,7 @@ static int run_self_test(struct st_size_params all_params[],
 	if (g_randomize_endpoints) {
 		randomize_endpts(endpts, num_endpts);
 	}
-
+  // printf("num_msg_sizes:%d\n", num_msg_sizes);
 	for (size_idx = 0; size_idx < num_msg_sizes; size_idx++) {
 		struct crt_st_start_params	 test_params = { 0 };
 
@@ -1373,6 +1389,7 @@ int parse_endpoint_string(char *const opt_arg,
 	 * Use the first three ; delimited strings - ignore the rest
 	 */
 	pch = strtok(opt_arg, ":");
+  // printf("opt_arg:%s,pch:%s\n", opt_arg, pch); // opt_arg:0:2
 	while (pch != NULL && separator_count < 2) {
 		token_ptrs[separator_count] = pch;
 
@@ -1380,7 +1397,7 @@ int parse_endpoint_string(char *const opt_arg,
 
 		pch = strtok(NULL, ":");
 	}
-
+  // printf("opt_arg:%s,pch:%s,token_ptrs:%s\n", opt_arg, pch, token_ptrs[0]);
 	/* Validate the input strings */
 	if (token_ptrs[ST_ENDPT_RANK_IDX] == NULL
 	    || token_ptrs[ST_ENDPT_TAG_IDX] == NULL
@@ -1440,8 +1457,8 @@ int parse_endpoint_string(char *const opt_arg,
 	}
 
 	printf("Adding endpoints:\n");
-	printf("  ranks: %s (# ranks = %u)\n", rank_valid_str, num_ranks);
-	printf("  tags: %s (# tags = %u)\n", tag_valid_str, num_tags);
+	printf("  to_ranks: %s (# num_ranks = %u)\n", rank_valid_str, num_ranks);
+	printf("  to_tags: %s (# num_tags = %u)\n", tag_valid_str, num_tags);
 
 	/* Reallocate/expand the endpoints array */
 	D_REALLOC_ARRAY(realloced_mem, *endpts, *num_endpts,
@@ -1818,6 +1835,7 @@ int main(int argc, char *argv[])
 
 	/* repeat rep_count for each endpoint */
 	rep_count = rep_count * num_endpts;
+  // printf("rep_count: %d\n", rep_count);
 
 	/*
 	 * Count the number of tuple tokens (',') in the user-specified string
@@ -1825,6 +1843,7 @@ int main(int argc, char *argv[])
 	 */
 	num_tokens = 0;
 	sizes_ptr = msg_sizes_str;
+  // printf("sizes_ptr:%s, tuple_tokens:%s\n", sizes_ptr, tuple_tokens);
 	while (1) {
 		const char *token_ptr = tuple_tokens;
 
@@ -1838,6 +1857,7 @@ int main(int argc, char *argv[])
 		while (1) {
 			if (*token_ptr == '\0')
 				break;
+      // printf("token_ptr:%s, sizes_ptr:%s\n", token_ptr, sizes_ptr);
 			if (*token_ptr == *sizes_ptr)
 				num_tokens++;
 			token_ptr++;
@@ -1845,15 +1865,15 @@ int main(int argc, char *argv[])
 
 		sizes_ptr++;
 	}
-
+  // printf("num_tokens:%d\n", num_tokens):
 	/* Allocate a large enough buffer to hold the message sizes list */
-	D_ALLOC_ARRAY(all_params, num_tokens + 1);
+	D_ALLOC_ARRAY(all_params, num_tokens + 1); // calloc
 	if (all_params == NULL)
 		D_GOTO(cleanup, ret = -DER_NOMEM);
 
 	/* Iterate over the user's message sizes and parse / validate them */
 	num_msg_sizes = 0;
-	pch = strtok(msg_sizes_str, tuple_tokens);
+	pch = strtok(msg_sizes_str, tuple_tokens);  // splite str token
 	while (pch != NULL) {
 		D_ASSERTF(num_msg_sizes <= num_tokens, "Token counting err\n");
 
@@ -1876,6 +1896,7 @@ int main(int argc, char *argv[])
 	}
 
 	/* Shrink the buffer if some of the user's tokens weren't kept */
+  // printf("num_msg_sizes:%d\n", num_msg_sizes);
 	if (num_msg_sizes < num_tokens + 1) {
 		struct st_size_params *realloced_mem;
 
@@ -1922,7 +1943,9 @@ int main(int argc, char *argv[])
 	printf("Self Test Parameters:\n"
 	       "  Group name to test against: %s\n"
 	       "  # endpoints:                %u\n"
-	       "  Message sizes:              [", dest_name, num_endpts);
+	       "  # num_msg_sizes:            %u\n"
+	       "  Message sizes:              [", dest_name, num_msg_sizes, num_endpts);
+         // Message sizes:              [(1048578-BULK_GET 1048578-BULK_PUT)]
 	for (j = 0; j < num_msg_sizes; j++) {
 		if (j > 0)
 			printf(", ");
@@ -1933,7 +1956,8 @@ int main(int argc, char *argv[])
 	}
 	printf("]\n");
 	if (buf_alignment == CRT_ST_BUF_ALIGN_DEFAULT)
-		printf("  Buffer addresses end with:  <Default>\n");
+		printf("  Buffer addresses end with:  <Default> CRT_ST_BUF_ALIGN_DEFAULT:%d\n", 
+      CRT_ST_BUF_ALIGN_DEFAULT);
 	else
 		printf("  Buffer addresses end with:  %d\n", buf_alignment);
 	printf("  Repetitions per size:       %d\n"
@@ -1941,6 +1965,14 @@ int main(int argc, char *argv[])
 	       rep_count, max_inflight);
 
 	/********************* Run the self test *********************/
+  printf("num_msg_sizes:%d\n", num_msg_sizes);
+  printf("rep_count:%d\n", rep_count);
+  printf("dest_name:%s\n", dest_name);
+  printf("buf_alignment:%d\n", buf_alignment);
+  printf("output_megabits:%d\n", output_megabits);
+  printf("num_endpts:%d\n", num_endpts);
+  printf("num_ms_endpts:%d\n", num_ms_endpts);
+  printf("attach_info_path:%s\n", attach_info_path);
 	ret = run_self_test(all_params, num_msg_sizes, rep_count,
 			    max_inflight, dest_name, ms_endpts,
 			    num_ms_endpts, endpts, num_endpts,

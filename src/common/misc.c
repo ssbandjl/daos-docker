@@ -665,6 +665,7 @@ daos_crt_init_opt_get(bool server, int ctx_nr)
 
 	/** Scalable EndPoint-related settings */
 	d_getenv_bool("CRT_CTX_SHARE_ADDR", &sep);
+  // D_DEBUG(DB_ALL, "sep:%d, DAOS_RPC_SIZE:%u", sep, DAOS_RPC_SIZE); //20480
 	if (!sep)
 		goto out;
 

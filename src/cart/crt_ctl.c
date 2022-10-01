@@ -254,7 +254,8 @@ crt_hdlr_ctl_ls(crt_rpc_t *rpc_req)
 	D_RWLOCK_UNLOCK(&crt_gdata.cg_rwlock);
 	D_ASSERT(count <= addr_buf_len);
 
-	D_DEBUG(DB_TRACE, "out_args->cel_ctx_num %d\n", out_args->cel_ctx_num);
+	// D_DEBUG(DB_TRACE, "out_args->cel_ctx_num %d\n", out_args->cel_ctx_num);
+	D_WARN("out_args->cel_ctx_num %d, addr_buf:%s\n", out_args->cel_ctx_num, addr_buf); // out_args->cel_ctx_num 3
 	d_iov_set(&out_args->cel_addr_str, addr_buf, count);
 
 out:

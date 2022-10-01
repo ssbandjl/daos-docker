@@ -31,7 +31,7 @@ ds_mgmt_group_update(crt_group_mod_op_t op, struct server_entry *servers,
 	D_ASSERTF(rc == 0, "%d\n", rc);
 	D_ASSERTF(version_current < version, "%u < %u\n", version_current,
 		  version);
-	D_DEBUG(DB_MGMT, "%u -> %u\n", version_current, version);
+	D_DEBUG(DB_MGMT, "%u -> %u total_ranks:%d\n", version_current, version, nservers);
 
 	ranks = d_rank_list_alloc(nservers);
 	if (ranks == NULL) {

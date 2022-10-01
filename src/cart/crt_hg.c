@@ -469,6 +469,7 @@ crt_get_info_string(int provider, char **string, int ctx_idx)
 		D_ASPRINTF(*string, "%s://%s/%s",
 			   provider_str, domain_str, ip_str);
 	}
+  // D_DEBUG(DB_ALL, "string:%s", string);
 
 out:
 	if (*string == NULL)
@@ -573,6 +574,7 @@ crt_hg_class_init(int provider, int idx, hg_class_t **ret_hg_class)
 
 	prov_data = crt_get_prov_gdata(provider);
 	rc = crt_get_info_string(provider, &info_string, idx);
+  D_DEBUG(DB_ALL, "idx:%d, info_string:%s", idx, info_string);  // ofi+sockets://eth0/172.17.0.2
 	if (rc != 0)
 		D_GOTO(out, rc);
 
@@ -659,7 +661,7 @@ crt_hg_ctx_init(struct crt_hg_context *hg_ctx, int provider, int idx)
 			hg_class = crt_sep_hg_class_get(provider);
 		}
 	} else {
-		rc = crt_hg_class_init(provider, idx, &hg_class);
+		rc = crt_hg_class_init(provider, idx, &hg_class);  // 默认
 		if (rc != 0)
 			D_GOTO(out, rc);
 	}
@@ -908,13 +910,14 @@ crt_hg_req_create(struct crt_hg_context *hg_ctx, struct crt_rpc_priv *rpc_priv)
 	D_ASSERT(rpc_priv->crp_opc_info != NULL);
 
 	if (!rpc_priv->crp_opc_info->coi_no_reply) {
-		rpcid = CRT_HG_RPCID;
+		rpcid = CRT_HG_RPCID;  // 需要响应
 		rpc_priv->crp_hdl_reuse = crt_hg_pool_get(hg_ctx);
 	} else {
-		rpcid = CRT_HG_ONEWAY_RPCID;
+		rpcid = CRT_HG_ONEWAY_RPCID;  // 单程(无需响应,默认)
 	}
 
 	if (rpc_priv->crp_hdl_reuse == NULL) {
+    D_DEBUG(DB_ALL, "no reuse rpcid:0x%" PRIx64 "" , rpcid);
 		hg_ret = HG_Create(hg_ctx->chc_hgctx, rpc_priv->crp_hg_addr,
 				   rpcid, &rpc_priv->crp_hg_hdl);
 		if (hg_ret == HG_SUCCESS) {
@@ -926,6 +929,7 @@ crt_hg_req_create(struct crt_hg_context *hg_ctx, struct crt_rpc_priv *rpc_priv)
 			D_GOTO(out, rc = -DER_HG);
 		}
 	} else {
+    D_DEBUG(DB_ALL, "reuse rpcid:0x%" PRIx64 "" , rpcid);
 		rpc_priv->crp_hg_hdl = rpc_priv->crp_hdl_reuse->chh_hdl;
 		hg_ret = HG_Reset(rpc_priv->crp_hg_hdl, rpc_priv->crp_hg_addr,
 				  0 /* reuse original rpcid */);

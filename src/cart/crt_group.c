@@ -593,8 +593,8 @@ grp_lc_uri_insert_internal_locked(struct crt_grp_priv *grp_priv,
 			rc = 0;
 		} else {
 			D_DEBUG(DB_TRACE, "Filling in URI in lookup table. "
-				" grp_priv %p ctx_idx %d, rank: %d, rlink %p\n",
-				grp_priv, ctx_idx, rank, &li->li_link);
+				" grp_priv %p ctx_idx %d, rank: %d, rlink %p, uri:%s\n",
+				grp_priv, ctx_idx, rank, &li->li_link, uri);
 		}
 		D_GOTO(out, rc);
 	}
@@ -618,8 +618,8 @@ grp_lc_uri_insert_internal_locked(struct crt_grp_priv *grp_priv,
 		}
 
 		D_DEBUG(DB_TRACE, "Filling in URI in lookup table. "
-			"grp_priv %p ctx_idx %d, rank: %d, tag: %u rlink %p\n",
-			grp_priv, ctx_idx, rank, tag, &li->li_link);
+			"grp_priv %p ctx_idx %d, rank: %d, tag: %u rlink %p, uri:%s\n",
+			grp_priv, ctx_idx, rank, tag, &li->li_link, uri);
 	}
 	D_MUTEX_UNLOCK(&li->li_mutex);
 
@@ -851,6 +851,13 @@ out:
  * the cache. For input parameters, base_addr and hg_addr can not be both NULL.
  * (hg_addr == NULL) means the caller only want to lookup the base_addr.
  * (base_addr == NULL) means the caller only want to lookup the hg_addr.
+ * 在 addr 缓存中查找 (rank, tag) 组合的 URI 和 NA 地址。
+此函数仅查看地址缓存。 如果请求（排名，标签）
+对在地址缓存中不存在，*hg_addr 在返回时将为 NULL，并且
+所请求排名的空记录具有 NULL 值将被插入到
+缓存。 对于输入参数，base_addr 和 hg_addr 不能同时为 NULL。
+(hg_addr == NULL) 表示调用者只想查找 base_addr。
+(base_addr == NULL) 表示调用者只想查找 hg_addr。
  */
 void
 crt_grp_lc_lookup(struct crt_grp_priv *grp_priv, int ctx_idx,
@@ -1416,12 +1423,12 @@ crt_primary_grp_init(crt_group_id_t grpid)
 		grp_priv->gp_size = 1;
 		grp_priv->gp_self = 0;
 	}
-
 	rc = grp_priv_init_membs(grp_priv, grp_priv->gp_size);
 	if (rc != 0) {
 		D_ERROR("grp_priv_init_membs() failed, " DF_RC "\n", DP_RC(rc));
 		D_GOTO(out, rc);
 	}
+  D_WARN("grp_priv->gp_size:%d, pri_grpid:%s", grp_priv->gp_size, pri_grpid);
 
 	grp_gdata->gg_primary_grp = grp_priv;
 
@@ -2363,7 +2370,7 @@ grp_add_to_membs_list(struct crt_grp_priv *grp_priv, d_rank_t rank)
 	}
 
 	D_ASSERT(index >= 0);
-
+  D_DEBUG(DB_ALL, "grp_priv:%p, add rank%d", grp_priv, rank);
 	/* Do not populate swim entries for views and secondary groups */
 	if (grp_priv->gp_primary && !grp_priv->gp_view) {
 		rc = crt_swim_rank_add(grp_priv, rank);
@@ -2414,6 +2421,7 @@ crt_group_primary_add_internal(struct crt_grp_priv *grp_priv,
 
 	/* Only add node to membership list once, for tag 0 */
 	/* TODO: This logic needs to be refactored as part of CART-517 */
+  // 如果是0号tag, 将rank添加到组成员列表中
 	if (tag == 0) {
 		D_RWLOCK_WRLOCK(&grp_priv->gp_rwlock);
 		rc = grp_add_to_membs_list(grp_priv, rank);
@@ -2440,7 +2448,7 @@ crt_rank_self_set(d_rank_t rank)
 	D_INFO("Setting self rank to %d\n", rank);
 
 	if (!crt_is_service()) {
-		D_WARN("Setting self rank is not supported on client\n");
+		D_WARN("Setting self rank is not supported on client, rank:%d\n", rank);
 		return 0;
 	}
 
@@ -2792,7 +2800,7 @@ crt_group_psr_set(crt_group_t *grp, d_rank_t rank)
 		D_ERROR("crt_rank_uri_get() failed, " DF_RC "\n", DP_RC(rc));
 		D_GOTO(out, rc);
 	}
-
+  D_DEBUG(DB_ALL, "uri:%s", uri); // uri:ofi+sockets://172.17.0.2:31416
 	rc = crt_grp_psr_set(grp_priv, rank, uri, true);
 out:
 	return rc;
@@ -3149,7 +3157,7 @@ crt_group_mod_get(d_rank_list_t *grp_membs, d_rank_list_t *mod_membs,
 		for (i = 0; i < mod_membs->rl_nr; i++) {
 			rank = mod_membs->rl_ranks[i];
 
-			if (d_rank_in_rank_list(grp_membs, rank) == false) {
+			if (d_rank_in_rank_list(grp_membs, rank) == false) { // 在编辑列表中, 但是不在删除列表(当前组列表)中, 则放入新加列表 
 				idx_to_add[to_add->rl_nr] = i;
 				to_add->rl_ranks[to_add->rl_nr++] = rank;
 			}
@@ -3159,7 +3167,7 @@ crt_group_mod_get(d_rank_list_t *grp_membs, d_rank_list_t *mod_membs,
 		for (i = 0; i < grp_membs->rl_nr; i++) {
 			rank = grp_membs->rl_ranks[i];
 
-			if (d_rank_in_rank_list(mod_membs, rank) == false)
+			if (d_rank_in_rank_list(mod_membs, rank) == false)  // 在原来列表中, 但是不在编辑列表中,表示需要移除(放入移除列表)
 				to_remove->rl_ranks[to_remove->rl_nr++] = rank;
 		}
 	} else if (op == CRT_GROUP_MOD_OP_ADD) {
@@ -3297,6 +3305,10 @@ crt_group_primary_modify(crt_group_t *grp, crt_context_t *ctxs, int num_ctxs,
 	D_RWLOCK_WRLOCK(&grp_priv->gp_rwlock);
 
 	grp_membs = grp_priv_get_membs(grp_priv);
+  for (i = 0; i < grp_membs->rl_nr; i++) {
+    D_INFO("Network_Crt current_total:%u, rank:%u", 
+      grp_membs->rl_nr, grp_membs->rl_ranks[i]);
+  }
 
 	/* Get back list of nodes to add, to remove and uri index list */
 	rc = crt_group_mod_get(grp_membs, ranks, op, &to_add, &to_remove,
@@ -3308,9 +3320,10 @@ crt_group_primary_modify(crt_group_t *grp, crt_context_t *ctxs, int num_ctxs,
 	cbs_event = crt_plugin_gdata.cpg_event_cbs;
 
 	/* Add ranks based on to_add list */
+  D_INFO("Network_Crt to_add_num:%u", to_add->rl_nr);
 	for (i = 0; i < to_add->rl_nr; i++) {
 		rank = to_add->rl_ranks[i];
-
+    D_INFO("Network_Crt add rank%u", rank);
 		rc = grp_add_to_membs_list(grp_priv, rank);
 		if (rc != 0) {
 			D_ERROR("grp_add_to_memb_list %d failed; rc=%d\n",
@@ -3340,8 +3353,10 @@ crt_group_primary_modify(crt_group_t *grp, crt_context_t *ctxs, int num_ctxs,
 	}
 
 	/* Remove ranks based on to_remove list */
+  D_INFO("Network_Crt to_remove_num:%u", to_remove->rl_nr);
 	for (i = 0; i < to_remove->rl_nr; i++) {
 		rank = to_remove->rl_ranks[i];
+    D_INFO("Network_Crt remove rank%u", rank);
 		crt_group_rank_remove_internal(grp_priv, rank);
 
 		if (grp_priv->gp_auto_remove) {

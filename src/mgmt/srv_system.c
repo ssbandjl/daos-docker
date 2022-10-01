@@ -178,9 +178,9 @@ ds_mgmt_group_update_handler(struct mgmt_grp_up_in *in)
 	rc = ds_mgmt_svc_get(&svc);
 	if (rc != 0 && rc != -DER_NOTLEADER)
 		goto out;
-
+  
 	D_DEBUG(DB_MGMT, "setting %d servers in map version %u\n",
-		in->gui_n_servers, in->gui_map_version);
+		in->gui_n_servers, in->gui_map_version); // setting 1 servers in map version 1 
 	rc = ds_mgmt_group_update(CRT_GROUP_MOD_OP_REPLACE, in->gui_servers,
 				  in->gui_n_servers, in->gui_map_version);
 	if (rc != 0)
@@ -226,8 +226,8 @@ map_update_bcast(crt_context_t ctx, struct mgmt_svc *svc, uint32_t map_version,
 	crt_rpc_t		       *rpc;
 	int				rc;
 
-	D_DEBUG(DB_MGMT, "enter: version=%u nservers=%d\n", map_version,
-		nservers);
+	D_DEBUG(DB_MGMT, "enter: version=%u nservers=%d crt_tree_topo:%d\n", map_version,
+		nservers, crt_tree_topo(CRT_TREE_KNOMIAL, 32));  // crt_tree_topo: 196640
 
 	opc = DAOS_RPC_OPCODE(MGMT_TGT_MAP_UPDATE, DAOS_MGMT_MODULE,
 			      DAOS_MGMT_VERSION);

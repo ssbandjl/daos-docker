@@ -30,13 +30,14 @@ struct free_index {
  * This structure is temporary until dynamic group support is added
  * for secondary groups as well. When that happens structure could
  * get simplified
+ * 用于跟踪组成员的结构,在添加动态组支持之前，此结构是临时的, 也适用于次要群体。 当这种情况发生时，结构可以得到简化
  */
 struct crt_grp_membs {
-	/* list of free indices unused yet. Only used when pmix is disabled */
+	/* list of free indices unused yet. Only used when pmix is disabled 尚未使用的免费索引列表。 仅在禁用 pmix 时使用 */
 	d_list_t	cgm_free_indices;
 	/* list of members */
 	d_rank_list_t	*cgm_list;
-	/* linear list of members. Only used when pmix is disabled */
+	/* linear list of members. Only used when pmix is disabled  成员的线性列表。 仅在禁用 pmix 时使用 */
 	d_rank_list_t	*cgm_linear_list;
 };
 
@@ -90,10 +91,10 @@ struct crt_grp_priv {
 	d_rank_t		 gp_psr_rank;
 	/* PSR phy addr address in attached group */
 	crt_phy_addr_t		 gp_psr_phy_addr;
-	/* address lookup cache, only valid for primary group */
+	/* address lookup cache, only valid for primary group 地址查找缓存 */
 	struct d_hash_table	 *gp_lookup_cache;
 
-	/* uri lookup cache, only valid for primary group */
+	/* uri lookup cache, only valid for primary group uri地址查找缓存 */
 	struct d_hash_table	 gp_uri_lookup_cache;
 
 	/* Primary to secondary rank mapping table */
@@ -337,7 +338,7 @@ crt_grp_psr_set(struct crt_grp_priv *grp_priv, d_rank_t psr_rank,
 			rc = -DER_NOMEM;
 	}
 	D_RWLOCK_UNLOCK(&grp_priv->gp_rwlock);
-	D_DEBUG(DB_TRACE, "group %s, set psr rank %d, uri %s.\n",
+	D_WARN("group %s, set psr rank %d, uri %s.\n",
 		grp_priv->gp_pub.cg_grpid, psr_rank, psr_addr);
 	return rc;
 }

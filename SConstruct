@@ -345,7 +345,7 @@ def scons(): # pylint: disable=too-many-locals
         daos_build.load_mpi_path(env)
     build_prefix = prereqs.get_src_build_dir()
     prereqs.init_build_targets(build_prefix)
-    prereqs.load_defaults(platform_arm)
+    prereqs.load_defaults(platform_arm) # build
     if prereqs.check_component('valgrind_devel'):
         env.AppendUnique(CPPDEFINES=["D_HAS_VALGRIND"])
 
