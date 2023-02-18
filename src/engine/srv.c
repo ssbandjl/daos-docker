@@ -1229,7 +1229,7 @@ dss_srv_init(void)
 	}
 	xstream_data.xd_init_step = XD_INIT_ULT_BARRIER;
 
-	/* register xstream-local storage key */
+	/* register xstream-local storage key pthread_key_create第一个参数为指向一个键值的指针，第二个参数指明了一个destructor函数，如果这个参数不为空，那么当每个线程结束时，系统将调用这个函数来释放绑定 */
 	rc = pthread_key_create(&dss_tls_key, NULL);
 	if (rc) {
 		rc = dss_abterr2der(rc);
@@ -1242,7 +1242,8 @@ dss_srv_init(void)
 	if (!xstream_data.xd_dtc)
 		D_GOTO(failed, rc);
 	xstream_data.xd_init_step = XD_INIT_TLS_INIT;
-
+  /* engine init vos_db */
+  D_WARN("dss_storage_path:%s\n", dss_storage_path);
 	rc = vos_db_init(dss_storage_path, NULL, false);
 	if (rc != 0)
 		D_GOTO(failed, rc);

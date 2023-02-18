@@ -514,3 +514,9 @@ coi_no_reply -> CRT_HG_ONEWAY_RPCID: 单程rpc(禁用响应)
 
 发送请求
 crt_req_send(req, shard_update_req_cb, remote_arg) 将用户回调设置为完成回调:crp_complete_cb, HG_Forward 在 crt_hg_req_send_cb 中执行完成回调:crp_complete_cb
+
+查询:
+查leader: dmg sys leader-query
+
+打开err日志:
+dmg server set-logmasks err

@@ -460,7 +460,7 @@ vos_mod_init(void)
 
 	/**
 	 * Registering the class for OI btree
-	 * and KV btree
+	 * and KV btree (object index)
 	 */
 	rc = vos_obj_tab_register();
 	if (rc) {
@@ -477,7 +477,7 @@ vos_mod_init(void)
 	rc = vos_ilog_init();
 	if (rc)
 		D_ERROR("Failed to initialize incarnation log capability\n");
-
+  D_DEBUG(DB_ALL, "init end\n");
 	return rc;
 }
 

@@ -1087,6 +1087,7 @@ main(int argc, char **argv)
 	int		sig;
 	int		rc;
 
+  printf("################## engine main ##################\n");
 	/** parse command line arguments */
 	rc = parse(argc, argv);
 	if (rc)

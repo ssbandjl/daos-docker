@@ -285,8 +285,8 @@ vos_pool_create(const char *path, uuid_t uuid, daos_size_t scm_sz,
 		return -DER_INVAL;
 
 	D_DEBUG(DB_MGMT, "Pool Path: %s, size: "DF_U64":"DF_U64", "
-		"UUID: "DF_UUID"\n", path, scm_sz, nvme_sz, DP_UUID(uuid));
-
+		"UUID: "DF_UUID" flags:%d\n", path, scm_sz, nvme_sz, DP_UUID(uuid), flags);
+  /* flags=0 */
 	if (flags & VOS_POF_SMALL)
 		flags |= VOS_POF_EXCL;
 

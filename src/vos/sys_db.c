@@ -387,6 +387,7 @@ vos_db_init(const char *db_path, const char *db_name, bool self_mode)
 		db_unlink(&vos_db.db_pub);
 
 	for (create = 0; create <= 1; create++) {
+    D_DEBUG(DB_ALL, "create:%d\n", create);
 		rc = db_open_create(&vos_db.db_pub, !!create);
 		if (rc == 0) {
 			D_DEBUG(DB_IO, "successfully open system DB\n");

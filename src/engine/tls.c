@@ -68,13 +68,13 @@ dss_thread_local_storage_init(struct dss_thread_local_storage *dtls,
 		if (dtls->dtls_values == NULL)
 			return -DER_NOMEM;
 	}
-
+  D_DEBUG(DB_ALL, "DAOS_MODULE_KEYS_NR:%d\n", DAOS_MODULE_KEYS_NR);
 	for (i = 0; i < DAOS_MODULE_KEYS_NR; i++) {
 		struct dss_module_key *dmk = dss_module_keys[i];
 
 		if (dmk != NULL && dtls->dtls_tag & dmk->dmk_tags) {
 			D_ASSERT(dmk->dmk_init != NULL);
-			dtls->dtls_values[i] = dmk->dmk_init(xs_id, tgt_id);
+			dtls->dtls_values[i] = dmk->dmk_init(xs_id, tgt_id); /* dss_srv_tls_init | vos_tls_init */
 			if (dtls->dtls_values[i] == NULL) {
 				rc = -DER_NOMEM;
 				break;
@@ -128,6 +128,7 @@ dss_tls_init(int tag, int xs_id, int tgt_id)
 		return NULL;
 
 	dtls->dtls_tag = tag;
+  D_DEBUG(DB_ALL, "tag:%d, xs_id:%d, tat_id:%d\n", tag, xs_id, tgt_id);
 	rc = dss_thread_local_storage_init(dtls, xs_id, tgt_id);
 	if (rc != 0) {
 		D_FREE(dtls);

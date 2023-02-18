@@ -96,7 +96,7 @@ run_specified_tests(const char *tests, int rank, int size,
 
 	if (strlen(tests) == 0)
 		tests = all_tests;
-  print("tests:%s\n", tests);
+  printf("tests:%s\n", tests);
 	while (*tests != '\0') {
 		switch (*tests) {
 		case 'm':

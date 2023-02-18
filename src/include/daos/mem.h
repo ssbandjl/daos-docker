@@ -463,7 +463,7 @@ static inline int
 umem_tx_add_ptr(struct umem_instance *umm, void *ptr, size_t size)
 {
 	if (umm->umm_ops->mo_tx_add_ptr)
-		return umm->umm_ops->mo_tx_add_ptr(umm, ptr, size);
+		return umm->umm_ops->mo_tx_add_ptr(umm, ptr, size); // pmem_tx_add_ptr
 	else
 		return 0;
 }
@@ -487,7 +487,7 @@ static inline int
 umem_tx_begin(struct umem_instance *umm, struct umem_tx_stage_data *txd)
 {
 	if (umm->umm_ops->mo_tx_begin)
-		return umm->umm_ops->mo_tx_begin(umm, txd);
+		return umm->umm_ops->mo_tx_begin(umm, txd); // pmem_tx_begin
 	else
 		return 0;
 }
