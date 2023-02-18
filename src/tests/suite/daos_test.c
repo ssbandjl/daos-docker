@@ -87,6 +87,7 @@ print_usage(int rank)
 	print_message("\n=============================\n");
 }
 
+// 执行指定的测试
 static int
 run_specified_tests(const char *tests, int rank, int size,
 		    int *sub_tests, int sub_tests_size)
@@ -95,7 +96,7 @@ run_specified_tests(const char *tests, int rank, int size,
 
 	if (strlen(tests) == 0)
 		tests = all_tests;
-
+  print("tests:%s\n", tests);
 	while (*tests != '\0') {
 		switch (*tests) {
 		case 'm':
@@ -323,8 +324,8 @@ main(int argc, char **argv)
 	MPI_Init(&argc, &argv);
 
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-	MPI_Comm_size(MPI_COMM_WORLD, &size);
-	MPI_Barrier(MPI_COMM_WORLD);
+	MPI_Comm_size(MPI_COMM_WORLD, &size); // 确定与通信器关联的组的大小
+	MPI_Barrier(MPI_COMM_WORLD); // MPI_Barrier函数 用于一个通信子中所有进程的同步，调用函数时进程将处于等待状态，直到通信子中所有进程 都调用了该函数后才继续执行
 
 	static struct option long_options[] = {
 		{"all",		no_argument,		NULL,	'a'},
@@ -518,7 +519,7 @@ main(int argc, char **argv)
 		}
 	}
 
-	/*Exclude tests mentioned in exclude list*/
+	/*Exclude tests mentioned in exclude list 排除排除列表中提到的测试 */
 	/* Example: daos_test -E mpc */
 	if(exclude_str != NULL){
 		int old_idx , new_idx=0;

@@ -913,7 +913,7 @@ crt_hg_req_create(struct crt_hg_context *hg_ctx, struct crt_rpc_priv *rpc_priv)
 		rpcid = CRT_HG_RPCID;  // 需要响应
 		rpc_priv->crp_hdl_reuse = crt_hg_pool_get(hg_ctx);
 	} else {
-		rpcid = CRT_HG_ONEWAY_RPCID;  // 单程(无需响应,默认)
+		rpcid = CRT_HG_ONEWAY_RPCID;  // 单程(无需响应)
 	}
 
 	if (rpc_priv->crp_hdl_reuse == NULL) {

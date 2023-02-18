@@ -667,6 +667,7 @@ static void open_sessions(void)
 		local_endpt.ep_rank = g_data->endpts[i].rank;
 		local_endpt.ep_tag = g_data->endpts[i].tag;
 
+    // D_ERROR("self_test rp_rank:%lu, tag:%lu", local_endpt.ep_rank, local_endpt.ep_tag);
 		/* Start a new RPC request */
 		ret = crt_req_create(g_data->crt_ctx, &local_endpt,
 				     CRT_OPC_SELF_TEST_OPEN_SESSION,

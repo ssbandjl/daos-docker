@@ -42,6 +42,13 @@ struct swim_target {
 	swim_id_t			 st_id;
 };
 
+/*
+struct { 
+  struct swim_target *cqe_next; 
+  struct swim_target *cqe_prev; 
+} st_link;
+*/
+
 static struct global {
 	pthread_mutex_t mutex;
 	pthread_t progress_tid;
@@ -394,7 +401,7 @@ int test_init(void)
 			goto out;
 		}
 		st->st_id = i;
-		CIRCLEQ_INSERT_HEAD(&g.target_list[i], st, st_link);
+		CIRCLEQ_INSERT_HEAD(&g.target_list[i], st, st_link); // 前面插入
 		g.target[i] = st;
 
 		for (j = 0; j < members_count; j++) {
@@ -406,9 +413,10 @@ int test_init(void)
 					goto out;
 				}
 				st->st_id = j;
+        // 后面插入
 				CIRCLEQ_INSERT_AFTER(&g.target_list[i],
 						     g.target[i], st, st_link);
-
+        // 用于随机ping, 
 				for (n = 1 + rand() % (j + 1); n > 0; n--)
 					g.target[i] = CIRCLEQ_LOOP_NEXT(
 							&g.target_list[i],

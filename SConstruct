@@ -28,6 +28,9 @@ import compiler_setup
 from prereq_tools import PreReqComponent
 import stack_analyzer
 
+# install
+print("BUILD_TARGETS is", BUILD_TARGETS) 
+
 def get_version():
     """ Read version from VERSION file """
     with open("VERSION", "r") as version_file:
@@ -138,6 +141,8 @@ def build_misc():
 
 def scons(): # pylint: disable=too-many-locals
     """Execute build"""
+    # print("COMMAND_LINE_TARGETS:", COMMAND_LINE_TARGETS)
+    # install
     if COMMAND_LINE_TARGETS == ['release']:
         try:
             # pylint: disable=import-outside-toplevel
@@ -331,7 +336,10 @@ def scons(): # pylint: disable=too-many-locals
 
     env = Environment(TOOLS=['extra', 'default', 'textfile'])
 
-    opts_file = os.path.join(Dir('#').abspath, 'daos.conf')
+    # /home/daos/docker/daos/daos.conf
+    opts_file = os.path.join(Dir('#').abspath, 'daos.conf')  
+    print("opts_file", opts_file)
+    # print('opts_file'.format(opts_file))
     opts = Variables(opts_file)
 
     commits_file = os.path.join(Dir('#').abspath, 'utils/build.config')

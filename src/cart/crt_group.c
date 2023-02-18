@@ -885,7 +885,7 @@ crt_grp_lc_lookup(struct crt_grp_priv *grp_priv, int ctx_idx,
 		/* convert subgroup rank to primary group rank */
 		rank = crt_grp_priv_get_primary_rank(grp_priv, rank);
 	}
-
+  // D_DEBUG(DB_ALL, "Network_Crt uri:%p hg_addr:%p", uri, hg_addr);
 	D_RWLOCK_RDLOCK(&default_grp_priv->gp_rwlock);
 	rlink = d_hash_rec_find(&default_grp_priv->gp_lookup_cache[ctx_idx],
 				(void *)&rank, sizeof(rank));
@@ -894,19 +894,23 @@ crt_grp_lc_lookup(struct crt_grp_priv *grp_priv, int ctx_idx,
 		D_ASSERT(li->li_grp_priv == default_grp_priv);
 		D_ASSERT(li->li_rank == rank);
 		D_ASSERT(li->li_initialized != 0);
-
-		if (uri != NULL)
+    
+		if (uri != NULL){
 			*uri = grp_li_uri_get(li, tag);
+      // RPC_TRACE(DB_ALL, rpc_priv, "Network_Crt rlink not null uri:%s", *uri);
+    }
 
 		if (hg_addr == NULL)
 			D_ASSERT(uri != NULL);
-		else if (li->li_tag_addr[tag] != NULL)
+		else if (li->li_tag_addr[tag] != NULL){
 			*hg_addr = li->li_tag_addr[tag];
+      // RPC_TRACE(DB_ALL, rpc_priv, "Network_Crt rlink not null, hg_addr:%s", (char *)*hg_addr);
+    }
 		d_hash_rec_decref(&default_grp_priv->gp_lookup_cache[ctx_idx],
 				  rlink);
 		D_GOTO(out, 0);
 	} else {
-		D_DEBUG(DB_ALL, "Entry for rank=%d not found\n", rank);
+		// RPC_TRACE(DB_ALL, rpc_priv, "Entry for rank=%d not found\n", rank);
 	}
 	D_RWLOCK_UNLOCK(&default_grp_priv->gp_rwlock);
 

@@ -930,7 +930,7 @@ crt_req_timeout_hdlr(struct crt_rpc_priv *rpc_priv)
 }
 
 static void
-c(struct crt_context *crt_ctx)
+crt_context_timeout_check(struct crt_context *crt_ctx)
 {
 	struct crt_rpc_priv		*rpc_priv;
 	struct d_binheap_node		*bh_node;

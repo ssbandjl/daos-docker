@@ -650,7 +650,7 @@ void
 ds_rsvc_request_map_dist(struct ds_rsvc *svc)
 {
 	svc->s_map_dist = true;
-	ABT_cond_broadcast(svc->s_map_dist_cv);
+	ABT_cond_broadcast(svc->s_map_dist_cv);   // -> mgmt_svc_map_dist_cb
 }
 
 static bool

@@ -1740,6 +1740,7 @@ sched_run(ABT_sched sched)
 	uint32_t		 work_count = 0;
 	int			 ret;
 
+  D_DEBUG(DB_ALL, "schedule run");
 	ABT_sched_get_data(sched, (void **)&data);
 	cycle = &data->sd_cycle;
 	dx = data->sd_dx;
@@ -1843,6 +1844,7 @@ sched_create_pools(struct dss_xstream *dx)
 		 * Set 'automatic' as ABT_TRUE, so the pools will be freed
 		 * automatically.
 		 */
+    // 创建的池可能只被一个执行流弹出
 		D_ASSERT(dx->dx_pools[i] == ABT_POOL_NULL);
 		rc = ABT_pool_create_basic(ABT_POOL_FIFO, ABT_POOL_ACCESS_MPSC,
 					   ABT_TRUE, &dx->dx_pools[i]);

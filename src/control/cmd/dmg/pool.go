@@ -8,6 +8,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"os"
 	"strings"
@@ -184,7 +185,8 @@ func (cmd *PoolCreateCmd) Execute(args []string) error {
 			"%s SCM, %s NVMe (%0.2f%% ratio)", humanize.Bytes(ScmBytes),
 			humanize.Bytes(NvmeBytes), scmRatio*100)
 	}
-
+	data, _ := json.Marshal(req)
+	cmd.log.Error(string(data)) // print pool create args
 	resp, err := control.PoolCreate(context.Background(), cmd.ctlInvoker, req)
 
 	if cmd.jsonOutputEnabled() {

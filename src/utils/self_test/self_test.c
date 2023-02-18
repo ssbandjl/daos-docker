@@ -19,6 +19,10 @@
 #include <daos/agent.h>
 #include <daos/mgmt.h>
 
+#define DEBUG(fmt, ...) \
+  printf(fmt, ##__VA_ARGS__);   \
+  printf(" %s() %s:%d\n", __func__, __FILE__, __LINE__)
+
 #define CRT_SELF_TEST_AUTO_BULK_THRESH		(1 << 20)
 #define CRT_SELF_TEST_GROUP_NAME		("crt_self_test")
 
@@ -1389,13 +1393,14 @@ int parse_endpoint_string(char *const opt_arg,
 	 * Use the first three ; delimited strings - ignore the rest
 	 */
 	pch = strtok(opt_arg, ":");
-  // printf("opt_arg:%s,pch:%s\n", opt_arg, pch); // opt_arg:0:2
+  DEBUG("opt_arg:%s,pch:%s\n", opt_arg, pch); // opt_arg:0:2
 	while (pch != NULL && separator_count < 2) {
 		token_ptrs[separator_count] = pch;
 
 		separator_count++;
 
 		pch = strtok(NULL, ":");
+    DEBUG("pch:%s", pch);
 	}
   // printf("opt_arg:%s,pch:%s,token_ptrs:%s\n", opt_arg, pch, token_ptrs[0]);
 	/* Validate the input strings */
@@ -1768,9 +1773,11 @@ int main(int argc, char *argv[])
 					      &num_ms_endpts);
 			break;
 		case 'e':
+      DEBUG("parse endpoint:%s\n", optarg);
 			parse_endpoint_string(optarg, &endpts, &num_endpts);
 			break;
 		case 's':
+      DEBUG("msgsize:%s\n", optarg);
 			msg_sizes_str = optarg;
 			break;
 		case 'r':
@@ -1792,7 +1799,7 @@ int main(int argc, char *argv[])
 			}
 			break;
 		case 'a':
-			ret = sscanf(optarg, "%" SCNd16, &buf_alignment);
+			ret = sscanf(optarg, "%" SCNd16, &buf_alignment); // 对齐
 			if (ret != 1 || buf_alignment < CRT_ST_BUF_ALIGN_MIN ||
 			    buf_alignment > CRT_ST_BUF_ALIGN_MAX) {
 				printf("Warning: Invalid align value %d;"
@@ -1842,8 +1849,8 @@ int main(int argc, char *argv[])
 	 * This gives an upper limit on the number of arguments the user passed
 	 */
 	num_tokens = 0;
-	sizes_ptr = msg_sizes_str;
-  // printf("sizes_ptr:%s, tuple_tokens:%s\n", sizes_ptr, tuple_tokens);
+	sizes_ptr = msg_sizes_str; // b1048576
+  DEBUG("sizes_ptr:%s, tuple_tokens:%s\n", sizes_ptr, tuple_tokens); // sizes_ptr:b1048576, tuple_tokens:(),
 	while (1) {
 		const char *token_ptr = tuple_tokens;
 
@@ -1858,14 +1865,14 @@ int main(int argc, char *argv[])
 			if (*token_ptr == '\0')
 				break;
       // printf("token_ptr:%s, sizes_ptr:%s\n", token_ptr, sizes_ptr);
-			if (*token_ptr == *sizes_ptr)
+			if (*token_ptr == *sizes_ptr) // --message-sizes "b1048576"
 				num_tokens++;
 			token_ptr++;
 		}
 
 		sizes_ptr++;
 	}
-  // printf("num_tokens:%d\n", num_tokens):
+  DEBUG("num_tokens:%d\n", num_tokens);
 	/* Allocate a large enough buffer to hold the message sizes list */
 	D_ALLOC_ARRAY(all_params, num_tokens + 1); // calloc
 	if (all_params == NULL)
@@ -1874,7 +1881,7 @@ int main(int argc, char *argv[])
 	/* Iterate over the user's message sizes and parse / validate them */
 	num_msg_sizes = 0;
 	pch = strtok(msg_sizes_str, tuple_tokens);  // splite str token
-	while (pch != NULL) {
+	while (pch != NULL) { // pch = "b1048576", 
 		D_ASSERTF(num_msg_sizes <= num_tokens, "Token counting err\n");
 
 		ret = parse_message_sizes_string(pch,

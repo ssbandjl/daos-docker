@@ -307,7 +307,7 @@ vos_pool_create(const char *path, uuid_t uuid, daos_size_t scm_sz,
 	}
 
 	ph = vos_pmemobj_create(path, POBJ_LAYOUT_NAME(vos_pool_layout), scm_sz,
-				0600);
+				0600); //  -rw------- (600) 只有拥有者有读写权限
 	if (!ph) {
 		rc = errno;
 		D_ERROR("Failed to create pool %s, size="DF_U64": %s\n", path,

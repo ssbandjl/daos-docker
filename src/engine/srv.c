@@ -829,7 +829,7 @@ dss_xstream_is_busy(void)
 	/* No IO requests for more than 5 seconds */
 	return cur_msec < (cntr->rc_active_time + 5000);
 }
-
+// 启动带id的启动执行流
 static int
 dss_start_xs_id(int xs_id)
 {
@@ -842,7 +842,7 @@ dss_start_xs_id(int xs_id)
 	D_DEBUG(DB_TRACE, "start xs_id called for %d.  ", xs_id);
 	/* if we are NUMA aware, use the NUMA information */
 	if (numa_obj) {
-		idx = hwloc_bitmap_first(core_allocation_bitmap);
+		idx = hwloc_bitmap_first(core_allocation_bitmap); //计算位图中的第一个索引（最低有效位）
 		if (idx == -1) {
 			D_ERROR("No core available for XS: %d", xs_id);
 			return -DER_INVAL;
@@ -934,6 +934,7 @@ dss_xstreams_init(void)
 			sched_relax_mode = SCHED_RELAX_MODE_NET;
 		}
 	}
+  // CPU relax mode is set to [net]
 	D_INFO("CPU relax mode is set to [%s]\n",
 	       sched_relax_mode2str(sched_relax_mode));
 
@@ -941,6 +942,7 @@ dss_xstreams_init(void)
 	d_getenv_bool("DAOS_SCHED_WATCHDOG_ALL", &sched_watchdog_all);
 
 	/* start the execution streams */
+  // example: 2 cores total detected starting 1 main xstreams
 	D_DEBUG(DB_TRACE,
 		"%d cores total detected starting %d main xstreams\n",
 		dss_core_nr, dss_tgt_nr);
@@ -995,7 +997,7 @@ dss_xstreams_init(void)
 			}
 		}
 	}
-
+  // 1 execution streams successfully started (first core 0)
 	D_DEBUG(DB_TRACE, "%d execution streams successfully started "
 		"(first core %d)\n", dss_tgt_nr, dss_core_offset);
 out:

@@ -69,7 +69,6 @@ enum sh_op {
 /* cmd_args_s: consolidated result of parsing command-line arguments
  * for pool, cont, obj commands, much of which is common.
  */
-
 struct cmd_args_s {
 	enum pool_op		p_op;		/* pool sub-command */
 	enum cont_op		c_op;		/* cont sub-command */

@@ -279,10 +279,17 @@ crt_progress -> crt_hg_progress poll cq -> crt_context_timeout_check 超时检�
 crtu_wait_for_ranks -> sem_init -> crt_req_create -> crt_req_set_timeout -> crt_req_send -> crtu_sync_timedwait
 crt_req_create -> crt_req_create_internal -> crt_rpc_priv_alloc 分配rpc请求私有数据 -> crt_rpc_priv_init 设置初始状态:rpc_priv->crp_state = RPC_STATE_INITED -> crt_opc_lookup 查找操作码 
 
-查找目标地址:
-crt_req_send -> crt_req_send_internal -> crt_req_ep_lc_lookup -> crp_hg_addr (na_addr) -> 地址作为 HG_Create 的参数 -> crt_req_send_immediately -> crt_hg_req_create RPC_STATE_REQ_SENT 创建请求,设置状态为发送 -> crt_hg_req_send -> HG_Forward -> HG_Core_forward -> forward(hg_core_handle) -> hg_core_forward_na -> NA_Msg_send_unexpected -> na_ofi_msg_send_unexpected -> na_ofi_msg_send -> fi_tsend
 
-crp_tgt_uri
+RPC_STATE_INITED -> 
+
+查找目标地址:
+crt_req_send -> crt_req_send_internal -> crt_req_ep_lc_lookup -> crp_hg_addr (na_addr) -> 地址作为 HG_Create 的参数(目的地址) -> crt_req_send_immediately -> crt_hg_req_create RPC_STATE_REQ_SENT 创建请求,设置状态为发送 -> crt_hg_req_send -> HG_Forward -> HG_Core_forward -> forward(hg_core_handle) -> hg_core_forward_na -> NA_Msg_send_unexpected -> na_ofi_msg_send_unexpected -> na_ofi_msg_send -> fi_tsend
+
+目标地址: crp_tgt_uri
+crt_req_send_internal -> crt_req_ep_lc_lookup -> crt_req_fill_tgt_uri -> crp_tgt_uri
+
+crt_issue_uri_lookup
+
 
 crt_hg_req_create -> 控制器复用:HG_Reset -> 不复用:HG_Create -> 
 
@@ -409,6 +416,10 @@ ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key
 for ip in 172.17.0.3 172.17.0.4;do rsync -rucalpzv /opt/daos root@$ip:/opt/;done
 
 run_all "sed -i s/DD_SUBSYS=all/DD_SUBSYS=swim,cart,mgmt/g /opt/daos/etc/daos_server.yml"
+run_all "sed -i s/#- FI_LOG_LEVEL=debug/- FI_LOG_LEVEL=debug/g /opt/daos/etc/daos_server.yml"
+
+run_all "sed -i /.*FI_LOG_LEVEL=.*/d /opt/daos/etc/daos_server.yml"
+run_all "sed -i '/env_vars:/a \ \ - FI_LOG_LEVEL=debug' /opt/daos/etc/daos_server.yml"
 
 
 Hybrid Logical Clock (HLC): hlc 混合逻辑时钟, 
@@ -497,3 +508,9 @@ engine -> for (;;) 一直循环 -> crt_progress -> crt_hg_progress -> HG_Progres
 hg_atomic_queue_push completion_queue -> hg_thread_cond_signal
 
 HG_Trigger -> HG_Core_trigger -> hg_core_trigger -> hg_completion_entry = hg_atomic_queue_pop_mc(context->completion_queue) 从完成队列中取出一个条目 -> hg_core_trigger_entry 根据条目内容触发 -> hg_cb(&hg_core_cb_info) 执行用户回调(最终执行crt_req_send传入的完成回调)
+
+
+coi_no_reply -> CRT_HG_ONEWAY_RPCID: 单程rpc(禁用响应) 
+
+发送请求
+crt_req_send(req, shard_update_req_cb, remote_arg) 将用户回调设置为完成回调:crp_complete_cb, HG_Forward 在 crt_hg_req_send_cb 中执行完成回调:crp_complete_cb

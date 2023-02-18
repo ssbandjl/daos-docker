@@ -1094,10 +1094,14 @@ crt_req_ep_lc_lookup(struct crt_rpc_priv *rpc_priv, bool *uri_exists)
 	*uri_exists = false;
 	grp_priv = crt_grp_pub2priv(tgt_ep->ep_grp);
 
+  // RPC_TRACE(DB_ALL, rpc_priv, "Network_Crt crp_tgt_uri:%s, base_addr:%s, crp_hg_addr:%p, rank:%d, tag:%d crt_is_service:%d", 
+  //   rpc_priv->crp_tgt_uri, base_addr,rpc_priv->crp_hg_addr, tgt_ep->ep_rank, tgt_ep->ep_tag, crt_is_service());
+
 	crt_grp_lc_lookup(grp_priv, ctx->cc_idx,
 			  tgt_ep->ep_rank, tgt_ep->ep_tag, &base_addr,
 			  &rpc_priv->crp_hg_addr);
-
+  // RPC_TRACE(DB_ALL, rpc_priv, "Network_Crt crp_tgt_uri:%s, base_addr:%s, crp_hg_addr:%p, rank:%d, tag:%d crt_is_service:%d", 
+  //   rpc_priv->crp_tgt_uri, base_addr,rpc_priv->crp_hg_addr, tgt_ep->ep_rank, tgt_ep->ep_tag, crt_is_service());
 	if (base_addr == NULL && rpc_priv->crp_hg_addr == NULL) {
 		if (crt_req_is_self(rpc_priv)) {
 			rc = crt_self_uri_get(tgt_ep->ep_tag, &uri);
@@ -1121,6 +1125,8 @@ crt_req_ep_lc_lookup(struct crt_rpc_priv *rpc_priv, bool *uri_exists)
 
 	if (base_addr != NULL && rpc_priv->crp_hg_addr == NULL) {
 		rc = crt_req_fill_tgt_uri(rpc_priv, base_addr);
+    RPC_TRACE(DB_ALL, rpc_priv, "Network_Crt fill end crp_tgt_uri:%s, base_addr:%s, crp_hg_addr:%p, rank:%d, tag:%d crt_is_service:%d", 
+      rpc_priv->crp_tgt_uri, base_addr,rpc_priv->crp_hg_addr, tgt_ep->ep_rank, tgt_ep->ep_tag, crt_is_service());
 		if (rc != 0)
 			RPC_ERROR(rpc_priv,
 				  "crt_req_fill_tgt_uri() failed, " DF_RC "\n",
@@ -1187,6 +1193,10 @@ crt_req_hg_addr_lookup(struct crt_rpc_priv *rpc_priv)
 
 	hg_ret = HG_Addr_lookup2(crt_ctx->cc_hg_ctx.chc_hgcla,
 				 rpc_priv->crp_tgt_uri, &hg_addr);
+  RPC_TRACE(DB_ALL, rpc_priv, "Network_Crt lookup addr end crp_tgt_uri:%s, hg_addr:%p", 
+    rpc_priv->crp_tgt_uri, hg_addr);
+  // D_DEBUG(DB_ALL, "Network_Crt lookup addr end crp_tgt_uri:%s, hg_addr:%p", 
+  //   rpc_priv->crp_tgt_uri, hg_addr);
 	if (hg_ret != HG_SUCCESS) {
 		D_ERROR("HG_Addr_lookup2() failed. uri=%s, hg_ret=%d\n",
 			rpc_priv->crp_tgt_uri, hg_ret);
@@ -1271,6 +1281,8 @@ crt_req_send_internal(struct crt_rpc_priv *rpc_priv)
 		/* lookup local cache  */
 		rpc_priv->crp_hg_addr = NULL;
 		rc = crt_req_ep_lc_lookup(rpc_priv, &uri_exists);
+    RPC_TRACE(DB_ALL, rpc_priv, "Network_Crt uri_exists:%d, rpc_priv->crp_hg_addr:%p", 
+      uri_exists, rpc_priv->crp_hg_addr);
 		if (rc != 0) {
 			RPC_ERROR(rpc_priv,
 				  "crt_grp_ep_lc_lookup() failed, " DF_RC "\n",
@@ -1494,7 +1506,7 @@ crt_req_abort(crt_rpc_t *req)
 	if (rc != 0) {
 		RPC_ERROR(rpc_priv, "crt_hg_req_cancel failed, rc: %d, "
 			  "opc: %#x.\n", rc, rpc_priv->crp_pub.cr_opc);
-		crt_rpc_complete(rpc_priv, rc);
+		crt_rpc_complete(rpc_priv, rc); // 如果hg取消失败
 		D_GOTO(out, rc);
 	}
 

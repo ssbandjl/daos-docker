@@ -7,6 +7,7 @@
 package server
 
 import (
+	"encoding/json"
 	"math/rand"
 	"sort"
 	"time"
@@ -374,6 +375,8 @@ func (svc *mgmtSvc) PoolCreate(ctx context.Context, req *mgmtpb.PoolCreateReq) (
 	}()
 
 	svc.log.Debugf("MgmtSvc.PoolCreate forwarding modified req:%s\n", mgmtpb.Debug(req))
+	data, _ := json.Marshal(req)
+	svc.log.Errorf("pool create args:\n%s\n", data)
 	dresp, err := svc.harness.CallDrpc(ctx, drpc.MethodPoolCreate, req)
 	if err != nil {
 		svc.log.Errorf("pool create dRPC call failed: %s", err)
