@@ -588,7 +588,7 @@ vea_get_ext_vector(struct vea_space_info *vsi, uint64_t blk_off,
 	return 0;
 }
 
-/* Load persistent hint data and initialize in-memory hint context */
+/* Load persistent hint data and initialize in-memory hint context 从 SCM 加载持久提示并初始化内存提示。 它通常在启动 I/O 流之前调用 */
 int
 vea_hint_load(struct vea_hint_df *phd, struct vea_hint_context **thc)
 {

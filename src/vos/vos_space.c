@@ -196,7 +196,7 @@ estimate_space_key(struct umem_instance *umm, daos_key_t *key)
 /*
  * Estimate how much space will be consumed by an update request. This
  * conservative esimation always assumes new object, dkey, akey will be
- * created for the update.
+ * created for the update. 估计更新请求将消耗多少空间。 这个保守的估计总是假设新对象、dkey、akey 将被创建用于更新
  */
 static void
 estimate_space(struct vos_pool *pool, daos_key_t *dkey, unsigned int iod_nr,
@@ -212,6 +212,11 @@ estimate_space(struct vos_pool *pool, daos_key_t *dkey, unsigned int iod_nr,
 	int			 i, j;
 
 	/* Object record */
+  /* OS 需要预留少量空间用于 GC 或聚合，否则 GC 或聚合等空间回收过程可能会在空间压力下遇到空间不足的问题。
+此补丁通过在估计大小大于“免费”-“保留”时拒绝更新请求来实现空间保留。
+此补丁中几乎没有其他修复/清理：
+- 重新组织了一些scm/nvme reserve代码，用于代码共享；
+- 为对象记录引入自定义分配类 */
 	scm = umem_slab_usize(umm, VOS_SLAB_OBJ_DF);
 	/* Assume one more object tree node created */
 	scm += umem_slab_usize(umm, VOS_SLAB_OBJ_NODE);

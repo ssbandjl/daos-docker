@@ -419,6 +419,7 @@ vos_cont_open(daos_handle_t poh, uuid_t co_uuid, daos_handle_t *coh)
 	if (cont->vc_pool->vp_vea_info != NULL) {
 		int	i;
 
+    D_WARN("VOS_IOS_CNT:%d\n", VOS_IOS_CNT);
 		for (i = 0; i < VOS_IOS_CNT; i++) {
 			rc = vea_hint_load(&cont->vc_cont_df->cd_hint_df[i],
 					   &cont->vc_hint_ctxt[i]);

@@ -160,7 +160,7 @@ struct vos_pool {
 	struct vos_pool_df	*vp_pool_df;
 	/** I/O context */
 	struct bio_io_context	*vp_io_ctxt;
-	/** In-memory free space tracking for NVMe device */
+	/** In-memory free space tracking for NVMe device NVMe 设备的内存可用空间跟踪 */
 	struct vea_space_info	*vp_vea_info;
 	/** Reserved sys space (for space reclaim, rebuild, etc.) in bytes */
 	daos_size_t		vp_space_sys[DAOS_MEDIA_MAX];
@@ -509,7 +509,7 @@ vos_dtx_post_handle(struct vos_container *cont,
 		    int count, bool abort, bool rollback);
 
 /**
- * Establish indexed active DTX table in DRAM.
+ * Establish indexed active DTX table in DRAM. 在内存中为活动的dtx建立索引
  *
  * \param cont	[IN]	Pointer to the container.
  *
@@ -1043,7 +1043,7 @@ vos_recx2irec_size(daos_size_t rsize, struct dcs_csum_info *csum);
 
 /*
  * A simple media selection policy embedded in VOS, which select media by
- * akey type and record size.
+ * akey type and record size. VOS 中嵌入了一个简单的媒体选择策略，它通过密钥类型和记录大小来选择媒体
  */
 static inline uint16_t
 vos_media_select(struct vos_pool *pool, daos_iod_type_t type, daos_size_t size)
