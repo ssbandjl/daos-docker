@@ -1997,6 +1997,7 @@ vos_reserve_single(struct vos_io_context *ioc, uint16_t media,
 	 * aligned part will be stored on NVMe and being referenced by
 	 * vos_irec_df->ir_ex_addr, small unaligned part will be stored on SCM
 	 * along with vos_irec_df, being referenced by vos_irec_df->ir_body.
+   * 未按4k对齐的,分为两部分,大的存储在scm, 小的存储到nvme
 	 */
 	scm_size = (media == DAOS_MEDIA_SCM) ?
 		vos_recx2irec_size(size, value_csum) :
@@ -2041,6 +2042,19 @@ done:
 
 	return rc;
 }
+/* DAOS-5187 重复数据删除：初始重复数据删除支持 (#2970)
+维护一个per-VOS-pool哈希表来保存所有更新的recx csum和地址，所有更新将首先搜索这个去重哈希以找到相同的recx，如果找到任何相同的recx，只需重新使用旧的recx地址并跳过空间 分配和数据传输。
+在 tx commit 之后添加 Dedup 条目，否则，当事务中止时，无效的 Dedup 条目可能会留在 Dedup 哈希中。
+引入两个新的容器属性：
+- dedup：定义是否启用重复数据删除。 打开时，有两个选项是可能的。 只需相信散列函数（“散列”）或传输数据并进行比较（“memcmp”）即可解决散列冲突。
+- dedup_th：定义要进行重复数据删除的 I/O 的最小大小。 换句话说，任何小于 dedup_th 的 I/O 都保证永远不会进行重复数据删除。
+当指定 memcmp 时，数据被 RDMA'ed 到临时分配的 SCM 范围，然后检查原始去重数据是否与 RDMA'ed 数据相同，如果不相同，则更新 VOS 树中的时间范围地址，否则，释放 时间范围并继续使用 VOS 树中的去重数据地址。 使用非事务性 pmemobj_alloc/free() 用于 dup 缓冲区。
+可以在没有校验和的情况下启用重复数据删除。 使用 dedup:hash，SHA256 哈希将只计算用于重复数据删除候选的范围。
+至于dedup:memcmp，默认使用crc64。
+向 dedup 可以利用的 csummer 添加了一些字段，但使其与 csummer 分离。 为了使 dedup 和 csum 属性更易于访问，添加了一个 cont_props
+打开时填充并添加到容器句柄的结构。
+为新的校验和跳过检查添加了单元测试。 为 dedup 特性添加了一些基本的功能测试
+ */
 
 static int
 vos_reserve_recx(struct vos_io_context *ioc, uint16_t media, daos_size_t size,
@@ -2133,6 +2147,29 @@ akey_update_begin(struct vos_io_context *ioc)
 	}
 	return 0;
 }
+
+/* 为了支持 NVMe 设备的 I/O，重组 VOS 和对象 I/O 代码
+调用 EIO API。
+- 统一内联 I/O & ZC(RMA) I/O 代码路径如下：
+   1.调用vos_fetch/update_begin()创建EIO io描述符，然后通过查找VOS索引树生成SGL；
+   2. eio_iod_prep() 将 SGLs 中的媒体特定地址转换为
+      内存地址，需要分配使用的 DMA 安全缓冲区
+      NVMe 设备上的 SPDK I/O。 为了获取 NVMe 地址，它将
+      通过读取 NVMe 设备准备缓冲区；
+   3. 对于内联获取/更新，eio_iod_copy() 在 RPC 之间复制数据
+      缓冲区和 DMA 安全缓冲区（或 SCM，如果它用于 SCM 获取/更新）；
+      对于 ZC 获取/更新，ds_bulk_transfer() 进行 RMA 传输
+      DMA 安全缓冲区（或 SCM，如果它用于 SCM 获取/更新）；
+   4. eio_iod_post() 释放 eio_iod_prep() 中持有的 DMA 缓冲区。 为了
+      NVMe地址更新，需要将DMA缓冲区中的数据写回NVMe设备；
+   5.调用vos_fetch/update_end()释放EIO io描述符；
+- 将 VOS I/O 代码移至 vos_io.c
+去做：
+- VOS 树接口更改以支持媒体特定的 SGL。
+- 删除 vos_obj_fetch/upate()（VOS 中 NVMe devcie 上没有 I/O）。
+- 将 vos_obj_zc_sgl_at() 替换为 vos_iod_sgl_at()。
+- 获取/更新时的校验和。
+- NVMe 记录支持 */
 
 static int
 dkey_update_begin(struct vos_io_context *ioc)
@@ -2672,6 +2709,9 @@ error:
  * some test programs (daos_perf, vos tests, etc).
  *
  * Caveat: These two functions may yield, please use with caution.
+ * 
+ * vos_obj_update() 和 vos_obj_fetch() 是两个用于内联更新和获取的辅助函数，目前它被 rdb、rebuild 和一些测试程序（daos_perf、vos 测试等）使用。
+注意：这两个函数可能会yield，请谨慎使用
  */
 static int
 vos_obj_copy(struct vos_io_context *ioc, d_sg_list_t *sgls,

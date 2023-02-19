@@ -306,7 +306,7 @@ struct daos_oid_list {
 };
 
 /**
- * Record
+ * Record 记录
  *
  * A record is an atomic blob of arbitrary length which is always
  * fetched/updated as a whole. The size of a record can change over time.
@@ -319,12 +319,16 @@ struct daos_oid_list {
  *   is an integer that ranges from zero to infinity. A range of indices
  *   identifies a contiguous set of records called extent. All records inside an
  *   extent must have the same size.
+ * 记录是一个任意长度的原子块，它总是作为一个整体被获取/更新。 记录的大小会随时间变化。 记录由以下复合键唯一标识：
+- 分布键（又名 dkey）表示位于同一存储目标上的一组数组。 dkey 具有任意大小。
+- 属性键（aka akey）区分各个数组。 同样，akey 具有任意大小。
+- 数组中的索引区分单个记录。 索引是一个整数，范围从零到无穷大。 一系列索引标识一组连续的记录，称为范围。 范围内的所有记录必须具有相同的大小
  */
 
 /**
  * A record extent is a range of contiguous records of the same size inside an
  * array. \a rx_idx is the first array index of the extent and \a rx_nr is the
- * number of records covered by the extent.
+ * number of records covered by the extent. 记录范围是数组内相同大小的一系列连续记录，rx_idx 是范围的第一个数组索引，rx_nr 是范围覆盖的记录数
  */
 typedef struct {
 	/** Indice of the first record in the extent */

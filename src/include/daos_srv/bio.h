@@ -626,6 +626,7 @@ enum bio_chunk_type {
  * memory address; For NVMe IOV, it maps the SPDK blob page offset to an
  * internally maintained DMA buffer, it also needs fill the buffer for fetch
  * operation.
+ * 准备一个 io 描述符的所有 SG 列表。 对于SCM IOV，只需要将PMDK pmemobj偏移量转换为直接内存地址即可； 对于 NVMe IOV，它将 SPDK blob 页面偏移量映射到内部维护的 DMA 缓冲区，它还需要填充缓冲区以进行获取操作
  *
  * \param biod       [IN]	io descriptor
  * \param type       [IN]	chunk type used by this iod
@@ -644,6 +645,8 @@ int bio_iod_prep(struct bio_desc *biod, unsigned int type, void *bulk_ctxt,
  * For SCM IOV, it's a noop operation; For NVMe IOV, it releases the DMA buffer
  * held in bio_iod_prep(), it also needs to write back the data from DMA buffer
  * to the NVMe device for update operation.
+ * 
+ * 在为 io 描述符完成 RDMA 传输或本地复制后的后操作。 对于 SCM IOV，这是一个 noop 操作； 对于NVMe IOV，它会释放bio_iod_prep()中持有的DMA buffer，还需要将DMA buffer中的数据写回NVMe设备进行update操作
  *
  * \param biod       [IN]	io descriptor
  *
