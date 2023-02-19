@@ -120,6 +120,7 @@ static inline uint64_t vos_byte2blkoff(uint64_t bytes)
 static inline void
 agg_reserve_space(daos_size_t *rsrvd)
 {
+  /* 40MB */
 	daos_size_t	size = VOS_MW_FLUSH_THRESH * 5;
 
 	rsrvd[DAOS_MEDIA_SCM]	+= size;
@@ -165,7 +166,7 @@ struct vos_pool {
 	daos_size_t		vp_space_sys[DAOS_MEDIA_MAX];
 	/** Held space by inflight updates. In bytes */
 	daos_size_t		vp_space_held[DAOS_MEDIA_MAX];
-	/** Dedup hash */
+	/** Dedup hash 去重hash */
 	struct d_hash_table	*vp_dedup_hash;
 	/* The count of committed DTXs for the whole pool. */
 	uint32_t		 vp_dtx_committed_count;
@@ -539,6 +540,32 @@ enum vos_tree_class {
 	/** the last reserved tree class */
 	VOS_BTR_END,
 };
+
+// static char* 
+// get_vos_tree_class(int tree_class){
+//   switch (tree_class) {
+//     case VOS_BTR_DKEY:
+//       return "VOS_BTR_DKEY";
+//     case VOS_BTR_AKEY:
+//       return "VOS_BTR_AKEY";
+//     case VOS_BTR_SINGV:
+//       return "VOS_BTR_SINGV";
+//     case VOS_BTR_OBJ_TABLE:
+//       return "VOS_BTR_OBJ_TABLE";
+//     case VOS_BTR_CONT_TABLE:
+//       return "VOS_BTR_CONT_TABLE";
+//     case VOS_BTR_DTX_ACT_TABLE:
+//       return "VOS_BTR_DTX_ACT_TABLE";
+//     case VOS_BTR_DTX_CMT_TABLE:
+//       return "VOS_BTR_DTX_CMT_TABLE";
+//     case VOS_BTR_ILOG:
+//       return "VOS_BTR_ILOG";
+//     case VOS_BTR_END:
+//       return "VOS_BTR_END";
+//     default:
+//       return "NO_FIND";
+//   }
+// };
 
 int obj_tree_init(struct vos_object *obj);
 int obj_tree_fini(struct vos_object *obj);

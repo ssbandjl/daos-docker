@@ -23,6 +23,32 @@ vos_pool_get_scm_cutoff(void)
 	return VOS_BLK_SZ;
 }
 
+static char* 
+get_vos_tree_class(int tree_class){
+  switch (tree_class) {
+    case VOS_BTR_DKEY:
+      return "VOS_BTR_DKEY";
+    case VOS_BTR_AKEY:
+      return "VOS_BTR_AKEY";
+    case VOS_BTR_SINGV:
+      return "VOS_BTR_SINGV";
+    case VOS_BTR_OBJ_TABLE:
+      return "VOS_BTR_OBJ_TABLE";
+    case VOS_BTR_CONT_TABLE:
+      return "VOS_BTR_CONT_TABLE";
+    case VOS_BTR_DTX_ACT_TABLE:
+      return "VOS_BTR_DTX_ACT_TABLE";
+    case VOS_BTR_DTX_CMT_TABLE:
+      return "VOS_BTR_DTX_CMT_TABLE";
+    case VOS_BTR_ILOG:
+      return "VOS_BTR_ILOG";
+    case VOS_BTR_END:
+      return "VOS_BTR_END";
+    default:
+      return "NO_FIND";
+  }
+};
+
 int
 vos_tree_get_overhead(int alloc_overhead, enum VOS_TREE_CLASS tclass,
 		      uint64_t ofeat, struct daos_tree_overhead *ovhd)
@@ -35,6 +61,7 @@ vos_tree_get_overhead(int alloc_overhead, enum VOS_TREE_CLASS tclass,
 	memset(ovhd, 0, sizeof(*ovhd));
 
 	if (tclass == VOS_TC_ARRAY) {
+    D_WARN("vos_tc_array\n");
 		rc = evt_overhead_get(alloc_overhead, VOS_EVT_ORDER, ovhd);
 		goto out;
 	}
@@ -68,7 +95,8 @@ vos_tree_get_overhead(int alloc_overhead, enum VOS_TREE_CLASS tclass,
 		D_ASSERT(0);
 		break;
 	};
-
+  D_WARN("dbtree_overhead_get tclass:%d, btr_class:%d, btr_class:%s, ofeat:%lu\n", 
+    tclass, btr_class, get_vos_tree_class(btr_class), ofeat);
 	rc = dbtree_overhead_get(alloc_overhead, btr_class, ofeat, tree_order,
 				 ovhd);
 out:

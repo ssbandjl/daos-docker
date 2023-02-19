@@ -386,12 +386,12 @@ btr_hkey_size_const(btr_ops_t *ops, uint64_t feats)
 
 	if (BTR_IS_DIRECT_KEY(feats))
 		return sizeof(umem_off_t);
-
+  // D_WARN("BTR_IS_DIRECT_KEY\n");
 	if (BTR_IS_UINT_KEY(feats))
 		return sizeof(uint64_t);
-
-	size = ops->to_hkey_size();
-
+  // D_WARN("BTR_IS_UINT_KEY\n");
+	size = ops->to_hkey_size(); // oi_hkey_size
+  D_WARN("size:%u\n", size);
 	D_ASSERT(size <= DAOS_HKEY_MAX);
 	return size;
 }
@@ -409,6 +409,7 @@ static void
 btr_hkey_gen(struct btr_context *tcx, d_iov_t *key, void *hkey)
 {
 	if (btr_is_direct_key(tcx)) {
+    D_WARN("key:%p\n", key);
 		/* We store umem offset to record when bubbling up */
 		return;
 	}
@@ -771,6 +772,7 @@ btr_root_init(struct btr_context *tcx, struct btr_root *root, bool in_place)
 	tins->ti_root = root;
 	if (UMOFF_IS_NULL(tins->ti_root_off) && btr_has_tx(tcx)) {
 		/* externally allocated root and has transaction */
+    D_DEBUG(DB_ALL, "tcx:%p\n", tcx);
 		rc = btr_root_tx_add(tcx);
 		if (rc != 0)
 			return rc;
@@ -812,9 +814,11 @@ btr_root_tx_add(struct btr_context *tcx)
 	int			 rc;
 
 	if (!UMOFF_IS_NULL(tins->ti_root_off)) {
+    D_WARN("umem_tx_add\n");
 		rc = umem_tx_add(btr_umm(tcx), tcx->tc_tins.ti_root_off,
 				 sizeof(struct btr_root));
 	} else {
+    D_WARN("umem_tx_add_ptr\n");
 		rc = umem_tx_add_ptr(btr_umm(tcx), tcx->tc_tins.ti_root,
 				     sizeof(struct btr_root));
 	}
@@ -1736,6 +1740,7 @@ btr_probe_prev(struct btr_context *tcx)
  * be copied into them. Otherwise if buffer address in \a key_out or/and
  * \a val_out is/are NULL, then addresses of key or/and value of the current
  * record will be returned.
+ * 搜索提供的键并获取其值（如果匹配的键与输入键不同，则为键）。 该功能可以支持基于opc 的高级范围搜索操作。 如果 key_out 和 val_out 提供接收器缓冲区，则键和值将被复制到它们中。 否则如果key_out或/和val_out中的缓冲区地址为NULL，则返回当前记录的key或/和value的地址
  *
  * \param toh	[IN]		Tree open handle.
  * \param opc	[IN]		Probe opcode, see dbtree_probe_opc_t for the
@@ -1905,7 +1910,7 @@ btr_upsert(struct btr_context *tcx, dbtree_probe_opc_t probe_opc,
 		rc = tcx->tc_probe_rc; /* trust previous probe... */
 	else
 		rc = btr_probe_key(tcx, probe_opc, intent, key);
-
+  D_WARN("btree update or inseret rc:%d\n", rc);
 	switch (rc) {
 	default:
 		D_ASSERTF(false, "unknown returned value: "DF_RC"\n",
@@ -3979,6 +3984,7 @@ dbtree_overhead_get(int alloc_overhead, unsigned int tclass, uint64_t ofeat,
 
 	btr_class = &btr_class_registered[tclass];
 	ops = btr_class->tc_ops;
+  // D_WARN("tclass:%d\n", tclass);
 
 	if (ops->to_rec_msize == NULL) {
 		D_ERROR("No record meta size callback for tree class: %d\n",
@@ -3986,10 +3992,10 @@ dbtree_overhead_get(int alloc_overhead, unsigned int tclass, uint64_t ofeat,
 		return -DER_INVAL;
 	}
 
-	hkey_size = btr_hkey_size_const(ops, ofeat);
+	hkey_size = btr_hkey_size_const(ops, ofeat); // oi_btr_ops to_hkey_size
 	btr_size = sizeof(struct btr_record) + hkey_size;
 
-	ovhd->to_record_msize = ops->to_rec_msize(alloc_overhead);
+	ovhd->to_record_msize = ops->to_rec_msize(alloc_overhead); // oi_rec_msize
 	ovhd->to_node_rec_msize = btr_size;
 
 	ovhd->to_leaf_overhead.no_order = tree_order;

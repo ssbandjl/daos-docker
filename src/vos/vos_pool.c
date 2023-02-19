@@ -386,7 +386,7 @@ end:
 		goto close;
 	}
 
-	/* SCM only pool or NVMe device isn't configured */
+	/* SCM only pool or NVMe device isn't configured 纯SCM或没有配置Nvme,则跳转到open */
 	if (nvme_sz == 0 || !bio_nvme_configured())
 		goto open;
 
@@ -582,7 +582,8 @@ set_slab_prop(int id, struct pobj_alloc_class_desc *slab)
 		D_ERROR("Invalid slab ID: %d\n", id);
 		return -DER_INVAL;
 	}
-
+  D_WARN("id:%d, tclass:%d\n", id, tclass);
+  // D_WARN("id:%d, tclass:%d, tclass:%s\n", id, tclass, get_vos_tree_class(tclass));
 	rc = vos_tree_get_overhead(0, tclass, 0, &ovhd);
 	if (rc)
 		return rc;
@@ -672,7 +673,8 @@ lock_pool_memory(struct vos_pool *pool)
 		}
 
 		if (rlim.rlim_cur != RLIM_INFINITY || rlim.rlim_max != RLIM_INFINITY) {
-			D_WARN("Infinite rlimit not detected, not locking VOS pool memory\n");
+			D_WARN("Infinite rlimit not detected, not locking VOS pool memory rlim.rlim_cur:%ju, rlim.rlim_max:%ju\n", 
+        (uintmax_t)rlim.rlim_cur, (uintmax_t)rlim.rlim_max);
 			lock_mem = LM_FLAG_DISABLED;
 			return;
 		}

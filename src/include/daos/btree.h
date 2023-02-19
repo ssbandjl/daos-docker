@@ -164,7 +164,7 @@ typedef enum {
 	BTR_PROBE_FIRST		= 1,
 	/** the last record in the tree */
 	BTR_PROBE_LAST		= 2,
-	/** probe the record whose key equals to the provide key */
+	/** probe the record whose key equals to the provide key 探测键等于提供键的记录 */
 	BTR_PROBE_EQ		= BTR_PROBE_SPEC,
 	/** probe the record whose key is great to the provided key */
 	BTR_PROBE_GT		= BTR_PROBE_SPEC | 1,

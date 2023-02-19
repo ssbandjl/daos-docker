@@ -487,7 +487,7 @@ static inline int
 umem_tx_begin(struct umem_instance *umm, struct umem_tx_stage_data *txd)
 {
 	if (umm->umm_ops->mo_tx_begin)
-		return umm->umm_ops->mo_tx_begin(umm, txd); // pmem_tx_begin
+		return umm->umm_ops->mo_tx_begin(umm, txd); // pmem_tx_begin -> pmemobj_tx_begin
 	else
 		return 0;
 }

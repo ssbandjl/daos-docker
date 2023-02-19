@@ -30,7 +30,7 @@ get_frag_overhead(daos_size_t tot_size, int media, bool small_pool)
 		else if (ovhd > max_sz)
 			ovhd = max_sz;
 	}
-
+  D_WARN("tot_size:%ld, ovhd:%ld\n", tot_size, ovhd);
 	return ovhd;
 }
 
@@ -40,6 +40,7 @@ vos_space_sys_init(struct vos_pool *pool)
 	daos_size_t	scm_tot = pool->vp_pool_df->pd_scm_sz;
 	daos_size_t	nvme_tot = pool->vp_pool_df->pd_nvme_sz;
 
+  /* ((pool)->vp_space_sys[DAOS_MEDIA_SCM]) */
 	POOL_SCM_SYS(pool) =
 		get_frag_overhead(scm_tot, DAOS_MEDIA_SCM, pool->vp_small);
 	POOL_NVME_SYS(pool) =

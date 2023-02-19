@@ -879,7 +879,7 @@ gc_add_pool(struct vos_pool *pool)
 {
 	struct vos_tls	   *tls = vos_tls_get();
 
-	D_DEBUG(DB_TRACE, "Register pool="DF_UUID" for GC\n",
+	D_DEBUG(DB_ALL, "Register pool="DF_UUID" for GC\n",
 		DP_UUID(pool->vp_id));
 
 	D_ASSERT(d_list_empty(&pool->vp_gc_link));

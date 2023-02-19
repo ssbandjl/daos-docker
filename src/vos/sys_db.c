@@ -120,7 +120,7 @@ db_open_create(struct sys_db *db, bool try_create)
 		D_CRIT("No access to existing db file %s\n", vdb->db_file);
 		goto failed;
 	}
-	D_DEBUG(DB_IO, "Opening %s, try_create=%d\n", vdb->db_file, try_create);
+	D_DEBUG(DB_IO, "Opening vdb->db_file:%s, try_create=%d\n", vdb->db_file, try_create);
 	if (try_create) {
 		rc = vos_pool_create(vdb->db_file, vdb->db_pool, SYS_DB_SIZE, 0,
 				     0, &vdb->db_poh);
