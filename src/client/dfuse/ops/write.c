@@ -32,7 +32,7 @@ dfuse_cb_write(fuse_req_t req, fuse_ino_t ino, struct fuse_bufvec *bufv,
 	DFUSE_TRA_INFO(oh, "%#zx-%#zx requested flags %#x pid=%d",
 		       position, position + len - 1,
 		       bufv->buf[0].flags, fc->pid);
-
+  D_ERROR("inode:%d, file:%s\n", ino, oh->doh_ie->ie_name);
 	D_ALLOC_PTR(ev);
 	if (ev == NULL)
 		D_GOTO(err, rc = ENOMEM);

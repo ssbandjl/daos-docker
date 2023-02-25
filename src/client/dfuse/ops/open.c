@@ -17,7 +17,7 @@ dfuse_cb_open(fuse_req_t req, fuse_ino_t ino, struct fuse_file_info *fi)
 	struct fuse_file_info	        fi_out = {0};
 	int				rc;
   
-  D_ERROR("open file %s\n", fi->);
+ 
 	rlink = d_hash_rec_find(&fs_handle->dpi_iet, &ino, sizeof(ino));
 	if (!rlink) {
     D_ERROR("no find ");
@@ -26,6 +26,7 @@ dfuse_cb_open(fuse_req_t req, fuse_ino_t ino, struct fuse_file_info *fi)
 	}
 	ie = container_of(rlink, struct dfuse_inode_entry, ie_htl);
 
+  D_ERROR("open file %s\n", ie->ie_name);
 	D_ALLOC_PTR(oh);
 	if (!oh)
 		D_GOTO(err, rc = ENOMEM);
