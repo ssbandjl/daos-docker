@@ -59,7 +59,7 @@ src/client/java/hadoop-daos/target/
 src/client/java/daos-java/build/
 cache
 cache_tgz
-test/
+# test/
 src/rdb
 swim.log
 trace.log
