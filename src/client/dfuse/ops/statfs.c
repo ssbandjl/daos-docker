@@ -13,7 +13,7 @@ dfuse_cb_statfs(fuse_req_t req, struct dfuse_inode_entry *inode)
 	struct statvfs stbuf = {};
 	daos_pool_info_t info = {.pi_bits = DPI_SPACE};
 	int rc;
-  D_ERROR("stat file:%s\n",inode->ie_name);
+  D_ERROR("stat file:%s inode:%lu\n",inode->ie_name, inode);
 	if (daos_handle_is_valid(inode->ie_dfs->dfs_dfp->dfp_poh)) {
 		rc = daos_pool_query(inode->ie_dfs->dfs_dfp->dfp_poh, NULL,
 				     &info, NULL, NULL);

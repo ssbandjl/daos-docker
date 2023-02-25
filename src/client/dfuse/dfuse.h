@@ -175,7 +175,7 @@ struct dfuse_pool {
  * This represents a container that DFUSE is accessing.  All containers
  * will have a valid dfs_handle.
  *
- * Note this struct used to be dfuse_dfs, hence the dfs_prefix for it's
+ * Note this struct used to be dfuse_dfs, hence(因此) the dfs_prefix for it's
  * members.
  *
  * uuid may be NULL for pool inodes.

@@ -1708,8 +1708,8 @@ class _Component():
         if self.name == 'ofi':
           # return True
           return False
-        if self.name == 'argobots':
-          return False
+        # if self.name == 'argobots':
+        #   return False
         has_changes = self.prereqs.build_deps
         # print('%s, has_changes:%s' %(self.name, has_changes))
         if "all" in self.prereqs.installed:

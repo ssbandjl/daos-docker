@@ -107,7 +107,7 @@ struct dfs_obj {
 		struct {
 			/** Default object class for all entries in dir */
 			daos_oclass_id_t        oclass;
-			/** Default chunk size for all entries in dir */
+			/** Default chunk size for all entries in dir 1048576=1MB */
 			daos_size_t             chunk_size;
 		} d;
 	};
@@ -220,6 +220,7 @@ print_stat(struct stat *stbuf)
 }
 #endif
 
+/* 返回对象模式, 只读|读写 */
 static inline int
 get_daos_obj_mode(int flags)
 {
@@ -340,7 +341,7 @@ fetch_entry(daos_handle_t oh, daos_handle_t th, const char *name, size_t len,
 	d_sg_list_t	l_sgl, *sgl;
 	d_iov_t		sg_iovs[INODE_AKEYS];
 	daos_iod_t	l_iod, *iod;
-	daos_recx_t	recx;
+	daos_recx_t	recx; /* 记录范围 */
 	daos_key_t	dkey;
 	unsigned int	i;
 	char		**pxnames = NULL;
@@ -373,7 +374,7 @@ fetch_entry(daos_handle_t oh, daos_handle_t th, const char *name, size_t len,
 			D_GOTO(out, rc = ENOMEM);
 
 		for (i = 0; i < xnr; i++) {
-			pxnames[i] = concat("x:", xnames[i]);
+			pxnames[i] = concat("x:", xnames[i]); /* x:user.daos */
 			if (pxnames[i] == NULL)
 				D_GOTO(out, rc = ENOMEM);
 
@@ -382,7 +383,7 @@ fetch_entry(daos_handle_t oh, daos_handle_t th, const char *name, size_t len,
 			iods[i].iod_nr		= 1;
 			iods[i].iod_recxs	= NULL;
 			iods[i].iod_type	= DAOS_IOD_SINGLE;
-			iods[i].iod_size	= xsizes[i];
+			iods[i].iod_size	= xsizes[i]; /* 170 */
 
 			d_iov_set(&sg_iovx[i], xvals[i], xsizes[i]);
 			sgls[i].sg_nr		= 1;
@@ -397,7 +398,7 @@ fetch_entry(daos_handle_t oh, daos_handle_t th, const char *name, size_t len,
 		iod = &l_iod;
 	}
 
-	d_iov_set(&dkey, (void *)name, len);
+	d_iov_set(&dkey, (void *)name, len); /* 文件名test作为dkey */
 	d_iov_set(&iod->iod_name, INODE_AKEY_NAME, sizeof(INODE_AKEY_NAME) - 1);
 	iod->iod_nr	= 1;
 	recx.rx_idx	= 0;
@@ -406,7 +407,7 @@ fetch_entry(daos_handle_t oh, daos_handle_t th, const char *name, size_t len,
 	iod->iod_type	= DAOS_IOD_ARRAY;
 	iod->iod_size	= 1;
 	i = 0;
-
+  /* entry为空, 取其地址 */
 	d_iov_set(&sg_iovs[i++], &entry->mode, sizeof(mode_t));
 	d_iov_set(&sg_iovs[i++], &entry->oid, sizeof(daos_obj_id_t));
 	d_iov_set(&sg_iovs[i++], &entry->atime, sizeof(time_t));
@@ -420,7 +421,7 @@ fetch_entry(daos_handle_t oh, daos_handle_t th, const char *name, size_t len,
 	sgl->sg_iovs	= sg_iovs;
 
 	rc = daos_obj_fetch(oh, th, 0, &dkey, xnr + 1, iods ? iods : iod,
-			    sgls ? sgls : sgl, NULL, NULL);
+			    sgls ? sgls : sgl, NULL, NULL); // -> dc_obj_fetch_task
 	if (rc) {
 		D_ERROR("Failed to fetch entry %s "DF_RC"\n", name,
 			DP_RC(rc));
@@ -702,10 +703,10 @@ check_name(const char *name, size_t *_len)
 	size_t len;
 
 	*_len = 0;
-
+  /* 检查文件名, 不能有'/' */
 	if (name == NULL || strchr(name, '/'))
 		return EINVAL;
-
+  /* 检查文件名长度, 不能超过255字节 */
 	len = strnlen(name, DFS_MAX_NAME + 1);
 	if (len > DFS_MAX_NAME)
 		return EINVAL;
@@ -2850,7 +2851,7 @@ dfs_lookup_rel_int(dfs_t *dfs, dfs_obj_t *parent, const char *name, int flags,
 		return EINVAL;
 	if (parent == NULL)
 		parent = &dfs->root;
-	else if (!S_ISDIR(parent->mode))
+	else if (!S_ISDIR(parent->mode)) /* 判断是否为目录 */
 		return ENOTDIR;
 
 	rc = check_name(name, &len);

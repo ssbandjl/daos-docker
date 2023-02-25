@@ -328,10 +328,10 @@ struct daos_oid_list {
 /**
  * A record extent is a range of contiguous records of the same size inside an
  * array. \a rx_idx is the first array index of the extent and \a rx_nr is the
- * number of records covered by the extent. 记录范围是数组内相同大小的一系列连续记录，rx_idx 是范围的第一个数组索引，rx_nr 是范围覆盖的记录数
+ * number of records covered by the extent. 记录范围, 是数组内相同大小的一系列连续记录，rx_idx 是范围的第一个数组索引，rx_nr 是范围覆盖的记录数
  */
 typedef struct {
-	/** Indice of the first record in the extent */
+	/** Indice of the first record in the extent 范围内第一条记录的索引 */
 	uint64_t	rx_idx;
 	/**
 	 * Number of contiguous records in the extent
@@ -354,7 +354,7 @@ typedef enum {
 /**
  * An I/O descriptor is a list of extents (effectively records associated with
  * contiguous array indices) to update/fetch in a particular array identified by
- * its akey.
+ * its akey. I/O 描述符是一个范围列表（与连续数组索引相关联的有效记录），用于在由其 akey 标识的特定数组中更新/获取
  */
 typedef struct {
 	/** akey for this iod */
@@ -369,6 +369,7 @@ typedef struct {
 	 * \a iod_type == DAOS_IOD_SINGLE, then iod_nr has to be 1, and
 	 * \a iod_size would be the size of the single atomic value. The idx is
 	 * ignored and the rx_nr is also required to be 1.
+   * IO描述的类型, 单个值|数组(包含相同大小的多个记录)
 	 */
 	daos_iod_type_t		iod_type;
 	/** Size of the single value or the record size of the array */
@@ -385,7 +386,7 @@ typedef struct {
 	/*
 	 * Array of extents, where each extent defines the index of the first
 	 * record in the extent and the number of records to access. If the
-	 * type of the iod is single, this is ignored.
+	 * type of the iod is single, this is ignored. 
 	 */
 	daos_recx_t		*iod_recxs;
 } daos_iod_t;
@@ -757,6 +758,27 @@ daos_obj_query(daos_handle_t oh, struct daos_obj_attr *oa, d_rank_list_t *ranks,
  *			-DER_REC2BIG	Record is too large and can't be
  *					fit into output buffer
  *			-DER_EP_OLD	Epoch is too old and has no data
+ 从并置数组中获取对象记录。
+
+参数：
+oh – 对象打开句柄。
+th – 用于获取的可选事务句柄。 将 DAOS_TX_NONE 用于独立事务。
+flags – 获取标志（条件操作）。
+dkey – 与获取操作关联的分布键。
+nr – 分别在 iods 和 sqls 中的 I/O 描述符和分散/聚集列表的数量。
+iods – [in]：I/O 描述符数组。 每个描述符都与给定的 akey 相关联，并描述要从数组中获取的记录范围列表。 [out]：每个extent的校验和通过iods[]::iod_csums[]返回。 如果一个范围的记录大小未知（即设置为 DAOS_REC_ANY 作为输入），那么实际记录大小将在 iods[]::iod_size 中返回。
+sqls – 用于存储记录的分散/聚集列表 (sql)。 每个数组都与 sqls 中的一个单独的 sql 相关联。 每个 sql 中的 I/O 描述可以是任意的，只要它们的总大小足以填充所有返回的数据即可。 例如，不同大小记录的extents可以相邻存储在I/O描述符的sql的同一个iod中，一个extent的start offset是前一个extent的end offset。 对于未找到的记录，相应 sql 的输出长度设置为零。
+ioms – 可选，上层可以简单地传入 NULL。 它是存储缓冲区，用于存储返回的 fetch 中使用的 iods 的实际布局。 它提供了该 dkey 中最高/最低范围内每个 iod 的信息，以及获取的有效范围（如果需要）。 如果范围不适合 io_map，则在 ioms[]::iom_nr 中为特定的 iod 设置所需的数量。
+ev – 完成事件，它是可选的，可以为 NULL。 如果 ev 为 NULL，函数将以阻塞模式运行。
+
+返回：
+这些值将由 ev::ev_error 在非阻塞模式下返回： 
+0 成功 
+-DER_NO_HDL 对象打开句柄无效 
+-DER_INVAL 参数无效 
+-DER_UNREACH 网络不可访问 
+-DER_REC2BIG 记录太大，无法放入输出缓冲区 
+-DER_EP_OLD Epoch 太旧，没有数据
  */
 int
 daos_obj_fetch(daos_handle_t oh, daos_handle_t th, uint64_t flags,
