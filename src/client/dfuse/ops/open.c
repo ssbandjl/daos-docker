@@ -16,9 +16,11 @@ dfuse_cb_open(fuse_req_t req, fuse_ino_t ino, struct fuse_file_info *fi)
 	struct dfuse_obj_hdl		*oh = NULL;
 	struct fuse_file_info	        fi_out = {0};
 	int				rc;
-
+  
+  D_ERROR("open file %s\n", fi->);
 	rlink = d_hash_rec_find(&fs_handle->dpi_iet, &ino, sizeof(ino));
 	if (!rlink) {
+    D_ERROR("no find ");
 		DFUSE_REPLY_ERR_RAW(fs_handle, req, ENOENT);
 		return;
 	}

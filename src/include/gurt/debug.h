@@ -34,6 +34,7 @@
  * d_alt_assert is a pointer to an alternative assert function, meaning an
  * alternative to the C library assert(). It is declared in gurt/debug.c. See
  * the example in D_ASSERT for how this is called from a macro.
+ * d_alt_assert 是一个指向替代断言函数的指针，意味着 C 库 assert() 的替代。 它在 gurt/debug.c 中声明。 请参阅 D_ASSERT 中的示例，了解如何从宏中调用它
  *
  * \param[in] result		The expression to assert
  * \param[in] expression	The expression as string

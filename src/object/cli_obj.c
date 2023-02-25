@@ -750,7 +750,7 @@ obj_dkey2grpmemb(struct dc_object *obj, uint64_t hash, uint32_t map_ver,
 		return grp_idx;
 
 	*grp_size = obj_get_grp_size(obj);
-	*start_shard = grp_idx * *grp_size;
+	*start_shard = grp_idx * *grp_size; /* 0 = 0 * 3 */
 
 	return 0;
 }
@@ -1123,7 +1123,7 @@ obj_shards_2_fwtgts(struct dc_object *obj, uint32_t map_ver, uint8_t *bit_map,
 	} else {
 		shard_nr = shard_cnt;
 	}
-
+  /* 分片数大于内联数(10) */
 	if (shard_nr > OBJ_TGT_INLINE_NR) {
 		if (req_tgts->ort_shard_tgts != NULL &&
 		    req_tgts->ort_grp_nr * req_tgts->ort_grp_size != shard_nr) {

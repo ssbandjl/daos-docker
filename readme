@@ -138,7 +138,12 @@ daos container --verbose query -p sxb -c sxb
 挂载/卸载
 mkdir -p /tmp/sxb
 dfuse --mountpoint=/tmp/sxb --pool=sxb --cont=sxb
+cd /tmp/sxb
+
 umount /tmp/sxb
+
+查看系统调用
+strace -o xxx.log -fff exec -f config_file
 
 
 
@@ -520,3 +525,23 @@ crt_req_send(req, shard_update_req_cb, remote_arg) 将用户回调设置为完�
 
 打开err日志:
 dmg server set-logmasks err
+
+
+vos_tests: gdb /opt/daos/bin/vos_tests
+set args -p 
+
+启动容器:
+daos_start_all
+
+停止所有服务:
+daos_stop_all
+
+
+客户端:
+文件系统操作表: dfuse_pool_ops
+
+查看系统调用:
+strace -fff test/write_file /tmp/sxb/testfile1
+
+
+

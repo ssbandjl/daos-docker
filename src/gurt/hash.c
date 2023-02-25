@@ -189,6 +189,7 @@ d_hash_murmur64(const unsigned char *key, unsigned int key_len,
  * Jump Consistent Hash Algorithm that provides a bucket location
  * for the given key. This algorithm hashes a minimal (1/n) number
  * of keys to a new bucket when extending the number of buckets.
+ * 为给定键提供存储桶位置的跳转一致性哈希算法。 当扩展桶的数量时，该算法将最小 (1/n) 的键散列到一个新的桶
  *
  * \param[in]   key             A unique key representing the object that
  *                              will be placed in the bucket.

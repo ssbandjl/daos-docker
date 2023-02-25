@@ -25,6 +25,7 @@ static const uint32_t type_counts[] = {
 	D_FOREACH_TS_TYPE(DEFINE_TS_COUNT)
 };
 
+/* 65536 */
 #define OBJ_MISS_SIZE (1 << 16)
 #define DKEY_MISS_SIZE (1 << 16)
 #define AKEY_MISS_SIZE (1 << 16)

@@ -114,7 +114,7 @@ static struct dc_array *
 array_hdl2ptr(daos_handle_t oh)
 {
 	struct d_hlink *hlink;
-
+  /* 控制器提前存在? */
 	hlink = daos_hhash_link_lookup(oh.cookie);
 	if (hlink == NULL)
 		return NULL;

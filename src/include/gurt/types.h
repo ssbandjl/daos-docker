@@ -105,6 +105,7 @@ struct d_string_buffer_t {
 	char	*str;
 };
 
+/* buf -> iov */
 static inline void
 d_iov_set(d_iov_t *iov, void *buf, size_t size)
 {

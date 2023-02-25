@@ -119,7 +119,7 @@ typedef struct {
 	daos_epoch_t	epr_hi;
 } daos_epoch_range_t;
 
-/** Highest possible epoch */
+/** Highest possible epoch 18446744073709551615 */
 #define DAOS_EPOCH_MAX	(~0ULL)
 
 typedef d_iov_t daos_key_t;
