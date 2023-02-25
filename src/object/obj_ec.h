@@ -26,6 +26,7 @@
  * the most-significant bit of the offset (an unsigned long). This effectively
  * limits the addressing of user extents to the lower 63 bits of the offset
  * range. The client stack should enforce this limitation.
+ * 校验指示, EC 奇偶校验存储在私有地址范围内，该范围通过设置偏移量的最高有效位（无符号长整型）来选择。 这有效地将用户范围的寻址限制在偏移范围的低 63 位。 客户端堆栈应强制执行此限制
  */
 #define PARITY_INDICATOR DAOS_EC_PARITY_BIT
 

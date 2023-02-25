@@ -135,7 +135,7 @@ d_hash_string_u32(const char *string, unsigned int len)
  */
 #define MUR_PRIME	0xc6a4a7935bd1e995
 #define MUR_ROTATE	47
-
+/* hash算法, e.g. (key=0x7fa7fc0008e8 "test4", key_len=5, seed=seed@entry=5731) */
 uint64_t
 d_hash_murmur64(const unsigned char *key, unsigned int key_len,
 		unsigned int seed)

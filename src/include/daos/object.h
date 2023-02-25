@@ -106,7 +106,7 @@ daos_ec_cs_valid(uint32_t cell_sz)
 
 	return true;
 }
-
+/* DAOS IO模式 */
 enum daos_io_mode {
 	DIM_DTX_FULL_ENABLED	= 0,	/* by default */
 	DIM_SERVER_DISPATCH	= 1,

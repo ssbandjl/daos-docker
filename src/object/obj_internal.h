@@ -132,6 +132,10 @@ struct shard_fetch_stat {
  *    match with it;
  * 2) For EC obj, split iod/recxs to each target, generate new sgl to match with
  *    it, create oiod/siod to specify each shard/tgt's IO req.
+ * 重新组合 obj 请求。
+用户输入的 iod/sql 可能需要在发送到服务器之前在客户端重新组装，例如：
+合并相邻的recx，或者对乱序的recx进行排序并生成新的sql与之匹配；
+对于EC obj，将iod/recxs拆分到每个target，生成新的sql与之匹配，创建oiod/siod指定每个shard/tgt的IO req
  */
 struct obj_reasb_req {
 	/* object ID */
@@ -583,7 +587,7 @@ dc_io_epoch_set(struct dtx_epoch *epoch)
 		/* DIM_CLIENT_DISPATCH doesn't promise consistency. */
 		epoch->oe_flags = 0;
 	} else {
-		epoch->oe_value = DAOS_EPOCH_MAX;
+		epoch->oe_value = DAOS_EPOCH_MAX; /* 初始化epoch值为最大 */
 		epoch->oe_first = epoch->oe_value;
 		epoch->oe_flags = 0;
 	}

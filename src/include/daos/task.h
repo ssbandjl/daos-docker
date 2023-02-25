@@ -103,7 +103,7 @@ struct daos_task_args {
 
 /**
  * Push to task stack space. This API only reserves space on the task stack, no
- * data copy involved.
+ * data copy involved. 推送到任务堆栈空间。 该接口只保留任务栈空间，不涉及数据拷贝
  *
  * \param task [in] task to push the buffer.
  * \param size [in] buffer size.

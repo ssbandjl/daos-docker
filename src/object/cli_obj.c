@@ -61,7 +61,7 @@ struct obj_auxi_tgt_list {
 	uint32_t	tl_nr;
 };
 
-/* Auxiliary args for object I/O */
+/* Auxiliary args for object I/O 对象IO的辅助参数 */
 struct obj_auxi_args {
 	tse_task_t			*obj_task;
 	daos_handle_t			 th;
@@ -260,7 +260,7 @@ obj_addref(struct dc_object *obj)
 {
 	daos_hhash_link_getref(&obj->cob_hlink);
 }
-
+/* 对象控制器 -> 指针, 利用缓存的cookie查找hash表, 返回指向客户端对象的指针 */
 struct dc_object *
 obj_hdl2ptr(daos_handle_t oh)
 {
@@ -873,7 +873,7 @@ obj_reasb_req_fini(struct obj_reasb_req *reasb_req, uint32_t iod_nr)
 	D_FREE(reasb_req->orr_iods);
 	memset(reasb_req, 0, sizeof(*reasb_req));
 }
-
+/* 重组对象读写请求 */
 static int
 obj_rw_req_reassemb(struct dc_object *obj, daos_obj_rw_t *args,
 		    struct dtx_epoch *epoch, struct obj_auxi_args *obj_auxi)

@@ -382,7 +382,7 @@ enum {
 	OC_RESERVED		= 1 << 30,
 
 };
-
+/* 对象模式 */
 enum daos_obj_schema {
 	DAOS_OS_SINGLE,		/**< Single stripe object */
 	DAOS_OS_STRIPED,	/**< Fix striped object */
@@ -391,15 +391,15 @@ enum daos_obj_schema {
 };
 
 enum daos_obj_resil {
-	DAOS_RES_EC,            /**< Erasure code */
-	DAOS_RES_REPL,          /**< Replication */
+	DAOS_RES_EC,            /**< Erasure code EC模式 */
+	DAOS_RES_REPL,          /**< Replication 副本模式 */
 };
 
 /** Object class attributes */
 struct daos_oclass_attr {
 	/** reserved: object placement schema, used by placement algorithm */
 	enum daos_obj_schema		 ca_schema;
-	/** Resilience method, replication or erasure code */
+	/** Resilience(弹性) method, replication or erasure code */
 	enum daos_obj_resil		 ca_resil;
 	/** reserved */
 	unsigned int			 ca_resil_degree;
