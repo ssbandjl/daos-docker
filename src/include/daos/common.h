@@ -277,13 +277,13 @@ daos_getutime(void)
 	d_gettime(&tv);
 	return d_time2us(tv);
 }
-
+/* 获取粗略时间 */
 static inline int daos_gettime_coarse(uint64_t *time)
 {
 	struct timespec	now;
 	int		rc;
 
-	rc = clock_gettime(CLOCK_MONOTONIC_COARSE, &now);
+	rc = clock_gettime(CLOCK_MONOTONIC_COARSE, &now); /* 系统运行时间，从系统启动时开始计时，速度更快精度更低，系统休眠时不再计时（NTP与硬件时钟有问题时会影响其频率，没有验证过） */
 	if (rc == 0)
 		*time = now.tv_sec;
 
@@ -792,7 +792,7 @@ enum {
 #define DAOS_CONT_OPEN_FAIL		(DAOS_FAIL_UNIT_TEST_GROUP_LOC | 0x68)
 #define DAOS_POOL_FAIL_MAP_REFRESH	(DAOS_FAIL_UNIT_TEST_GROUP_LOC | 0x69)
 
-/** interoperability failure inject */
+/** interoperability failure inject 注入互操作性故障 */
 #define FLC_SMD_DF_VER			(DAOS_FAIL_UNIT_TEST_GROUP_LOC | 0x70)
 #define FLC_POOL_DF_VER			(DAOS_FAIL_UNIT_TEST_GROUP_LOC | 0x71)
 

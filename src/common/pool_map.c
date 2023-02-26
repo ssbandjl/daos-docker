@@ -68,7 +68,7 @@ struct pool_map {
 	 * These sorters are in ascending order for binary search of sorters.
 	 */
 	struct pool_comp_sorter	*po_domain_sorters;
-	/** sorter for binary search of target */
+	/** sorter for binary search of target 用于进行二分搜索的排序目标 */
 	struct pool_comp_sorter	 po_target_sorter;
 	/**
 	 * Tree root of all components.
@@ -1777,7 +1777,7 @@ pool_map_find_nodes(struct pool_map *map, uint32_t id,
  * to \a target_pp.
  *
  * The return value of this function is the number of targets, so it is zero
- * on failure, and it is always one if a particular id is found.
+ * on failure, and it is always one if a particular id is found. 通过二分查找找到一个id等于id的target。 如果 id 是 PO_COMP_ID_ALL，它将连续存储的目标数组返回给 target_pp。 这个函数的返回值是目标的数量，所以失败时它是零，如果找到一个特定的 id，它总是一个
  *
  * \param map	[IN]		The pool map to search
  * \param id	[IN]		Target ID to search

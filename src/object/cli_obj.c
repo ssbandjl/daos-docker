@@ -25,7 +25,7 @@
 
 #define OBJ_TGT_INLINE_NR	10
 #define OBJ_INLINE_BTIMAP	4
-
+/* 对象的IO请求需要发送的目标 */
 struct obj_req_tgts {
 	/* to save memory allocation if #targets <= OBJ_TGT_INLINE_NR */
 	struct daos_shard_tgt	 ort_tgts_inline[OBJ_TGT_INLINE_NR];
@@ -578,7 +578,7 @@ obj_grp_valid_shard_get(struct dc_object *obj, int grp_idx,
 			continue;
 
 		/* Skip the target which is already in the failed list, i.e.
-		 * they have been tried.
+		 * they have been tried. 跳过失败列表,已经试过的目标
 		 */
 		tgt_id = obj->cob_shards->do_shards[index].do_target_id;
 		if (failed_list && tgt_in_failed_tgts_list(tgt_id, failed_list))
@@ -686,7 +686,7 @@ obj_dkey2grpidx(struct dc_object *obj, uint64_t hash, unsigned int map_ver)
 		return -DER_NO_HDL;
 
 	D_RWLOCK_RDLOCK(&pool->dp_map_lock);
-	pool_map_ver = pool_map_get_version(pool->dp_map);
+	pool_map_ver = pool_map_get_version(pool->dp_map); /* some thread update pool_map async ? */
 	D_RWLOCK_UNLOCK(&pool->dp_map_lock);
 
 	grp_size = obj_get_grp_size(obj);
@@ -1053,7 +1053,7 @@ ec_deg_get:
 	shard_tgt->st_shard_id	= obj_shard->do_id.id_shard;
 	shard_tgt->st_tgt_idx	= obj_shard->do_target_idx;
 	rc = obj_shard2tgtid(obj, shard, map_ver, &shard_tgt->st_tgt_id);
-	obj_shard_close(obj_shard);
+	obj_shard_close(obj_shard); /* -> dc_obj_shard_close 减引用计数, 是否释放布局? */
 out:
 	return rc;
 }
@@ -1088,11 +1088,11 @@ obj_req_tgts_dump(struct obj_req_tgts *req_tgts)
 
 /* only send to leader and need not forward */
 #define OBJ_TGT_FLAG_LEADER_ONLY	(1U << 0)
-/* client side dispatch, despite of srv_io_mode setting */
+/* client side dispatch, despite of srv_io_mode setting 尽管设置了服务端IO模式,也是用客户端分发IO */
 #define OBJ_TGT_FLAG_CLI_DISPATCH	(1U << 1)
 /* Forward leader information. */
 #define OBJ_TGT_FLAG_FW_LEADER_INFO	(1U << 2)
-
+/* 根据分片选择要转发的目标(集) */
 static int
 obj_shards_2_fwtgts(struct dc_object *obj, uint32_t map_ver, uint8_t *bit_map,
 		    uint32_t start_shard, uint32_t shard_cnt, uint32_t grp_nr,
@@ -1153,7 +1153,7 @@ obj_shards_2_fwtgts(struct dc_object *obj, uint32_t map_ver, uint8_t *bit_map,
 
 		shard_idx = start_shard + i * grp_size;
 		head = tgt = req_tgts->ort_shard_tgts + i * grp_size;
-		if (req_tgts->ort_srv_disp) {
+		if (req_tgts->ort_srv_disp) { /* 服务端IO分发 */
 			rc = obj_grp_leader_get(obj, shard_idx, map_ver, bit_map);
 			if (rc < 0) {
 				D_ERROR(DF_OID" no valid shard %u, grp size %u "
@@ -4329,7 +4329,7 @@ obj_csum_fetch(const struct dc_object *obj, daos_obj_fetch_t *args,
 
 	if (!daos_csummer_initialized(csummer) ||
 	    csummer->dcs_skip_data_verify)
-		/** csummer might be initialized by dedup, but checksum
+		/** csummer might be initialized by dedup(去重), but checksum
 		 * feature is turned off ...
 		 */
 		return 0;
