@@ -2724,7 +2724,7 @@ shard_io(tse_task_t *task, struct shard_auxi_args *shard_auxi)
 	}
 
 	rc = shard_auxi->shard_io_cb(obj_shard, obj_auxi->opc, shard_auxi,
-				     fw_shard_tgts, fw_cnt, task);
+				     fw_shard_tgts, fw_cnt, task); /* -> dc_obj_shard_rw */
 	obj_shard_close(obj_shard);
 
 	return rc;
@@ -2915,7 +2915,7 @@ obj_req_fanout(struct dc_object *obj, struct obj_auxi_args *obj_auxi,
 		shard_auxi->obj_auxi = obj_auxi;
 		shard_auxi->shard_io_cb = io_cb;
 		rc = io_prep_cb(shard_auxi, obj, obj_auxi, dkey_hash,
-				shard_auxi->grp_idx);
+				shard_auxi->grp_idx); /* IO预处理 -> shard_rw_prep*/
 		if (rc)
 			goto out_task;
 

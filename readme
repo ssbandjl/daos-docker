@@ -550,6 +550,11 @@ gdb attach `ps aux|grep dfuse|grep -v grep|awk '{print$2}'`
 kill dfuse
 kill -9 `ps aux|grep dfuse|grep -v grep|awk '{print$2}'`
 
+gdb条件断点:
+(gdb) b ds_obj_rw_handler if opc==DAOS_OBJ_RPC_FETCH
+
+
+
 
 
 

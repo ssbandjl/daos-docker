@@ -121,7 +121,7 @@ out:
 	if (daos_event_is_priv(ev)) {
 		int rc2;
 
-		rc2 = daos_event_priv_wait();
+		rc2 = daos_event_priv_wait(); /* 等事件 */
 		if (rc2)
 			return rc2;
 		rc = ev->ev_error;
