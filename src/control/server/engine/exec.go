@@ -74,6 +74,7 @@ func (r *Runner) run(ctx context.Context, args, env []string, errOut chan<- erro
 		return errors.Wrapf(common.GetExitStatus(err),
 			"%s (instance %d) failed to start", binPath, r.Config.Index)
 	}
+	r.log.Infof("Engine pid %d", cmd.Process.Pid)
 	r.cmd = cmd
 
 	waitDone := make(chan struct{})
