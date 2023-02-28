@@ -66,7 +66,7 @@ struct vos_ilog_info {
 	bool			 ii_empty;
 };
 
-/** Initialize the incarnation log globals */
+/** Initialize the incarnation log globals 初始化全局化身日志 */
 int
 vos_ilog_init(void);
 

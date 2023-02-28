@@ -12,7 +12,7 @@
 #include <pthread.h>
 #include "srv_internal.h"
 
-/* The array remember all of registered module keys on one node. */
+/* The array remember all of registered module keys on one node. 在dss_module_init_one中注册 */
 struct dss_module_key *dss_module_keys[DAOS_MODULE_KEYS_NR] = { NULL };
 
 pthread_mutex_t dss_module_keys_lock = PTHREAD_MUTEX_INITIALIZER;

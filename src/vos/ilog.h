@@ -70,7 +70,7 @@ struct ilog_desc_cbs {
 	void	*dc_log_del_args;
 };
 
-/** Globally initialize incarnation log */
+/** Globally initialize incarnation log 空实现 */
 int
 ilog_init(void);
 

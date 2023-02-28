@@ -141,6 +141,13 @@ dlv exec /opt/daos/bin/daos -- cont create --oclass=RP_3GX --properties=rf:1 --t
 gdb /opt/daos/bin/daos
 set args cont create --oclass=RP_3GX --properties=rf:1 --type POSIX --pool sxb --label sxb1
 
+池
+gdb /opt/daos/bin/dmg
+set args pool create sxb -z 4g
+b xxx 
+r
+
+
 查容器:
 daos cont query sxb sxb
 

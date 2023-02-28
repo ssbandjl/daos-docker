@@ -260,7 +260,7 @@ sched_create_thread(struct dss_xstream *dx, void (*func)(void *), void *arg,
 void dss_tls_fini(struct dss_thread_local_storage *dtls);
 struct dss_thread_local_storage *dss_tls_init(int tag, int xs_id, int tgt_id);
 
-/* server_iv.c */
+/* server_iv.c 服务端初始化IV(内部广播变量) */
 void ds_iv_init(void);
 void ds_iv_fini(void);
 

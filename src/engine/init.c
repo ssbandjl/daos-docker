@@ -1086,8 +1086,11 @@ main(int argc, char **argv)
 	sigset_t	set;
 	int		sig;
 	int		rc;
+  uint16_t	pid;
 
-  printf("################## engine main ##################\n");
+	pid = getpid();
+  printf("################## engine main pid=%d##################\n", pid);
+  sleep(60);
 	/** parse command line arguments */
 	rc = parse(argc, argv);
 	if (rc)

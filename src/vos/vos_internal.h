@@ -529,7 +529,7 @@ enum vos_tree_class {
 	VOS_BTR_SINGV		= (VOS_BTR_BEGIN + 2),
 	/** object index table */
 	VOS_BTR_OBJ_TABLE	= (VOS_BTR_BEGIN + 3),
-	/** container index table */
+	/** container index table 容器索引表 */
 	VOS_BTR_CONT_TABLE	= (VOS_BTR_BEGIN + 4),
 	/** DAOS two-phase commit transaction table (active) */
 	VOS_BTR_DTX_ACT_TABLE	= (VOS_BTR_BEGIN + 5),

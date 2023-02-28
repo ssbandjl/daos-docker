@@ -1192,7 +1192,7 @@ dss_srv_fini(bool force)
 	}
 	return 0;
 }
-
+/* 服务初始化 */
 int
 dss_srv_init(void)
 {
