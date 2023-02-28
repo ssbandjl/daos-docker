@@ -74,7 +74,7 @@ dss_thread_local_storage_init(struct dss_thread_local_storage *dtls,
 
 		if (dmk != NULL && dtls->dtls_tag & dmk->dmk_tags) {
 			D_ASSERT(dmk->dmk_init != NULL);
-			dtls->dtls_values[i] = dmk->dmk_init(xs_id, tgt_id); /* dss_srv_tls_init | vos_tls_init | dtx_tls_init | pool_tls_init | dsm_tls_init*/
+			dtls->dtls_values[i] = dmk->dmk_init(xs_id, tgt_id); /* dss_srv_tls_init | vos_tls_init | dtx_tls_init | pool_tls_init | dsm_tls_init | obj_tls_init | rebuild_tls_init*/
 			if (dtls->dtls_values[i] == NULL) {
 				rc = -DER_NOMEM;
 				break;
