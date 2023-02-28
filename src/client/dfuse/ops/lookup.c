@@ -235,7 +235,7 @@ dfuse_cb_lookup(fuse_req_t req, struct dfuse_inode_entry *parent,
 	DFUSE_TRA_UP(ie, parent, "inode");
 
 	ie->ie_parent = parent->ie_stat.st_ino; /* File serial number */
-  D_ERROR("dfs_cont: "DF_UUID"\n", DP_UUID(parent->dfs_cont));
+  // D_ERROR("dfs_cont: "DF_UUID"\n", DP_UUID(parent->dfs_cont));
 	ie->ie_dfs = parent->ie_dfs;
 
 	rc = dfs_lookupx(parent->ie_dfs->dfs_ns, parent->ie_obj, name,
