@@ -295,7 +295,7 @@ func (cmd *containerCreateCmd) Execute(_ []string) (err error) {
 		defer freeString(ap.path)
 		rc = C.cont_create_uns_hdlr(ap)
 	} else {
-		rc = C.cont_create_hdlr(ap)
+		rc = C.cont_create_hdlr(ap) // -> cont_create_hdlr(struct cmd_args_s *ap)
 	}
 	if err := daosError(rc); err != nil {
 		return errors.Wrap(err, "failed to create container")

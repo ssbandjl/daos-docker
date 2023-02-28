@@ -135,6 +135,16 @@ daos cont create --oclass=RP_3GX --properties=rf:1 --type POSIX --pool sxb --lab
 daos container create --pool sxb --type POSIX --label sxb
 daos container --verbose query -p sxb -c sxb
 
+
+调试:
+dlv exec /opt/daos/bin/daos -- cont create --oclass=RP_3GX --properties=rf:1 --type POSIX --pool sxb --label sxb
+gdb /opt/daos/bin/daos
+set args cont create --oclass=RP_3GX --properties=rf:1 --type POSIX --pool sxb --label sxb1
+
+查容器:
+daos cont query sxb sxb
+
+
 挂载/卸载
 mkdir -p /tmp/sxb
 dfuse --mountpoint=/tmp/sxb --pool=sxb --cont=sxb

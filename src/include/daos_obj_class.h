@@ -127,7 +127,7 @@ enum {
 	 * Object classes protected by replication which supports Scalable
 	 * Fetch (SF)
 	 * SF classes have more replicas, so they are slower on update, but more
-	 * scalable on fetch because they have more replicas to serve fetches.
+	 * scalable on fetch because they have more replicas to serve fetches. 可扩展性查询, 在查询上有更多可供选择的副本(扩展性好)
 	 */
 	/**
 	 * Tiny object protected by replication
@@ -155,7 +155,7 @@ enum {
 
 	/**
 	 * Replicated object class which is extremely scalable for fetch.
-	 * It has many replicas so it is very slow for update.
+	 * It has many replicas so it is very slow for update. 极具可扩展性
 	 */
 	OC_RP_XSF	= 80,
 
@@ -186,13 +186,13 @@ enum {
 	 */
 	OC_EC_MAX,
 	/**
-	 * Object classes with explicit layout
+	 * Object classes with explicit layout 对象具有明确的布局
 	 */
 	/**
 	 * Object classes with explicit layout but no data protection
 	 * Examples:
 	 * S1 : shards=1, S2 means shards=2, ...
-	 * SX : spreading across all targets within the pool
+	 * SX : spreading across all targets within the pool 遍布池上所有关联的目标
 	 */
 	OC_S1		= OBJ_CLASS_DEF(OR_RP_1, 1ULL),
 	OC_S2		= OBJ_CLASS_DEF(OR_RP_1, 2ULL),
@@ -225,7 +225,7 @@ enum {
 	OC_RP_2G32	= OBJ_CLASS_DEF(OR_RP_2, 32ULL),
 	OC_RP_2GX	= OBJ_CLASS_DEF(OR_RP_2, MAX_NUM_GROUPS),
 
-	/** 3-way replicated object classes */
+	/** 3-way replicated object classes 3副本对象类型 */
 	OC_RP_3G1	= OBJ_CLASS_DEF(OR_RP_3, 1ULL),
 	OC_RP_3G2	= OBJ_CLASS_DEF(OR_RP_3, 2ULL),
 	OC_RP_3G4	= OBJ_CLASS_DEF(OR_RP_3, 4ULL),

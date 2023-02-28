@@ -1661,7 +1661,7 @@ cont_create_hdlr(struct cmd_args_s *ap)
 		if (uuid_is_null(ap->c_uuid))
 			rc = dfs_cont_create(ap->pool, &ap->c_uuid, &attr, NULL, NULL);
 		else
-			rc = dfs_cont_create(ap->pool, ap->c_uuid, &attr, NULL, NULL);
+			rc = dfs_cont_create(ap->pool, ap->c_uuid, &attr, NULL, NULL); // no mount fs
 		if (rc)
 			rc = daos_errno2der(rc);
 	} else {

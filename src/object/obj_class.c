@@ -8,7 +8,7 @@
 #include "obj_class.h"
 #include <isa-l.h>
 
-/** indirect indices for binary search by ID */
+/** indirect indices for binary search by ID 用ID作为二分法的间接索引 */
 static struct daos_obj_class **oc_ident_array;
 /** indirect indices for binary search by number of groups */
 static struct daos_obj_class **oc_scale_array;
@@ -537,7 +537,7 @@ oc_sop_redun_cmp_key(void *array, int i, uint64_t key)
 		return -1;
 	return 0;
 }
-
+/* 冗余组的排序操作函数表 */
 static daos_sort_ops_t	oc_redun_sort_ops = {
 	.so_swap	= oc_sop_swap,
 	.so_cmp		= oc_sop_redun_cmp,
@@ -650,7 +650,7 @@ static daos_sort_ops_t	oc_scale_sort_ops = {
 #define OC_NR	daos_oclass_nr(0)
 
 /*
- * find object class by ID.
+ * find object class by ID. 先用唯一id搜索, 未匹配则用冗余组搜索
  *
  * firstly try to search predefined object class by unique ID, if
  * not try to match oc_redun if ID is not less than OC_S1, number

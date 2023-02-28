@@ -1269,7 +1269,7 @@ dfs_cont_create_int(daos_handle_t poh, uuid_t *cuuid, bool uuid_is_set, uuid_t i
 	if (attr != NULL && attr->da_props != NULL)
 		prop = daos_prop_alloc(attr->da_props->dpp_nr + 2);
 	else
-		prop = daos_prop_alloc(2);
+		prop = daos_prop_alloc(2); //
 	if (prop == NULL)
 		return ENOMEM;
 
@@ -1340,7 +1340,7 @@ dfs_cont_create_int(daos_handle_t poh, uuid_t *cuuid, bool uuid_is_set, uuid_t i
 	if (uuid_is_set)
 		rc = daos_cont_create(poh, in_uuid, prop, NULL);
 	else
-		rc = daos_cont_create(poh, cuuid, prop, NULL);
+		rc = daos_cont_create(poh, cuuid, prop, NULL); // 未设置uuid
 	if (rc) {
 		D_ERROR("daos_cont_create() failed "DF_RC"\n", DP_RC(rc));
 		D_GOTO(err_prop, rc = daos_der2errno(rc));

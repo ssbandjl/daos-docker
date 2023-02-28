@@ -33,7 +33,7 @@ import (
 void
 init_op_vals(struct cmd_args_s *ap)
 {
-	// Annoyingly, cgo insists that these fields are
+	// Annoyingly 烦人, cgo insists that these fields are
 	// uint32_t, and refuses to allow assignment of -1
 	// from the Go side, so we do this here.
 	ap->p_op = -1;
