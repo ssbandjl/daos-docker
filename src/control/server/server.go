@@ -350,7 +350,7 @@ func (srv *server) registerEvents() {
 								return
 							}
 						}
-						srv.log.Debugf("no engines ready for GroupUpdate; waiting %s", groupUpdateInterval)
+						// srv.log.Debugf("no engines ready for GroupUpdate; waiting %s", groupUpdateInterval)
 						time.Sleep(groupUpdateInterval)
 					}
 				}

@@ -548,7 +548,7 @@ umem_attr_get(struct umem_instance *umm, struct umem_attr *uma)
  * To avoid allocating stage data for each transaction, umem user should
  * prepare per-xstream stage data and initialize it by umem_init_txd(),
  * this per-xstream stage data will be used for all transactions within
- * the same xstream.
+ * the same xstream. 在事务之前提前分配数据
  */
 int
 umem_init_txd(struct umem_tx_stage_data *txd)

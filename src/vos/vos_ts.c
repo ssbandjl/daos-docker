@@ -19,7 +19,7 @@
 static const char * const type_strs[] = {
 	D_FOREACH_TS_TYPE(DEFINE_TS_STR)
 };
-
+/* 计数组成数组 */
 #define DEFINE_TS_COUNT(type, desc, count)	count,
 static const uint32_t type_counts[] = {
 	D_FOREACH_TS_TYPE(DEFINE_TS_COUNT)

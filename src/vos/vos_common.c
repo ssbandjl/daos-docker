@@ -406,7 +406,7 @@ vos_tls_init(int xs_id, int tgt_id)
 	}
 
 	if (tgt_id < 0)
-		/** skip sensor setup on standalone vos & sys xstream */
+		/** skip sensor setup on standalone vos & sys xstream 单节点vos和系统执行流, 不设置传感器 */
 		return tls;
 
 	rc = d_tm_add_metric(&tls->vtl_committed, D_TM_STATS_GAUGE,

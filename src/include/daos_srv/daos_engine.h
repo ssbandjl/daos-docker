@@ -77,7 +77,7 @@ enum dss_module_tag {
 	DAOS_SYS_TAG	= 1 << 0, /** only run on system xstream */
 	DAOS_TGT_TAG	= 1 << 1, /** only run on target xstream */
 	DAOS_OFF_TAG	= 1 << 2, /** only run on offload/helper xstream */
-	DAOS_SERVER_TAG	= 0xff,	  /** run on all xstream */
+	DAOS_SERVER_TAG	= 0xff,	  /** run on all xstream 255 */
 };
 
 /* The module key descriptor for each xstream */

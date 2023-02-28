@@ -150,7 +150,7 @@ struct vos_ts_table {
 	struct dtx_id		tt_tx_rl;
 	/** Transaciton id associated with global read high timestamp */
 	struct dtx_id		tt_tx_rh;
-	/** Negative entry cache */
+	/** Negative entry cache 失效的缓存条目 */
 	struct vos_ts_entry	*tt_misses;
 	/** Timestamp table pointers for a type */
 	struct vos_ts_info	tt_type_info[VOS_TS_TYPE_COUNT];
