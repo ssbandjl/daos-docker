@@ -1089,7 +1089,7 @@ main(int argc, char **argv)
   uint16_t	pid;
 
 	pid = getpid();
-  printf("################## engine main pid=%d##################\n", pid);
+  printf("################## engine main pid=%d ##################\n", pid);
   sleep(60);
 	/** parse command line arguments */
 	rc = parse(argc, argv);
