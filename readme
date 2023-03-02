@@ -576,4 +576,12 @@ gdb条件断点:
 
 
 
+vos初始化
+vos_db_init
 
+
+
+bug:
+停服务,引用计数不对
+HG_Context_destroy
+  hg_core_context_destroy 1 remaining

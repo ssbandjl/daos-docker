@@ -708,7 +708,7 @@ out:
 }
 
 int
-crt_hg_ctx_fini(struct crt_hg_context *hg_ctx)
+crt_hg_ctx_fini(struct crt_hg_context *hg_ctx) //
 {
 	hg_return_t	hg_ret = HG_SUCCESS;
 	int		rc = 0;
