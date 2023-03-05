@@ -73,6 +73,8 @@ DAOS API operation. This is useful for applications and middleware libraries
 using DAOS and needing to build a schedule of DAOS operations with dependencies
 between each other (N-1, 1-N, N-N).
 
+DAOS Task API 提供了一种替代方式，以非阻塞方式使用 DAOS API，同时在 DAOS API 操作之间构建任务依赖树。 这对于使用 DAOS 的应用程序和中间件库非常有用，并且需要构建相互依赖的 DAOS 操作计划（N-1、1-N、N-N）。
+
 To leverage the task API, the user would need to create a scheduler where DAOS
 tasks can be created as a part of. The task API is generic enough to allow the
 user to mix DAOS specific tasks (through the DAOS task API) and other user
@@ -80,3 +82,9 @@ defined tasks and add dependencies between those.
 
 For more details on how TSE is used in client library, see [TSE internals
 documentation](/src/common/README.md) for more details.
+
+要利用任务 API，用户需要创建一个调度程序，DAOS 任务可以作为其中的一部分创建。 任务 API 足够通用，允许用户混合 DAOS 特定任务（通过 DAOS 任务 API）和其他用户定义的任务，并在它们之间添加依赖关系。
+
+有关如何在客户端库中使用 TSE 的更多详细信息，请参阅 TSE 内部文档了解更多详细信息。
+
+
