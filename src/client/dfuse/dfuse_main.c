@@ -545,7 +545,8 @@ main(int argc, char **argv)
 
 	if (uuid_is_null(dfp->dfp_pool))
 		dfs->dfs_ops = &dfuse_pool_ops;
-
+  
+  /* 阻塞 */
 	rc = dfuse_start(fs_handle, dfs);
 	if (rc != -DER_SUCCESS)
 		D_GOTO(out_daos, rc);

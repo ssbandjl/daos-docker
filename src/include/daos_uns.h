@@ -165,7 +165,8 @@ duns_create_path(daos_handle_t poh, const char *path, struct duns_attr_t *attrp)
  * container, or it can be empty for example in the case of an HDF5 file.
  *
  * User is responsible to call duns_destroy_attr on \a attr to free the internal buffers allocated.
- *
+ * 从对应于 DAOS 位置的路径中检索池和容器 uuid。 如果这是使用 duns_create_path() 创建的路径，则此调用将返回 attr 结构中的池、容器和类型值（其余值未填充。默认情况下，此调用对真实路径进行反向查找 直到它在具有 UNS attr 的路径中找到一个条目。从该入口点开始的路径的其余部分在 attr.da_rel_path 中返回。如果整个路径没有该条目，则返回 ENODATA 错误。为避免执行相反的操作 查找并仅检查最后一个条目，设置 attr.da_no_reverse_lookup。如果用户知道池和容器 uuid，为了避免通过 UNS，可以传递一种特殊格式作为“快速路径”的前缀，并且此调用将解析 attr 结构中的那些，并返回 attr.da_rel_path 中路径留下的任何内容。提供此模式是为了方便 IO 中间件库，并为用户知道池和容器 uuid 的模式确定统一格式 只是喜欢直接传递给他们 而不是传统的路径。 这个路径的格式应该是：daos://pool_uuid/container_uuid/xyz 如果用户正在访问一个 posix 容器，这里的 xyz 可以是一个相对于 POSIX 容器根的路径，或者它可以是空的，例如在这种情况下 一个 HDF5 文件。 用户负责在 attr 上调用 duns_destroy_attr 以释放分配的内部缓冲区
+ * 
  * \param[in]		path	Valid path in an existing namespace.
  * \param[in,out]	attr	Struct containing the attrs on the path.
  *
