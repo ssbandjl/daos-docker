@@ -63,7 +63,7 @@ mem_pin_workaround(void)
 		       errno, strerror(errno));
 		goto exit;
 	}
-
+  /* 如果没有limit,则将所有页面进行锁定 */
 	if (rlim.rlim_cur == RLIM_INFINITY &&
 	    rlim.rlim_max == RLIM_INFINITY) {
 		D_INFO("Infinite rlimit detected; performing mlockall()\n");
