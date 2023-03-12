@@ -21,6 +21,7 @@ failed=0
 failures=()
 log_num=0
 
+# 定义函数
 run_test()
 {
     local in="$*"
@@ -46,6 +47,7 @@ run_test()
     #    before deciding this. Also, we intentionally leave off the last 'S'
     #    in that error message so that we don't guarantee printing that in
     #    every run's output, thereby making all tests here always pass.
+    # 执行传入的脚本
     if ! time eval "${VALGRIND_CMD}" "$@"; then
         retcode=${PIPESTATUS[0]}
         echo "Test $* failed with exit status ${retcode}."
@@ -64,9 +66,11 @@ run_test()
     mv "${DAOS_BASE}"/test_results/*.xml "${DAOS_BASE}"/test_results/xml
 }
 
+#开始执行, 存在目录则执行
 if [ -d "/mnt/daos" ]; then
     # shellcheck disable=SC1091
     source ./.build_vars.sh
+    # new?
     if ! ${OLD_CI:-true}; then
         # fix up paths so they are relative to $PWD since we might not
         # be in the same path as the software was built
@@ -78,7 +82,7 @@ if [ -d "/mnt/daos" ]; then
 
     VALGRIND_CMD=""
     if [ -z "$RUN_TEST_VALGRIND" ]; then
-        # Tests that do not run valgrind
+        # Tests that do not run valgrind 不用valgrind测试, 存储容量预估测试
         COMP="UTEST_client"
         run_test src/vos/storage_estimator/common/tests/storage_estimator.sh
         COMP="UTEST_rdb"

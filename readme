@@ -587,3 +587,6 @@ HG_Context_destroy
   hg_core_context_destroy 1 remaining
 
 
+单元测试, daos_test, 
+run_test.sh
+
