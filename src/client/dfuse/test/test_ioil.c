@@ -410,6 +410,7 @@ skip_mmap:
 }
 
 /* Simple sanity test to ensure low-level POSIX APIs work */
+/* 简单的完整性测试, 拦截库 */
 void sanity(void)
 {
 	char *buf;

@@ -155,7 +155,7 @@ if [ -d "/mnt/daos" ]; then
     run_test "${SL_BUILD_DIR}/src/common/tests/prop_tests"
     run_test "${SL_BUILD_DIR}/src/common/tests/fault_domain_tests"
 
-    COMP="UTEST_client"
+    COMP="UTEST_client" #客户端/事件队列测试
     run_test "${SL_BUILD_DIR}/src/client/api/tests/eq_tests"
 
     COMP="UTEST_security"

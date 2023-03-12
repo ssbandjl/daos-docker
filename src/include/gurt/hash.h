@@ -564,7 +564,9 @@ void d_hhash_hlink_init(struct d_hlink *hlink, struct d_hlink_ops *hl_ops);
 void d_hhash_link_insert(struct d_hhash *hhash, struct d_hlink *hlink,
 			 int type);
 struct d_hlink *d_hhash_link_lookup(struct d_hhash *hhash, uint64_t key);
+/* 加引用 */
 void d_hhash_link_getref(struct d_hhash *hhash, struct d_hlink *hlink);
+/* 减引用 */
 void d_hhash_link_putref(struct d_hhash *hhash, struct d_hlink *hlink);
 bool d_hhash_link_delete(struct d_hhash *hhash, struct d_hlink *hlink);
 bool d_hhash_link_empty(struct d_hlink *hlink);

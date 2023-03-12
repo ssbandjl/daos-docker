@@ -1,3 +1,7 @@
+vscode filter:
+*.c, *.h, readme, *sh, *.py, *.go
+
+
 cart流程:
 1. 日志初始化/注册协议和操作码 crt_init_opt
 2. 创建上下文（fabric->domain->endpoint->cq...） crt_context_create
@@ -589,4 +593,14 @@ HG_Context_destroy
 
 单元测试, daos_test, 
 run_test.sh
+  eq_test 事件队列测试
+
+拦截库IL, 
+ioil_do_writex
+一个名为 libioil 的拦截库可用于 DFuse。 该库与 DFuse 结合使用，允许拦截 POSIX I/O 调用并通过 libdaos 直接从应用程序上下文发出 I/O 操作，而无需任何应用程序更改。 这为 I/O 数据提供了内核旁路，从而提高了性能
+unified namespace integration: 集成统一命名空间
+
+
+
+
 

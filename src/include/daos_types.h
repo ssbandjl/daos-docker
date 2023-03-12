@@ -179,6 +179,7 @@ struct daos_eq;
  * The handle type, uses the least significant 4-bits in the 64-bits hhash key.
  * The bit 0 is only used for D_HYTPE_PTR (pointer type), all other types MUST
  * set bit 0 to 1.
+ * 64bit中的4bit(最低有效位)做hash键
  */
 enum {
 	DAOS_HTYPE_EQ		= 1, /**< event queue */

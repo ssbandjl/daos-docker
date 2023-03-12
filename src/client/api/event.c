@@ -85,6 +85,7 @@ daos_eq_lib_init()
 	}
 
 	/** set up scheduler for non-eq events */
+  /* 不带完成回调 */
 	rc = tse_sched_init(&daos_sched_g, NULL, daos_eq_ctx);
 	if (rc != 0)
 		D_GOTO(crt, rc);
@@ -172,6 +173,7 @@ static struct daos_eq *
 daos_eq_alloc(void)
 {
 	struct daos_eq		*eq;
+  /* 私有事件队列eqx */
 	struct daos_eq_private	*eqx;
 	int			rc;
 
@@ -228,6 +230,7 @@ daos_eq_insert(struct daos_eq_private *eqx)
 	daos_hhash_link_insert(&eqx->eqx_hlink, DAOS_HTYPE_EQ);
 }
 
+/* 设置控制器上的cookie为事件队列链表上的key */
 static void
 daos_eq_handle(struct daos_eq_private *eqx, daos_handle_t *h)
 {
