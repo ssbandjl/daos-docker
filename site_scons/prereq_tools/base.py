@@ -72,8 +72,8 @@ else:
     import configparser as ConfigParser
 
 # cache_dir = '/home/daos/pre/cache'
-# cache_dir = '/home/daos/docker/daos/cache'
-cache_dir = '/home/daos/docker/cache'
+cache_dir = '/home/daos/docker/daos/cache'
+# cache_dir = '/home/daos/docker/cache'
 
 class DownloadFailure(Exception):
     """Exception raised when source can't be downloaded
@@ -1699,15 +1699,17 @@ class _Component():
 
     def _has_changes(self):
         """check for changes"""
+        # return True #打开表示编译所有三方包
+
         # print(self.__dict__)
         # print('%s build_cmd:%s' %(self.name, ' '.join(self.build_commands)))
         # 返回True表示已变化, 需要编译
-        if self.name == 'mercury':
-          # return True
-          return False
-        if self.name == 'ofi':
-          # return True
-          return False
+        # if self.name == 'mercury':
+        #   return True
+        #   return False
+        # if self.name == 'ofi':
+        #   return True
+        #   return False
         # if self.name == 'argobots':
         #   return False
         has_changes = self.prereqs.build_deps

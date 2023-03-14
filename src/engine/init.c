@@ -1090,7 +1090,7 @@ main(int argc, char **argv)
 
 	pid = getpid();
   printf("################## engine main pid=%d ##################\n", pid);
-  sleep(60);
+//   sleep(60);
 	/** parse command line arguments */
 	rc = parse(argc, argv);
 	if (rc)
