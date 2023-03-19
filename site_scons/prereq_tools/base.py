@@ -1699,13 +1699,15 @@ class _Component():
 
     def _has_changes(self):
         """check for changes"""
-        # return True #打开表示编译所有三方包
+        # return True #打开表示, 强制编译所有三方包(强制返回代码已变化,缓存失效,触发编译)
 
         # print(self.__dict__)
         # print('%s build_cmd:%s' %(self.name, ' '.join(self.build_commands)))
         # 返回True表示已变化, 需要编译
         # if self.name == 'mercury':
         #   return True
+        if self.name == 'spdk':
+          return True
         #   return False
         # if self.name == 'ofi':
         #   return True

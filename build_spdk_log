@@ -1,0 +1,1755 @@
+hecking for C library mercury... (cached) yes
+Checking for C library na... (cached) yes
+Checking for C library mercury_util... (cached) yes
+Checking for C header file uuid/uuid.h... (cached) yes
+Checking for C library uuid... (cached) yes
+Checking for C header file openssl/md5.h... (cached) yes
+Checking for C library crypto... (cached) yes
+Checking for C header file protobuf-c/protobuf-c.h... (cached) yes
+Checking for C library protobuf-c... (cached) yes
+Checking for C header file lz4.h... (cached) yes
+Checking for C library isal... (cached) yes
+Checking for C library isal_crypto... (cached) yes
+Checking for C library cmocka... (cached) yes
+Checking for C library pmemobj... (cached) yes
+Checking for C header file spdk/nvme.h... (cached) yes
+Checking for C header file dpdk/rte_eal.h... (cached) yes
+rebuild spdk for change True,has_miss_tgt:False
+Checking whether patchelf program exists.../bin/patchelf
+Running commands in /home/daos/docker/daos/build/external/debug/spdk
+command:./configure --prefix="/opt/daos/prereq/debug/spdk" --without-crypto --with-rdma --without-isal --without-vtune --with-shared
+Notice: ISA-L, compression & crypto require NASM version 2.14 or newer. Turning off default ISA-L and crypto features.
+Using default SPDK env in /home/daos/docker/daos/build/external/debug/spdk/lib/env_dpdk
+Using default DPDK in /home/daos/docker/daos/build/external/debug/spdk/dpdk/build
+RDMA_OPTION_ID_ACK_TIMEOUT is not supported
+Using 'verbs' RDMA provider
+Creating mk/config.mk...done.
+Creating mk/cc.flags.mk...done.
+Type 'make' to build.
+command:make -j 1
+The Meson build system
+Version: 0.55.1
+Source dir: /home/daos/docker/daos/build/external/debug/spdk/dpdk
+Build dir: /home/daos/docker/daos/build/external/debug/spdk/dpdk/build-tmp
+Build type: native build
+Program cat found: YES
+Project name: DPDK
+Project version: 21.05.0
+Using 'CC' from environment with value: 'cc'
+Using 'CC' from environment with value: 'cc'
+C compiler for the host machine: cc (gcc 4.8.5 "cc (GCC) 4.8.5 20150623 (Red Hat 4.8.5-44)")
+C linker for the host machine: cc ld.bfd 2.27-44
+Host machine cpu family: x86_64
+Host machine cpu: x86_64
+Program pkg-config found: YES
+Program check-symbols.sh found: YES
+Program options-ibverbs-static.sh found: YES
+Program binutils-avx512-check.sh found: YES
+Program python3 found: YES (/usr/bin/python3)
+Program cat found: YES
+Program ../buildtools/symlink-drivers-solibs.sh found: YES (/bin/sh /home/daos/docker/daos/build/external/debug/spdk/dpdk/config/../buildtools/symlink-drivers-solibs.sh)
+Checking for size of "void *" : 8
+Checking for size of "void *" : 8
+Library m found: YES
+Library numa found: YES
+Has header "numaif.h" : YES 
+Library libfdt found: NO
+Library libexecinfo found: NO
+Found pkg-config: /bin/pkg-config (0.27.1)
+Run-time dependency libbsd found: NO (tried pkgconfig)
+Run-time dependency libpcap found: NO (tried pkgconfig)
+Library pcap found: NO
+Compiler for C supports arguments -Wextra: YES 
+config/meson.build:245: WARNING: Consider using the built-in warning_level option instead of using "-Wextra".
+Compiler for C supports arguments -Wcast-qual: YES 
+Compiler for C supports arguments -Wdeprecated: YES 
+Compiler for C supports arguments -Wformat: YES 
+Compiler for C supports arguments -Wformat-nonliteral: YES 
+Compiler for C supports arguments -Wformat-security: YES 
+Compiler for C supports arguments -Wmissing-declarations: YES 
+Compiler for C supports arguments -Wmissing-prototypes: YES 
+Compiler for C supports arguments -Wnested-externs: YES 
+Compiler for C supports arguments -Wold-style-definition: YES 
+Compiler for C supports arguments -Wpointer-arith: YES 
+Compiler for C supports arguments -Wsign-compare: YES 
+Compiler for C supports arguments -Wstrict-prototypes: YES 
+Compiler for C supports arguments -Wundef: YES 
+Compiler for C supports arguments -Wwrite-strings: YES 
+Compiler for C supports arguments -Wno-address-of-packed-member -Waddress-of-packed-member: NO 
+Compiler for C supports arguments -Wno-packed-not-aligned -Wpacked-not-aligned: NO 
+Compiler for C supports arguments -Wno-missing-field-initializers -Wmissing-field-initializers: YES 
+Fetching value of define "__SSE4_2__" : 1 
+Fetching value of define "__AES__" : 1 
+Fetching value of define "__AVX__" : 1 
+Fetching value of define "__AVX2__" : 1 
+Fetching value of define "__AVX512BW__" :  
+Fetching value of define "__AVX512CD__" :  
+Fetching value of define "__AVX512DQ__" :  
+Fetching value of define "__AVX512F__" :  
+Fetching value of define "__AVX512VL__" :  
+Fetching value of define "__PCLMUL__" : 1 
+Fetching value of define "__RDRND__" : 1 
+Fetching value of define "__RDSEED__" :  
+Fetching value of define "__VPCLMULQDQ__" :  
+Compiler for C supports arguments -Wno-format-truncation -Wformat-truncation: NO 
+Checking for function "getentropy" : NO 
+Fetching value of define "__PCLMUL__" : 1 (cached)
+Fetching value of define "__AVX512F__" :  (cached)
+Compiler for C supports arguments -mpclmul: YES 
+Compiler for C supports arguments -maes: YES 
+Compiler for C supports arguments -mavx512f: NO 
+Run-time dependency jansson found: NO (tried pkgconfig)
+Fetching value of define "__AVX2__" : 1 (cached)
+Fetching value of define "__AVX512F__" :  (cached)
+Fetching value of define "__AVX512VL__" :  (cached)
+Fetching value of define "__AVX512CD__" :  (cached)
+Fetching value of define "__AVX512BW__" :  (cached)
+Compiler for C supports arguments -mavx512f -mavx512vl -mavx512cd -mavx512bw: NO 
+Has header "linux/userfaultfd.h" : YES 
+Fetching value of define "__AVX512F__" :  (cached)
+Fetching value of define "__AVX512DQ__" :  (cached)
+Compiler for C supports arguments -mavx512f -mavx512dq: NO 
+Run-time dependency libelf found: NO (tried pkgconfig)
+Compiler for C supports arguments -Wno-format-truncation -Wformat-truncation: NO (cached)
+Program doxygen found: NO
+Program sphinx-build found: NO
+Configuring rte_build_config.h using configuration
+Message: 
+=================
+Libraries Enabled
+=================
+
+libs:
+        kvargs, telemetry, eal, ring, rcu, mempool, mbuf, net, 
+        meter, ethdev, pci, cmdline, hash, timer, compressdev, cryptodev, 
+        power, reorder, security, vhost, 
+
+Message: 
+===============
+Drivers Enabled
+===============
+
+common:
+
+bus:
+        pci, vdev, 
+mempool:
+        ring, 
+net:
+
+raw:
+
+crypto:
+
+compress:
+
+regex:
+
+vdpa:
+
+event:
+
+baseband:
+
+
+Message: 
+=================
+Content Skipped
+=================
+
+libs:
+        metrics:        not needed by SPDK
+        acl:    not needed by SPDK
+        bbdev:  not needed by SPDK
+        bitratestats:   not needed by SPDK
+        cfgfile:        not needed by SPDK
+        distributor:    not needed by SPDK
+        efd:    not needed by SPDK
+        eventdev:       not needed by SPDK
+        gro:    not needed by SPDK
+        gso:    not needed by SPDK
+        ip_frag:        not needed by SPDK
+        jobstats:       not needed by SPDK
+        kni:    not needed by SPDK
+        latencystats:   not needed by SPDK
+        lpm:    not needed by SPDK
+        member: not needed by SPDK
+        pdump:  not needed by SPDK
+        rawdev: not needed by SPDK
+        regexdev:       not needed by SPDK
+        rib:    not needed by SPDK
+        sched:  not needed by SPDK
+        stack:  not needed by SPDK
+        ipsec:  not needed by SPDK
+        fib:    not needed by SPDK
+        port:   not needed by SPDK
+        table:  not needed by SPDK
+        pipeline:       not needed by SPDK
+        flow_classify:  not needed by SPDK
+        bpf:    not needed by SPDK
+        graph:  not needed by SPDK
+        node:   not needed by SPDK
+
+drivers:
+        common/cpt:     explicitly disabled via build config
+        common/dpaax:   explicitly disabled via build config
+        common/iavf:    explicitly disabled via build config
+        common/mvep:    explicitly disabled via build config
+        common/octeontx:        explicitly disabled via build config
+        common/octeontx2:       explicitly disabled via build config
+        bus/dpaa:       explicitly disabled via build config
+        bus/fslmc:      explicitly disabled via build config
+        bus/ifpga:      explicitly disabled via build config
+        bus/vmbus:      explicitly disabled via build config
+        common/cnxk:    explicitly disabled via build config
+        common/mlx5:    explicitly disabled via build config
+        common/qat:     explicitly disabled via build config
+        common/sfc_efx: explicitly disabled via build config
+        mempool/bucket: explicitly disabled via build config
+        mempool/cnxk:   explicitly disabled via build config
+        mempool/dpaa:   explicitly disabled via build config
+        mempool/dpaa2:  explicitly disabled via build config
+        mempool/octeontx:       explicitly disabled via build config
+        mempool/octeontx2:      explicitly disabled via build config
+        mempool/stack:  explicitly disabled via build config
+        net/af_packet:  explicitly disabled via build config
+        net/af_xdp:     explicitly disabled via build config
+        net/ark:        explicitly disabled via build config
+        net/atlantic:   explicitly disabled via build config
+        net/avp:        explicitly disabled via build config
+        net/axgbe:      explicitly disabled via build config
+        net/bnx2x:      explicitly disabled via build config
+        net/bnxt:       explicitly disabled via build config
+        net/bonding:    explicitly disabled via build config
+        net/cxgbe:      explicitly disabled via build config
+        net/dpaa:       explicitly disabled via build config
+        net/dpaa2:      explicitly disabled via build config
+        net/e1000:      explicitly disabled via build config
+        net/ena:        explicitly disabled via build config
+        net/enetc:      explicitly disabled via build config
+        net/enic:       explicitly disabled via build config
+        net/failsafe:   explicitly disabled via build config
+        net/fm10k:      explicitly disabled via build config
+        net/hinic:      explicitly disabled via build config
+        net/hns3:       explicitly disabled via build config
+        net/i40e:       explicitly disabled via build config
+        net/iavf:       explicitly disabled via build config
+        net/ice:        explicitly disabled via build config
+        net/igc:        explicitly disabled via build config
+        net/ionic:      explicitly disabled via build config
+        net/ipn3ke:     explicitly disabled via build config
+        net/ixgbe:      explicitly disabled via build config
+        net/kni:        explicitly disabled via build config
+        net/liquidio:   explicitly disabled via build config
+        net/memif:      explicitly disabled via build config
+        net/mlx4:       explicitly disabled via build config
+        net/mlx5:       explicitly disabled via build config
+        net/mvneta:     explicitly disabled via build config
+        net/mvpp2:      explicitly disabled via build config
+        net/netvsc:     explicitly disabled via build config
+        net/nfb:        explicitly disabled via build config
+        net/nfp:        explicitly disabled via build config
+        net/null:       explicitly disabled via build config
+        net/octeontx:   explicitly disabled via build config
+        net/octeontx2:  explicitly disabled via build config
+        net/octeontx_ep:        explicitly disabled via build config
+        net/pcap:       explicitly disabled via build config
+        net/pfe:        explicitly disabled via build config
+        net/qede:       explicitly disabled via build config
+        net/ring:       explicitly disabled via build config
+        net/sfc:        explicitly disabled via build config
+        net/softnic:    explicitly disabled via build config
+        net/szedata2:   explicitly disabled via build config
+        net/tap:        explicitly disabled via build config
+        net/thunderx:   explicitly disabled via build config
+        net/txgbe:      explicitly disabled via build config
+        net/vdev_netvsc:        explicitly disabled via build config
+        net/vhost:      explicitly disabled via build config
+        net/virtio:     explicitly disabled via build config
+        net/vmxnet3:    explicitly disabled via build config
+        raw/dpaa2_cmdif:        explicitly disabled via build config
+        raw/dpaa2_qdma: explicitly disabled via build config
+        raw/ifpga:      explicitly disabled via build config
+        raw/ioat:       explicitly disabled via build config
+        raw/ntb:        explicitly disabled via build config
+        raw/octeontx2_dma:      explicitly disabled via build config
+        raw/octeontx2_ep:       explicitly disabled via build config
+        raw/skeleton:   explicitly disabled via build config
+        crypto/aesni_gcm:       explicitly disabled via build config
+        crypto/aesni_mb:        explicitly disabled via build config
+        crypto/armv8:   explicitly disabled via build config
+        crypto/bcmfs:   explicitly disabled via build config
+        crypto/caam_jr: explicitly disabled via build config
+        crypto/ccp:     explicitly disabled via build config
+        crypto/dpaa_sec:        explicitly disabled via build config
+        crypto/dpaa2_sec:       explicitly disabled via build config
+        crypto/kasumi:  explicitly disabled via build config
+        crypto/mvsam:   explicitly disabled via build config
+        crypto/nitrox:  explicitly disabled via build config
+        crypto/null:    explicitly disabled via build config
+        crypto/octeontx:        explicitly disabled via build config
+        crypto/octeontx2:       explicitly disabled via build config
+        crypto/openssl: explicitly disabled via build config
+        crypto/scheduler:       explicitly disabled via build config
+        crypto/snow3g:  explicitly disabled via build config
+        crypto/virtio:  explicitly disabled via build config
+        crypto/zuc:     explicitly disabled via build config
+        compress/isal:  explicitly disabled via build config
+        compress/mlx5:  explicitly disabled via build config
+        compress/octeontx:      explicitly disabled via build config
+        compress/zlib:  explicitly disabled via build config
+        regex/mlx5:     explicitly disabled via build config
+        regex/octeontx2:        explicitly disabled via build config
+        vdpa/ifc:       explicitly disabled via build config
+        vdpa/mlx5:      explicitly disabled via build config
+        event/cnxk:     explicitly disabled via build config
+        event/dlb2:     explicitly disabled via build config
+        event/dpaa:     explicitly disabled via build config
+        event/dpaa2:    explicitly disabled via build config
+        event/dsw:      explicitly disabled via build config
+        event/octeontx2:        explicitly disabled via build config
+        event/opdl:     explicitly disabled via build config
+        event/skeleton: explicitly disabled via build config
+        event/sw:       explicitly disabled via build config
+        event/octeontx: explicitly disabled via build config
+        baseband/acc100:        explicitly disabled via build config
+        baseband/fpga_5gnr_fec: explicitly disabled via build config
+        baseband/fpga_lte_fec:  explicitly disabled via build config
+        baseband/null:  explicitly disabled via build config
+        baseband/turbo_sw:      explicitly disabled via build config
+
+
+Build targets in project: 99
+
+Found ninja-1.10.2 at /bin/ninja
+ninja: Entering directory `/home/daos/docker/daos/build/external/debug/spdk/dpdk/build-tmp'
+[260/260] Linking target drivers/librte_mempool_ring.so.21.2
+  CC lib/log/log.o
+  CC lib/log/log_flags.o
+  LIB libspdk_log.a
+  SO libspdk_log.so.4.0
+  SYMLINK libspdk_log.so
+  CC lib/util/base64.o
+  CC lib/util/bit_array.o
+  CC lib/util/cpuset.o
+  CC lib/util/crc16.o
+  CC lib/util/crc32.o
+  CC lib/util/crc32c.o
+  CC lib/util/crc32_ieee.o
+  CC lib/util/dif.o
+  CC lib/util/fd.o
+  CC lib/util/file.o
+  CC lib/util/iov.o
+  CC lib/util/math.o
+  CC lib/util/pipe.o
+  CC lib/util/strerror_tls.o
+  CC lib/util/string.o
+  CC lib/util/uuid.o
+  CC lib/util/fd_group.o
+  CC lib/util/zipf.o
+  LIB libspdk_util.a
+  SO libspdk_util.so.3.1
+  SYMLINK libspdk_util.so
+  CC lib/json/json_parse.o
+  CC lib/json/json_util.o
+  CC lib/json/json_write.o
+  LIB libspdk_json.a
+  SO libspdk_json.so.3.1
+  SYMLINK libspdk_json.so
+  CC lib/jsonrpc/jsonrpc_server.o
+  CC lib/jsonrpc/jsonrpc_server_tcp.o
+  CC lib/jsonrpc/jsonrpc_client.o
+  CC lib/jsonrpc/jsonrpc_client_tcp.o
+  LIB libspdk_jsonrpc.a
+  SO libspdk_jsonrpc.so.3.0
+  SYMLINK libspdk_jsonrpc.so
+  CC lib/rpc/rpc.o
+  LIB libspdk_rpc.a
+  SO libspdk_rpc.so.3.0
+  SYMLINK libspdk_rpc.so
+  CC lib/trace/trace.o
+  CC lib/trace/trace_flags.o
+  CC lib/trace/trace_rpc.o
+  LIB libspdk_trace.a
+  SO libspdk_trace.so.4.0
+  SYMLINK libspdk_trace.so
+  CC lib/thread/thread.o
+  LIB libspdk_thread.a
+  SO libspdk_thread.so.6.0
+  SYMLINK libspdk_thread.so
+  CC lib/notify/notify.o
+  CC lib/notify/notify_rpc.o
+  LIB libspdk_notify.a
+  SO libspdk_notify.so.3.0
+  SYMLINK libspdk_notify.so
+  CC lib/bdev/bdev.o
+  CC lib/bdev/bdev_rpc.o
+  CC lib/bdev/bdev_zone.o
+  CC lib/bdev/part.o
+  CC lib/bdev/scsi_nvme.o
+  LIB libspdk_bdev.a
+  SO libspdk_bdev.so.7.0
+  SYMLINK libspdk_bdev.so
+  CC lib/blob/blobstore.o
+  CC lib/blob/request.o
+  CC lib/blob/zeroes.o
+  CC lib/blob/blob_bs_dev.o
+  LIB libspdk_blob.a
+  SO libspdk_blob.so.5.0
+  SYMLINK libspdk_blob.so
+  CC lib/blobfs/blobfs.o
+  CC lib/blobfs/tree.o
+  LIB libspdk_blobfs.a
+  SO libspdk_blobfs.so.4.0
+  SYMLINK libspdk_blobfs.so
+  CC lib/conf/conf.o
+  LIB libspdk_conf.a
+  SO libspdk_conf.so.3.0
+  SYMLINK libspdk_conf.so
+  CC lib/accel/accel_engine.o
+  LIB libspdk_accel.a
+  SO libspdk_accel.so.6.0
+  SYMLINK libspdk_accel.so
+  CC lib/init/json_config.o
+  CC lib/init/subsystem.o
+  CC lib/init/subsystem_rpc.o
+  CC lib/init/rpc.o
+  LIB libspdk_init.a
+  SO libspdk_init.so.1.0
+  SYMLINK libspdk_init.so
+  CC lib/event/app.o
+  CC lib/event/reactor.o
+  CC lib/event/log_rpc.o
+  CC lib/event/app_rpc.o
+  CC lib/event/scheduler_static.o
+  CC lib/event/gscheduler.o
+  CC lib/event/dpdk_governor.o
+  CC lib/event/scheduler_dynamic.o
+  LIB libspdk_event.a
+  SO libspdk_event.so.9.0
+  SYMLINK libspdk_event.so
+  CC lib/lvol/lvol.o
+  LIB libspdk_lvol.a
+  SO libspdk_lvol.so.4.0
+  SYMLINK libspdk_lvol.so
+  CC lib/sock/sock.o
+  CC lib/sock/sock_rpc.o
+  LIB libspdk_sock.a
+  SO libspdk_sock.so.5.0
+  SYMLINK libspdk_sock.so
+  CC lib/rdma/common.o
+  CC lib/rdma/rdma_verbs.o
+  LIB libspdk_rdma.a
+  SO libspdk_rdma.so.2.0
+  SYMLINK libspdk_rdma.so
+  CC lib/nvme/nvme_ctrlr_cmd.o
+  CC lib/nvme/nvme_ctrlr.o
+  CC lib/nvme/nvme_fabric.o
+  CC lib/nvme/nvme_ns_cmd.o
+  CC lib/nvme/nvme_ns.o
+  CC lib/nvme/nvme_pcie_common.o
+  CC lib/nvme/nvme_pcie.o
+  CC lib/nvme/nvme_qpair.o
+  CC lib/nvme/nvme.o
+  CC lib/nvme/nvme_quirks.o
+  CC lib/nvme/nvme_transport.o
+  CC lib/nvme/nvme_ctrlr_ocssd_cmd.o
+  CC lib/nvme/nvme_ns_ocssd_cmd.o
+  CC lib/nvme/nvme_tcp.o
+  CC lib/nvme/nvme_opal.o
+  CC lib/nvme/nvme_io_msg.o
+  CC lib/nvme/nvme_poll_group.o
+  CC lib/nvme/nvme_zns.o
+  CC lib/nvme/nvme_rdma.o
+  LIB libspdk_nvme.a
+  SO libspdk_nvme.so.6.0
+  SYMLINK libspdk_nvme.so
+  CC lib/vmd/vmd.o
+  CC lib/vmd/led.o
+  LIB libspdk_vmd.a
+  SO libspdk_vmd.so.3.0
+  SYMLINK libspdk_vmd.so
+  CC lib/nvmf/ctrlr.o
+  CC lib/nvmf/ctrlr_discovery.o
+  CC lib/nvmf/ctrlr_bdev.o
+  CC lib/nvmf/subsystem.o
+  CC lib/nvmf/nvmf.o
+  CC lib/nvmf/nvmf_rpc.o
+  CC lib/nvmf/transport.o
+  CC lib/nvmf/tcp.o
+  CC lib/nvmf/rdma.o
+  LIB libspdk_nvmf.a
+  SO libspdk_nvmf.so.9.0
+  SYMLINK libspdk_nvmf.so
+  CC lib/scsi/dev.o
+  CC lib/scsi/lun.o
+  CC lib/scsi/port.o
+  CC lib/scsi/scsi.o
+  CC lib/scsi/scsi_bdev.o
+  CC lib/scsi/scsi_pr.o
+  CC lib/scsi/scsi_rpc.o
+  CC lib/scsi/task.o
+  LIB libspdk_scsi.a
+  SO libspdk_scsi.so.4.0
+  SYMLINK libspdk_scsi.so
+  CC lib/ioat/ioat.o
+  LIB libspdk_ioat.a
+  SO libspdk_ioat.so.4.0
+  SYMLINK libspdk_ioat.so
+  CC lib/ut_mock/mock.o
+  LIB libspdk_ut_mock.a
+  SO libspdk_ut_mock.so.3.0
+  SYMLINK libspdk_ut_mock.so
+  CC lib/iscsi/conn.o
+  CC lib/iscsi/init_grp.o
+  CC lib/iscsi/iscsi.o
+  CC lib/iscsi/md5.o
+  CC lib/iscsi/param.o
+  CC lib/iscsi/portal_grp.o
+  CC lib/iscsi/tgt_node.o
+  CC lib/iscsi/iscsi_subsystem.o
+  CC lib/iscsi/iscsi_rpc.o
+  CC lib/iscsi/task.o
+  LIB libspdk_iscsi.a
+  SO libspdk_iscsi.so.5.0
+  SYMLINK libspdk_iscsi.so
+  CC lib/nbd/nbd.o
+  CC lib/nbd/nbd_rpc.o
+  LIB libspdk_nbd.a
+  SO libspdk_nbd.so.4.0
+  SYMLINK libspdk_nbd.so
+  CC lib/ftl/ftl_band.o
+  CC lib/ftl/ftl_core.o
+  CC lib/ftl/ftl_debug.o
+  CC lib/ftl/ftl_io.o
+  CC lib/ftl/ftl_reloc.o
+  CC lib/ftl/ftl_restore.o
+  CC lib/ftl/ftl_init.o
+  CC lib/ftl/ftl_trace.o
+  LIB libspdk_ftl.a
+  SO libspdk_ftl.so.3.0
+  SYMLINK libspdk_ftl.so
+  CC lib/vhost/vhost.o
+  CC lib/vhost/vhost_rpc.o
+  CC lib/vhost/vhost_scsi.o
+  CC lib/vhost/vhost_blk.o
+  CC lib/vhost/rte_vhost_compat.o
+  LIB libspdk_vhost.a
+  SO libspdk_vhost.so.5.0
+  SYMLINK libspdk_vhost.so
+  CC lib/virtio/virtio.o
+  CC lib/virtio/virtio_user.o
+  CC lib/virtio/virtio_pci.o
+  CC lib/virtio/vhost_user.o
+  LIB libspdk_virtio.a
+  SO libspdk_virtio.so.3.0
+  SYMLINK libspdk_virtio.so
+  CC lib/env_dpdk/env.o
+  CC lib/env_dpdk/memory.o
+  CC lib/env_dpdk/pci.o
+  CC lib/env_dpdk/init.o
+  CC lib/env_dpdk/threads.o
+  CC lib/env_dpdk/pci_ioat.o
+  CC lib/env_dpdk/pci_virtio.o
+  CC lib/env_dpdk/pci_vmd.o
+  CC lib/env_dpdk/pci_idxd.o
+  CC lib/env_dpdk/pci_event.o
+  CC lib/env_dpdk/sigbus_handler.o
+  LIB libspdk_env_dpdk.a
+  SO libspdk_env_dpdk.so.7.0
+  SYMLINK libspdk_env_dpdk.so
+  CC module/blob/bdev/blob_bdev.o
+  LIB libspdk_blob_bdev.a
+  SO libspdk_blob_bdev.so.5.0
+  SYMLINK libspdk_blob_bdev.so
+  CC module/bdev/delay/vbdev_delay.o
+  CC module/bdev/delay/vbdev_delay_rpc.o
+  LIB libspdk_bdev_delay.a
+  SO libspdk_bdev_delay.so.3.0
+  SYMLINK libspdk_bdev_delay.so
+  CC module/bdev/error/vbdev_error.o
+  CC module/bdev/error/vbdev_error_rpc.o
+  LIB libspdk_bdev_error.a
+  SO libspdk_bdev_error.so.3.0
+  SYMLINK libspdk_bdev_error.so
+  CC module/bdev/gpt/gpt.o
+  CC module/bdev/gpt/vbdev_gpt.o
+  LIB libspdk_bdev_gpt.a
+  SO libspdk_bdev_gpt.so.3.0
+  SYMLINK libspdk_bdev_gpt.so
+  CC module/bdev/lvol/vbdev_lvol.o
+  CC module/bdev/lvol/vbdev_lvol_rpc.o
+  LIB libspdk_bdev_lvol.a
+  SO libspdk_bdev_lvol.so.3.0
+  SYMLINK libspdk_bdev_lvol.so
+  CC module/bdev/malloc/bdev_malloc.o
+  CC module/bdev/malloc/bdev_malloc_rpc.o
+  LIB libspdk_bdev_malloc.a
+  SO libspdk_bdev_malloc.so.3.0
+  SYMLINK libspdk_bdev_malloc.so
+  CC module/bdev/null/bdev_null.o
+  CC module/bdev/null/bdev_null_rpc.o
+  LIB libspdk_bdev_null.a
+  SO libspdk_bdev_null.so.3.0
+  SYMLINK libspdk_bdev_null.so
+  CC module/bdev/nvme/bdev_nvme.o
+  CC module/bdev/nvme/bdev_nvme_rpc.o
+  CC module/bdev/nvme/nvme_rpc.o
+  CC module/bdev/nvme/common.o
+  CC module/bdev/nvme/bdev_ocssd.o
+  CC module/bdev/nvme/bdev_ocssd_rpc.o
+  CC module/bdev/nvme/vbdev_opal.o
+  CC module/bdev/nvme/vbdev_opal_rpc.o
+  LIB libspdk_bdev_nvme.a
+  SO libspdk_bdev_nvme.so.4.0
+  SYMLINK libspdk_bdev_nvme.so
+  CC module/bdev/passthru/vbdev_passthru.o
+  CC module/bdev/passthru/vbdev_passthru_rpc.o
+  LIB libspdk_bdev_passthru.a
+  SO libspdk_bdev_passthru.so.3.0
+  SYMLINK libspdk_bdev_passthru.so
+  CC module/bdev/raid/bdev_raid.o
+  CC module/bdev/raid/bdev_raid_rpc.o
+  CC module/bdev/raid/raid0.o
+  LIB libspdk_bdev_raid.a
+  SO libspdk_bdev_raid.so.3.0
+  SYMLINK libspdk_bdev_raid.so
+  CC module/bdev/split/vbdev_split.o
+  CC module/bdev/split/vbdev_split_rpc.o
+  LIB libspdk_bdev_split.a
+  SO libspdk_bdev_split.so.3.0
+  SYMLINK libspdk_bdev_split.so
+  CC module/bdev/zone_block/vbdev_zone_block.o
+  CC module/bdev/zone_block/vbdev_zone_block_rpc.o
+  LIB libspdk_bdev_zone_block.a
+  SO libspdk_bdev_zone_block.so.3.0
+  SYMLINK libspdk_bdev_zone_block.so
+  CC module/bdev/aio/bdev_aio.o
+  CC module/bdev/aio/bdev_aio_rpc.o
+  LIB libspdk_bdev_aio.a
+  SO libspdk_bdev_aio.so.3.0
+  SYMLINK libspdk_bdev_aio.so
+  CC module/bdev/ftl/bdev_ftl.o
+  CC module/bdev/ftl/bdev_ftl_rpc.o
+  LIB libspdk_bdev_ftl.a
+  SO libspdk_bdev_ftl.so.3.0
+  SYMLINK libspdk_bdev_ftl.so
+  CC module/bdev/virtio/bdev_virtio_scsi.o
+  CC module/bdev/virtio/bdev_virtio_blk.o
+  CC module/bdev/virtio/bdev_virtio_rpc.o
+  LIB libspdk_bdev_virtio.a
+  SO libspdk_bdev_virtio.so.3.0
+  SYMLINK libspdk_bdev_virtio.so
+  CC module/blobfs/bdev/blobfs_bdev.o
+  CC module/blobfs/bdev/blobfs_bdev_rpc.o
+  LIB libspdk_blobfs_bdev.a
+  SO libspdk_blobfs_bdev.so.3.0
+  SYMLINK libspdk_blobfs_bdev.so
+  CC module/accel/ioat/accel_engine_ioat.o
+  CC module/accel/ioat/accel_engine_ioat_rpc.o
+  LIB libspdk_accel_ioat.a
+  SO libspdk_accel_ioat.so.3.0
+  SYMLINK libspdk_accel_ioat.so
+  CC module/event/subsystems/accel/accel.o
+  LIB libspdk_event_accel.a
+  SO libspdk_event_accel.so.3.0
+  SYMLINK libspdk_event_accel.so
+  CC module/event/subsystems/vmd/vmd.o
+  CC module/event/subsystems/vmd/vmd_rpc.o
+  LIB libspdk_event_vmd.a
+  SO libspdk_event_vmd.so.3.0
+  SYMLINK libspdk_event_vmd.so
+  CC module/event/subsystems/sock/sock.o
+  LIB libspdk_event_sock.a
+  SO libspdk_event_sock.so.2.0
+  SYMLINK libspdk_event_sock.so
+  CC module/event/subsystems/bdev/bdev.o
+  LIB libspdk_event_bdev.a
+  SO libspdk_event_bdev.so.3.0
+  SYMLINK libspdk_event_bdev.so
+  CC module/event/subsystems/scsi/scsi.o
+  LIB libspdk_event_scsi.a
+  SO libspdk_event_scsi.so.3.0
+  SYMLINK libspdk_event_scsi.so
+  CC module/event/subsystems/iscsi/iscsi.o
+  LIB libspdk_event_iscsi.a
+  SO libspdk_event_iscsi.so.3.0
+  SYMLINK libspdk_event_iscsi.so
+  CC module/event/subsystems/nvmf/nvmf_rpc.o
+  CC module/event/subsystems/nvmf/nvmf_tgt.o
+  LIB libspdk_event_nvmf.a
+  SO libspdk_event_nvmf.so.3.0
+  SYMLINK libspdk_event_nvmf.so
+  CC module/event/subsystems/nbd/nbd.o
+  LIB libspdk_event_nbd.a
+  SO libspdk_event_nbd.so.3.0
+  SYMLINK libspdk_event_nbd.so
+  CC module/event/subsystems/vhost/vhost.o
+  LIB libspdk_event_vhost.a
+  SO libspdk_event_vhost.so.3.0
+  SYMLINK libspdk_event_vhost.so
+  CC module/sock/posix/posix.o
+  LIB libspdk_sock_posix.a
+  SO libspdk_sock_posix.so.3.0
+  SYMLINK libspdk_sock_posix.so
+  CC module/env_dpdk/env_dpdk_rpc.o
+  LIB libspdk_env_dpdk_rpc.a
+  SO libspdk_env_dpdk_rpc.so.3.0
+  SYMLINK libspdk_env_dpdk_rpc.so
+  CC examples/accel/perf/accel_perf.o
+  LINK accel_perf
+  CC examples/bdev/hello_world/hello_bdev.o
+  LINK hello_bdev
+  CC examples/blob/hello_world/hello_blob.o
+  LINK hello_blob
+  CC examples/blob/cli/blobcli.o
+  LINK blobcli
+  CC examples/ioat/perf/perf.o
+  LINK ioat_perf
+  CC examples/ioat/verify/verify.o
+  LINK verify
+  CC examples/nvme/hello_world/hello_world.o
+  LINK hello_world
+  CC examples/nvme/identify/identify.o
+  LINK identify
+  CC examples/nvme/perf/perf.o
+  LINK perf
+  CC examples/nvme/reconnect/reconnect.o
+  LINK reconnect
+  CC examples/nvme/nvme_manage/nvme_manage.o
+  LINK nvme_manage
+  CC examples/nvme/arbitration/arbitration.o
+  LINK arbitration
+  CC examples/nvme/hotplug/hotplug.o
+  LINK hotplug
+  CC examples/nvme/cmb_copy/cmb_copy.o
+  LINK cmb_copy
+  CC examples/nvme/abort/abort.o
+  LINK abort
+  CC examples/nvme/pmr_persistence/pmr_persistence.o
+  LINK pmr_persistence
+  CC examples/sock/hello_world/hello_sock.o
+  LINK hello_sock
+  CC examples/vmd/lsvmd/lsvmd.o
+  LINK lsvmd
+  CC examples/vmd/led/led.o
+  LINK led
+  CC examples/nvmf/nvmf/nvmf.o
+  LINK nvmf
+  CC examples/util/zipf/zipf.o
+  LINK zipf
+  CC examples/interrupt_tgt/interrupt_tgt.o
+  LINK interrupt_tgt
+  CXX app/trace/trace.o
+  LINK spdk_trace
+  CC app/trace_record/trace_record.o
+  LINK spdk_trace_record
+  CC app/nvmf_tgt/nvmf_main.o
+  LINK nvmf_tgt
+  CC app/iscsi_top/iscsi_top.o
+  LINK iscsi_top
+  CC app/iscsi_tgt/iscsi_tgt.o
+  LINK iscsi_tgt
+  CC app/spdk_tgt/spdk_tgt.o
+  LINK spdk_tgt
+  CC app/spdk_lspci/spdk_lspci.o
+  LINK spdk_lspci
+  CC app/spdk_top/spdk_top.o
+  LINK spdk_top
+  CC app/vhost/vhost.o
+  LINK vhost
+  CC app/spdk_dd/spdk_dd.o
+  LINK spdk_dd
+  CC test/app/bdev_svc/bdev_svc.o
+  LINK bdev_svc
+  CC test/app/fuzz/nvme_fuzz/nvme_fuzz.o
+  LINK nvme_fuzz
+  CC test/app/fuzz/iscsi_fuzz/iscsi_fuzz.o
+  LINK iscsi_fuzz
+  CC test/app/fuzz/vhost_fuzz/vhost_fuzz_rpc.o
+  CC test/app/fuzz/vhost_fuzz/vhost_fuzz.o
+  LINK vhost_fuzz
+  CC test/app/histogram_perf/histogram_perf.o
+  LINK histogram_perf
+  CC test/app/jsoncat/jsoncat.o
+  LINK jsoncat
+  CC test/app/stub/stub.o
+  LINK stub
+  CC test/bdev/bdevio/bdevio.o
+  LINK bdevio
+  CC test/bdev/bdevperf/bdevperf.o
+  LINK bdevperf
+  CC test/blobfs/mkfs/mkfs.o
+  LINK mkfs
+  CXX test/cpp_headers/nvme.o
+  CXX test/cpp_headers/string.o
+  CXX test/cpp_headers/jsonrpc.o
+  CXX test/cpp_headers/sock.o
+  CXX test/cpp_headers/vmd.o
+  CXX test/cpp_headers/rpc.o
+  CXX test/cpp_headers/bit_pool.o
+  CXX test/cpp_headers/ioat.o
+  CXX test/cpp_headers/blobfs.o
+  CXX test/cpp_headers/notify.o
+  CXX test/cpp_headers/zipf.o
+  CXX test/cpp_headers/file.o
+  CXX test/cpp_headers/version.o
+  CXX test/cpp_headers/config.o
+  CXX test/cpp_headers/opal_spec.o
+  CXX test/cpp_headers/uuid.o
+  CXX test/cpp_headers/stdinc.o
+  CXX test/cpp_headers/dif.o
+  CXX test/cpp_headers/likely.o
+  CXX test/cpp_headers/memory.o
+  CXX test/cpp_headers/vfio_user_pci.o
+  CXX test/cpp_headers/nbd.o
+  CXX test/cpp_headers/log.o
+  CXX test/cpp_headers/bdev_module.o
+  CXX test/cpp_headers/env_dpdk.o
+  CXX test/cpp_headers/bdev_zone.o
+  CXX test/cpp_headers/fd_group.o
+  CXX test/cpp_headers/json.o
+  CXX test/cpp_headers/opal.o
+  CXX test/cpp_headers/ftl.o
+  CXX test/cpp_headers/base64.o
+  CXX test/cpp_headers/gpt_spec.o
+  CXX test/cpp_headers/nvmf_spec.o
+  CXX test/cpp_headers/blobfs_bdev.o
+  CXX test/cpp_headers/nvme_ocssd.o
+  CXX test/cpp_headers/bdev.o
+  CXX test/cpp_headers/barrier.o
+  CXX test/cpp_headers/nvmf_fc_spec.o
+  CXX test/cpp_headers/scsi_spec.o
+  CXX test/cpp_headers/nvmf.o
+  CXX test/cpp_headers/event.o
+  CXX test/cpp_headers/blob.o
+  CXX test/cpp_headers/cpuset.o
+  CXX test/cpp_headers/thread.o
+  CXX test/cpp_headers/tree.o
+  CXX test/cpp_headers/assert.o
+  CXX test/cpp_headers/nvme_zns.o
+  CXX test/cpp_headers/endian.o
+  CXX test/cpp_headers/pci_ids.o
+  CXX test/cpp_headers/util.o
+  CXX test/cpp_headers/conf.o
+  CXX test/cpp_headers/nvme_ocssd_spec.o
+  CXX test/cpp_headers/fd.o
+  CXX test/cpp_headers/vhost.o
+  CXX test/cpp_headers/pipe.o
+  CXX test/cpp_headers/nvme_intel.o
+  CXX test/cpp_headers/nvmf_transport.o
+  CXX test/cpp_headers/crc16.o
+  CXX test/cpp_headers/accel_engine.o
+  CXX test/cpp_headers/scsi.o
+  CXX test/cpp_headers/trace.o
+  CXX test/cpp_headers/idxd.o
+  CXX test/cpp_headers/blob_bdev.o
+  CXX test/cpp_headers/crc32.o
+  CXX test/cpp_headers/init.o
+  CXX test/cpp_headers/vfio_user_spec.o
+  CXX test/cpp_headers/lvol.o
+  CXX test/cpp_headers/nvme_spec.o
+  CXX test/cpp_headers/iscsi_spec.o
+  CXX test/cpp_headers/env.o
+  CXX test/cpp_headers/nvmf_cmd.o
+  CXX test/cpp_headers/reduce.o
+  CXX test/cpp_headers/histogram_data.o
+  CXX test/cpp_headers/queue.o
+  CXX test/cpp_headers/ioat_spec.o
+  CXX test/cpp_headers/mmio.o
+  CXX test/cpp_headers/bit_array.o
+  CC test/env/mem_callbacks/mem_callbacks.o
+  LINK mem_callbacks
+  CC test/env/vtophys/vtophys.o
+  LINK vtophys
+  CC test/env/env_dpdk_post_init/env_dpdk_post_init.o
+  LINK env_dpdk_post_init
+  CC test/env/memory/memory_ut.o
+  LINK memory_ut
+  CC test/env/pci/pci_ut.o
+  LINK pci_ut
+  CC test/event/event_perf/event_perf.o
+  LINK event_perf
+  CC test/event/reactor/reactor.o
+  LINK reactor
+  CC test/event/reactor_perf/reactor_perf.o
+  LINK reactor_perf
+  CC test/event/app_repeat/app_repeat.o
+  LINK app_repeat
+  CC test/event/scheduler/scheduler.o
+  LINK scheduler
+  CC test/nvme/aer/aer.o
+  LINK aer
+  CC test/nvme/reset/reset.o
+  LINK reset
+  CC test/nvme/sgl/sgl.o
+  LINK sgl
+  CC test/nvme/e2edp/nvme_dp.o
+  LINK nvme_dp
+  CC test/nvme/overhead/overhead.o
+  LINK overhead
+  CC test/nvme/deallocated_value/deallocated_value.o
+  LINK deallocated_value
+  CC test/nvme/err_injection/err_injection.o
+  LINK err_injection
+  CC test/nvme/startup/startup.o
+  LINK startup
+  CC test/nvme/reserve/reserve.o
+  LINK reserve
+  CC test/nvme/simple_copy/simple_copy.o
+  LINK simple_copy
+  CC test/nvme/connect_stress/connect_stress.o
+  LINK connect_stress
+  CC test/rpc_client/rpc_client_test.o
+  LINK rpc_client_test
+  CC test/unit/include/spdk/histogram_data.h/histogram_ut.o
+  LINK histogram_ut
+  CC test/unit/lib/accel/accel.c/accel_engine_ut.o
+  LINK accel_engine_ut
+  CC test/unit/lib/bdev/bdev.c/bdev_ut.o
+  LINK bdev_ut
+  CC test/unit/lib/bdev/part.c/part_ut.o
+  LINK part_ut
+  CC test/unit/lib/bdev/scsi_nvme.c/scsi_nvme_ut.o
+  LINK scsi_nvme_ut
+  CC test/unit/lib/bdev/gpt/gpt.c/gpt_ut.o
+  LINK gpt_ut
+  CC test/unit/lib/bdev/vbdev_lvol.c/vbdev_lvol_ut.o
+  LINK vbdev_lvol_ut
+  CC test/unit/lib/bdev/mt/bdev.c/bdev_ut.o
+  LINK bdev_ut
+  CC test/unit/lib/bdev/raid/bdev_raid.c/bdev_raid_ut.o
+  LINK bdev_raid_ut
+  CC test/unit/lib/bdev/bdev_zone.c/bdev_zone_ut.o
+  LINK bdev_zone_ut
+  CC test/unit/lib/bdev/vbdev_zone_block.c/vbdev_zone_block_ut.o
+  LINK vbdev_zone_block_ut
+  CC test/unit/lib/bdev/nvme/bdev_nvme.c/bdev_nvme_ut.o
+  LINK bdev_nvme_ut
+  CC test/unit/lib/bdev/nvme/bdev_ocssd.c/bdev_ocssd_ut.o
+  LINK bdev_ocssd_ut
+  CC test/unit/lib/blob/blob.c/blob_ut.o
+  LINK blob_ut
+  CC test/unit/lib/blobfs/tree.c/tree_ut.o
+  LINK tree_ut
+  CC test/unit/lib/blobfs/blobfs_async_ut/blobfs_async_ut.o
+  LINK blobfs_async_ut
+  CC test/unit/lib/blobfs/blobfs_sync_ut/blobfs_sync_ut.o
+  LINK blobfs_sync_ut
+  CC test/unit/lib/blobfs/blobfs_bdev.c/blobfs_bdev_ut.o
+  LINK blobfs_bdev_ut
+  CC test/unit/lib/event/app.c/app_ut.o
+  LINK app_ut
+  CC test/unit/lib/event/reactor.c/reactor_ut.o
+  LINK reactor_ut
+  CC test/unit/lib/ioat/ioat.c/ioat_ut.o
+  LINK ioat_ut
+  CC test/unit/lib/iscsi/conn.c/conn_ut.o
+  LINK conn_ut
+  CC test/unit/lib/iscsi/init_grp.c/init_grp_ut.o
+  LINK init_grp_ut
+  CC test/unit/lib/iscsi/iscsi.c/iscsi_ut.o
+  LINK iscsi_ut
+  CC test/unit/lib/iscsi/param.c/param_ut.o
+  LINK param_ut
+  CC test/unit/lib/iscsi/portal_grp.c/portal_grp_ut.o
+  LINK portal_grp_ut
+  CC test/unit/lib/iscsi/tgt_node.c/tgt_node_ut.o
+  LINK tgt_node_ut
+  CC test/unit/lib/json/json_parse.c/json_parse_ut.o
+  LINK json_parse_ut
+  CC test/unit/lib/json/json_util.c/json_util_ut.o
+  LINK json_util_ut
+  CC test/unit/lib/json/json_write.c/json_write_ut.o
+  LINK json_write_ut
+  CC test/unit/lib/jsonrpc/jsonrpc_server.c/jsonrpc_server_ut.o
+  LINK jsonrpc_server_ut
+  CC test/unit/lib/log/log.c/log_ut.o
+  LINK log_ut
+  CC test/unit/lib/lvol/lvol.c/lvol_ut.o
+  LINK lvol_ut
+  CC test/unit/lib/notify/notify.c/notify_ut.o
+  LINK notify_ut
+  CC test/unit/lib/nvme/nvme.c/nvme_ut.o
+  LINK nvme_ut
+  CC test/unit/lib/nvme/nvme_ctrlr.c/nvme_ctrlr_ut.o
+  LINK nvme_ctrlr_ut
+  CC test/unit/lib/nvme/nvme_ctrlr_cmd.c/nvme_ctrlr_cmd_ut.o
+  LINK nvme_ctrlr_cmd_ut
+  CC test/unit/lib/nvme/nvme_ctrlr_ocssd_cmd.c/nvme_ctrlr_ocssd_cmd_ut.o
+  LINK nvme_ctrlr_ocssd_cmd_ut
+  CC test/unit/lib/nvme/nvme_ns.c/nvme_ns_ut.o
+  LINK nvme_ns_ut
+  CC test/unit/lib/nvme/nvme_ns_cmd.c/nvme_ns_cmd_ut.o
+  LINK nvme_ns_cmd_ut
+  CC test/unit/lib/nvme/nvme_ns_ocssd_cmd.c/nvme_ns_ocssd_cmd_ut.o
+  LINK nvme_ns_ocssd_cmd_ut
+  CC test/unit/lib/nvme/nvme_pcie.c/nvme_pcie_ut.o
+  LINK nvme_pcie_ut
+  CC test/unit/lib/nvme/nvme_poll_group.c/nvme_poll_group_ut.o
+  LINK nvme_poll_group_ut
+  CC test/unit/lib/nvme/nvme_qpair.c/nvme_qpair_ut.o
+  LINK nvme_qpair_ut
+  CC test/unit/lib/nvme/nvme_quirks.c/nvme_quirks_ut.o
+  LINK nvme_quirks_ut
+  CC test/unit/lib/nvme/nvme_tcp.c/nvme_tcp_ut.o
+  LINK nvme_tcp_ut
+  CC test/unit/lib/nvme/nvme_transport.c/nvme_transport_ut.o
+  LINK nvme_transport_ut
+  CC test/unit/lib/nvme/nvme_io_msg.c/nvme_io_msg_ut.o
+  LINK nvme_io_msg_ut
+  CC test/unit/lib/nvme/nvme_pcie_common.c/nvme_pcie_common_ut.o
+  LINK nvme_pcie_common_ut
+  CC test/unit/lib/nvme/nvme_fabric.c/nvme_fabric_ut.o
+  LINK nvme_fabric_ut
+  CC test/unit/lib/nvme/nvme_opal.c/nvme_opal_ut.o
+  LINK nvme_opal_ut
+  CC test/unit/lib/nvme/nvme_rdma.c/nvme_rdma_ut.o
+  LINK nvme_rdma_ut
+  CC test/unit/lib/nvmf/tcp.c/tcp_ut.o
+  LINK tcp_ut
+  CC test/unit/lib/nvmf/ctrlr.c/ctrlr_ut.o
+  LINK ctrlr_ut
+  CC test/unit/lib/nvmf/subsystem.c/subsystem_ut.o
+  LINK subsystem_ut
+  CC test/unit/lib/nvmf/ctrlr_discovery.c/ctrlr_discovery_ut.o
+  LINK ctrlr_discovery_ut
+  CC test/unit/lib/nvmf/ctrlr_bdev.c/ctrlr_bdev_ut.o
+  LINK ctrlr_bdev_ut
+  CC test/unit/lib/nvmf/rdma.c/rdma_ut.o
+  LINK rdma_ut
+  CC test/unit/lib/scsi/dev.c/dev_ut.o
+  LINK dev_ut
+  CC test/unit/lib/scsi/lun.c/lun_ut.o
+  LINK lun_ut
+  CC test/unit/lib/scsi/scsi.c/scsi_ut.o
+  LINK scsi_ut
+  CC test/unit/lib/scsi/scsi_bdev.c/scsi_bdev_ut.o
+  LINK scsi_bdev_ut
+  CC test/unit/lib/scsi/scsi_pr.c/scsi_pr_ut.o
+  LINK scsi_pr_ut
+  CC test/unit/lib/sock/sock.c/sock_ut.o
+  LINK sock_ut
+  CC test/unit/lib/sock/posix.c/posix_ut.o
+  LINK posix_ut
+  CC test/unit/lib/thread/thread.c/thread_ut.o
+  LINK thread_ut
+  CC test/unit/lib/util/base64.c/base64_ut.o
+  LINK base64_ut
+  CC test/unit/lib/util/bit_array.c/bit_array_ut.o
+  LINK bit_array_ut
+  CC test/unit/lib/util/cpuset.c/cpuset_ut.o
+  LINK cpuset_ut
+  CC test/unit/lib/util/crc16.c/crc16_ut.o
+  LINK crc16_ut
+  CC test/unit/lib/util/crc32_ieee.c/crc32_ieee_ut.o
+  LINK crc32_ieee_ut
+  CC test/unit/lib/util/crc32c.c/crc32c_ut.o
+  LINK crc32c_ut
+  CC test/unit/lib/util/dif.c/dif_ut.o
+  LINK dif_ut
+  CC test/unit/lib/util/iov.c/iov_ut.o
+  LINK iov_ut
+  CC test/unit/lib/util/math.c/math_ut.o
+  LINK math_ut
+  CC test/unit/lib/util/pipe.c/pipe_ut.o
+  LINK pipe_ut
+  CC test/unit/lib/util/string.c/string_ut.o
+  LINK string_ut
+  CC test/unit/lib/env_dpdk/pci_event.c/pci_event_ut.o
+  LINK pci_event_ut
+  CC test/unit/lib/init/subsystem.c/subsystem_ut.o
+  LINK subsystem_ut
+  CC test/unit/lib/vhost/vhost.c/vhost_ut.o
+  LINK vhost_ut
+  CC test/unit/lib/ftl/ftl_ppa/ftl_ppa_ut.o
+  LINK ftl_ppa_ut
+  CC test/unit/lib/ftl/ftl_band.c/ftl_band_ut.o
+  LINK ftl_band_ut
+  CC test/unit/lib/ftl/ftl_reloc.c/ftl_reloc_ut.o
+  LINK ftl_reloc_ut
+  CC test/unit/lib/ftl/ftl_wptr/ftl_wptr_ut.o
+  LINK ftl_wptr_ut
+  CC test/unit/lib/ftl/ftl_md/ftl_md_ut.o
+  LINK ftl_md_ut
+  CC test/unit/lib/ftl/ftl_io.c/ftl_io_ut.o
+  LINK ftl_io_ut
+command:make install
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_log.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_log.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_log.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_util.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_util.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_util.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_json.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_json.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_json.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_jsonrpc.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_jsonrpc.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_jsonrpc.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_rpc.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_rpc.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_rpc.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_trace.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_trace.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_trace.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_thread.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_thread.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_thread.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_notify.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_notify.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_notify.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_bdev.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_bdev.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_bdev.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_blob.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_blob.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_blob.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_blobfs.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_blobfs.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_blobfs.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_conf.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_conf.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_conf.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_accel.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_accel.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_accel.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_init.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_init.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_init.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_event.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_event.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_event.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_lvol.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_lvol.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_lvol.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_sock.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_sock.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_sock.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_rdma.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_rdma.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_rdma.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_nvme.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_nvme.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_nvme.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_vmd.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_vmd.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_vmd.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_nvmf.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_nvmf.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_nvmf.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_scsi.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_scsi.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_scsi.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_ioat.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_ioat.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_ioat.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_ut_mock.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_ut_mock.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_ut_mock.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_iscsi.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_iscsi.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_iscsi.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_nbd.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_nbd.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_nbd.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_ftl.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_ftl.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_ftl.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_vhost.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_vhost.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_vhost.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_virtio.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_virtio.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_virtio.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_dpdklibs.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_env_dpdk.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_env_dpdk.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_env_dpdk.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_blob_bdev.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_blob_bdev.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_blob_bdev.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_bdev_delay.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_bdev_delay.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_bdev_delay.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_bdev_error.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_bdev_error.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_bdev_error.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_bdev_gpt.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_bdev_gpt.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_bdev_gpt.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_bdev_lvol.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_bdev_lvol.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_bdev_lvol.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_bdev_malloc.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_bdev_malloc.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_bdev_malloc.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_bdev_null.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_bdev_null.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_bdev_null.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_bdev_nvme.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_bdev_nvme.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_bdev_nvme.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_bdev_passthru.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_bdev_passthru.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_bdev_passthru.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_bdev_raid.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_bdev_raid.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_bdev_raid.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_bdev_split.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_bdev_split.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_bdev_split.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_bdev_zone_block.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_bdev_zone_block.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_bdev_zone_block.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_bdev_aio.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_bdev_aio.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_bdev_aio.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_bdev_ftl.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_bdev_ftl.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_bdev_ftl.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_bdev_virtio.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_bdev_virtio.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_bdev_virtio.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_blobfs_bdev.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_blobfs_bdev.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_blobfs_bdev.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_accel_ioat.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_accel_ioat.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_accel_ioat.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_event_accel.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_event_accel.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_event_accel.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_event_vmd.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_event_vmd.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_event_vmd.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_event_sock.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_event_sock.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_event_sock.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_event_bdev.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_event_bdev.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_event_bdev.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_event_scsi.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_event_scsi.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_event_scsi.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_event_iscsi.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_event_iscsi.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_event_iscsi.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_event_nvmf.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_event_nvmf.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_event_nvmf.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_event_nbd.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_event_nbd.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_event_nbd.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_event_vhost.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_event_vhost.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_event_vhost.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_sock_posix.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_sock_posix.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_sock_posix.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_env_dpdk_rpc.a
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_env_dpdk_rpc.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk_env_dpdk_rpc.so
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_bdev_modules.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_accel_modules.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_sock_modules.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/pkgconfig/spdk_syslibs.pc
+  INSTALL /opt/daos/prereq/debug/spdk/lib/libspdk.so
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/nvme.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/string.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/jsonrpc.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/sock.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/vmd.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/queue_extras.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/rpc.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/bit_pool.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/ioat.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/blobfs.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/notify.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/zipf.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/file.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/version.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/config.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/opal_spec.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/uuid.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/stdinc.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/dif.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/likely.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/memory.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/vfio_user_pci.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/nbd.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/log.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/bdev_module.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/env_dpdk.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/bdev_zone.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/fd_group.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/json.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/opal.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/ftl.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/base64.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/gpt_spec.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/nvmf_spec.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/blobfs_bdev.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/nvme_ocssd.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/bdev.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/barrier.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/nvmf_fc_spec.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/scsi_spec.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/nvmf.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/event.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/blob.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/cpuset.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/thread.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/tree.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/assert.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/nvme_zns.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/endian.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/pci_ids.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/util.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/conf.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/nvme_ocssd_spec.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/fd.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/vhost.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/pipe.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/nvme_intel.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/nvmf_transport.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/crc16.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/accel_engine.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/scsi.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/trace.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/idxd.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/blob_bdev.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/crc32.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/init.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/vfio_user_spec.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/lvol.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/nvme_spec.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/iscsi_spec.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/env.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/nvmf_cmd.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/reduce.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/histogram_data.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/queue.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/ioat_spec.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/mmio.h
+  INSTALL /opt/daos/prereq/debug/spdk/include/spdk/bit_array.h
+  INSTALL /opt/daos/prereq/debug/spdk/bin/spdk_nvme_identify
+  INSTALL /opt/daos/prereq/debug/spdk/bin/spdk_nvme_perf
+  INSTALL /opt/daos/prereq/debug/spdk/bin/spdk_tgt
+Installed to /opt/daos/prereq/debug/spdk
+command:cp -r -P dpdk/build/lib/* "/opt/daos/prereq/debug/spdk/lib"
+command:mkdir -p "/opt/daos/prereq/debug/spdk/include/dpdk"
+command:cp -r -P dpdk/build/include/* "/opt/daos/prereq/debug/spdk/include/dpdk"
+command:mkdir -p "/opt/daos/prereq/debug/spdk/share/spdk"
+command:cp -r include scripts "/opt/daos/prereq/debug/spdk/share/spdk"
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_bdev_delay.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_bdev_ftl.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_ftl.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_ut_mock.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_trace.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_bdev_lvol.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk.so
+patchelf: not an ELF executable
+Skipped patching /opt/daos/prereq/debug/spdk/lib/libspdk.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/librte_mempool_ring.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_nbd.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_virtio.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_accel.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_sock.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_blobfs.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/librte_cmdline.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_blob.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/librte_kvargs.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/librte_mempool.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_event_accel.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_env_dpdk_rpc.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_notify.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_nvmf.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/librte_rcu.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_ioat.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_event_bdev.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_bdev_nvme.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_util.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_event_scsi.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/librte_power.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_bdev_zone_block.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_nvme.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_scsi.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/librte_compressdev.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_iscsi.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_bdev.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/librte_security.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/librte_pci.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_log.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_bdev_malloc.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_rpc.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_bdev_virtio.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_event_nvmf.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_init.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_vmd.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_blobfs_bdev.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_event.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_bdev_null.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/librte_ring.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_bdev_error.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/librte_eal.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/librte_timer.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/librte_telemetry.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_conf.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_lvol.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_event_nbd.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/librte_ethdev.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_sock_posix.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_bdev_raid.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/librte_meter.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/librte_net.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_event_vmd.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/librte_hash.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/librte_reorder.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_bdev_aio.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/librte_mbuf.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_blob_bdev.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_bdev_split.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_env_dpdk.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_bdev_passthru.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/librte_bus_pci.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/librte_cryptodev.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/librte_vhost.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_thread.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_event_iscsi.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/librte_bus_vdev.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_event_sock.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_rdma.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_jsonrpc.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_json.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_accel_ioat.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_bdev_gpt.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_event_vhost.so
+Running commands in /home/daos/docker/daos
+command:patchelf --set-rpath '$ORIGIN:/opt/daos/prereq/debug/spdk/lib' /opt/daos/prereq/debug/spdk/lib/libspdk_vhost.so
+Checking for C header file fuse3/fuse.h... (cached) yes
+Checking for C library fuse3... (cached) yes
+Checking for C header file json-c/json.h... (cached) yes
+Checking for C library json-c... (cached) yes
+Setting up compile environment for gcc
+Build type is 'debug'
+Checking gcc -Wno-gnu-designator (cached) no
+Checking gcc -Wno-missing-braces (cached) yes
+Checking g++ -Wno-missing-braces (cached) yes
+Checking gcc -fstack-usage (cached) yes
+Checking g++ -fstack-usage (cached) yes
+Checking gcc -Wno-ignored-attributes (cached) no
+Checking gcc -Wno-gnu-zero-variadic-macro-arguments (cached) no
+Checking gcc -Wno-tautological-constant-out-of-range-compare (cached) no
+Checking gcc -Wno-unused-command-line-argument (cached) no
+Checking gcc -Wframe-larger-than=4096 (cached) yes
+Checking g++ -Wframe-larger-than=4096 (cached) yes
+Checking gcc -fno-strict-overflow (cached) yes
+Checking g++ -fno-strict-overflow (cached) yes
+Checking gcc -fno-delete-null-pointer-checks (cached) yes
+Checking g++ -fno-delete-null-pointer-checks (cached) yes
+Checking gcc -fwrapv (cached) yes
+Checking g++ -fwrapv (cached) yes
+Checking gcc -fstack-protector-strong (cached) yes
+Checking g++ -fstack-protector-strong (cached) yes
+Checking gcc -fstack-clash-protection (cached) yes
+Checking g++ -fstack-clash-protection (cached) yes
+Checking for C header file stdatomic.h... (cached) no
+Checking for C function explicit_bzero()... (cached) no
+generated daos version header file: /home/daos/docker/daos/build/debug/gcc/src/include/daos_version.h
+Checking local headers can be included
+Checking for C header file cart/api.h... (cached) yes
+Checking for C header file cart/iv.h... (cached) yes
+Checking for C header file cart/types.h... (cached) yes
+Checking for C header file cart/swim.h... (cached) yes
+Loaded mpi/openmpi3-x86_64
+Setting up compile environment for mpicc
+Build type is 'debug'
+Checking mpicc -Wno-gnu-designator (cached) yes
+Checking g++ -Wno-gnu-designator (cached) no
+Checking mpicc -Wno-missing-braces (cached) yes
+Checking g++ -Wno-missing-braces (cached) yes
+Checking mpicc -fstack-usage (cached) yes
+Checking g++ -fstack-usage (cached) yes
+Checking mpicc -Wno-ignored-attributes (cached) yes
+Checking g++ -Wno-ignored-attributes (cached) no
+Checking mpicc -Wno-gnu-zero-variadic-macro-arguments (cached) yes
+Checking g++ -Wno-gnu-zero-variadic-macro-arguments (cached) no
+Checking mpicc -Wno-tautological-constant-out-of-range-compare (cached) yes
+Checking g++ -Wno-tautological-constant-out-of-range-compare (cached) no
+Checking mpicc -Wno-unused-command-line-argument (cached) yes
+Checking g++ -Wno-unused-command-line-argument (cached) no
+Checking mpicc -Wframe-larger-than=4096 (cached) yes
+Checking g++ -Wframe-larger-than=4096 (cached) yes
+Checking mpicc -fno-strict-overflow (cached) yes
+Checking g++ -fno-strict-overflow (cached) yes
+Checking mpicc -fno-delete-null-pointer-checks (cached) yes
+Checking g++ -fno-delete-null-pointer-checks (cached) yes
+Checking mpicc -fwrapv (cached) yes
+Checking g++ -fwrapv (cached) yes
+Checking mpicc -fstack-protector-strong (cached) yes
+Checking g++ -fstack-protector-strong (cached) yes
+Checking mpicc -fstack-clash-protection (cached) yes
+Checking g++ -fstack-clash-protection (cached) yes
+Checking for C header file stdatomic.h... (cached) no
+openmpi is installed
+libs = isal isal_crypto
+Checking for C library lustreapi... (cached) no
+No installed Lustre version detected
+Not building with Lustre bindings.
+Checking for cache_readdir in struct fuse_file_info (cached) no
+Checking if fuse ioctl is type unsigned int (cached) yes
+Checking for C header file CUnit/Basic.h... (cached) yes
+Checking for C library cunit... (cached) yes
+Setting up compile environment for gcc
+Build type is 'debug'
+Checking gcc -Wno-gnu-designator (cached) no
+Checking gcc -Wno-missing-braces (cached) yes
+Checking g++ -Wno-missing-braces (cached) yes
+Checking gcc -fstack-usage (cached) yes
+Checking g++ -fstack-usage (cached) yes
+Checking gcc -Wno-ignored-attributes (cached) no
+Checking gcc -Wno-gnu-zero-variadic-macro-arguments (cached) no
+Checking gcc -Wno-tautological-constant-out-of-range-compare (cached) no
+Checking gcc -Wno-unused-command-line-argument (cached) no
+Checking gcc -Wframe-larger-than=4096 (cached) yes
+Checking g++ -Wframe-larger-than=4096 (cached) yes
+Checking gcc -fno-strict-overflow (cached) yes
+Checking g++ -fno-strict-overflow (cached) yes
+Checking gcc -fno-delete-null-pointer-checks (cached) yes
+Checking g++ -fno-delete-null-pointer-checks (cached) yes
+Checking gcc -fwrapv (cached) yes
+Checking g++ -fwrapv (cached) yes
+Checking gcc -fstack-protector-strong (cached) yes
+Checking g++ -fstack-protector-strong (cached) yes
+Checking gcc -fstack-clash-protection (cached) yes
+Checking g++ -fstack-clash-protection (cached) yes
+Checking for C header file stdatomic.h... (cached) no
+Checking for C library hdf5... (cached) no
+No installed hdf5 detected, DAOS serialization is not enabled
+Setting up compile environment for mpicc
+Build type is 'debug'
+Checking mpicc -Wno-gnu-designator (cached) yes
+Checking g++ -Wno-gnu-designator (cached) no
+Checking mpicc -Wno-missing-braces (cached) yes
+Checking g++ -Wno-missing-braces (cached) yes
+Checking mpicc -fstack-usage (cached) yes
+Checking g++ -fstack-usage (cached) yes
+Checking mpicc -Wno-ignored-attributes (cached) yes
+Checking g++ -Wno-ignored-attributes (cached) no
+Checking mpicc -Wno-gnu-zero-variadic-macro-arguments (cached) yes
+Checking g++ -Wno-gnu-zero-variadic-macro-arguments (cached) no
+Checking mpicc -Wno-tautological-constant-out-of-range-compare (cached) yes
+Checking g++ -Wno-tautological-constant-out-of-range-compare (cached) no
+Checking mpicc -Wno-unused-command-line-argument (cached) yes
+Checking g++ -Wno-unused-command-line-argument (cached) no
+Checking mpicc -Wframe-larger-than=4096 (cached) yes
+Checking g++ -Wframe-larger-than=4096 (cached) yes
+Checking mpicc -fno-strict-overflow (cached) yes
+Checking g++ -fno-strict-overflow (cached) yes
+Checking mpicc -fno-delete-null-pointer-checks (cached) yes
+Checking g++ -fno-delete-null-pointer-checks (cached) yes
+Checking mpicc -fwrapv (cached) yes
+Checking g++ -fwrapv (cached) yes
+Checking mpicc -fstack-protector-strong (cached) yes
+Checking g++ -fstack-protector-strong (cached) yes
+Checking mpicc -fstack-clash-protection (cached) yes
+Checking g++ -fstack-clash-protection (cached) yes
+Checking for C header file stdatomic.h... (cached) no
+openmpi is installed
+Checking for Go compiler in $PATH... /bin/go
+Checking /bin/go version... 1.17.12
+Setting up compile environment for mpicc
+Build type is 'debug'
+Checking mpicc -Wno-gnu-designator (cached) yes
+Checking g++ -Wno-gnu-designator (cached) no
+Checking mpicc -Wno-missing-braces (cached) yes
+Checking g++ -Wno-missing-braces (cached) yes
+Checking mpicc -fstack-usage (cached) yes
+Checking g++ -fstack-usage (cached) yes
+Checking mpicc -Wno-ignored-attributes (cached) yes
+Checking g++ -Wno-ignored-attributes (cached) no
+Checking mpicc -Wno-gnu-zero-variadic-macro-arguments (cached) yes
+Checking g++ -Wno-gnu-zero-variadic-macro-arguments (cached) no
+Checking mpicc -Wno-tautological-constant-out-of-range-compare (cached) yes
+Checking g++ -Wno-tautological-constant-out-of-range-compare (cached) no
+Checking mpicc -Wno-unused-command-line-argument (cached) yes
+Checking g++ -Wno-unused-command-line-argument (cached) no
+Checking mpicc -Wframe-larger-than=4096 (cached) yes
+Checking g++ -Wframe-larger-than=4096 (cached) yes
+Checking mpicc -fno-strict-overflow (cached) yes
+Checking g++ -fno-strict-overflow (cached) yes
+Checking mpicc -fno-delete-null-pointer-checks (cached) yes
+Checking g++ -fno-delete-null-pointer-checks (cached) yes
+Checking mpicc -fwrapv (cached) yes
+Checking g++ -fwrapv (cached) yes
+Checking mpicc -fstack-protector-strong (cached) yes
+Checking g++ -fstack-protector-strong (cached) yes
+Checking mpicc -fstack-clash-protection (cached) yes
+Checking g++ -fstack-clash-protection (cached) yes
+Checking for C header file stdatomic.h... (cached) no
+openmpi is installed
+Checking if cmocka skip() bug is present ...  (Other error than bug) assuming (cached) yes
+libcmocka with broken skip(), using workaround (DAOS-1093).
+Checking local headers can be included
+Checking for C header file gurt/dlog.h... (cached) yes
+Checking for C header file gurt/debug.h... (cached) yes
+Checking for C header file gurt/common.h... (cached) yes
+Checking for C header file gurt/hash.h... (cached) yes
+Checking for C header file gurt/list.h... (cached) yes
+Checking for C header file gurt/heap.h... (cached) yes
+Checking for C header file gurt/fault_inject.h... (cached) yes
+Checking for C header file gurt/debug_setup.h... (cached) yes
+Checking for C header file gurt/types.h... (cached) yes
+Checking for C header file gurt/atomic.h... (cached) yes
+Checking for C header file gurt/slab.h... (cached) yes
+Checking for C header file gurt/telemetry_consumer.h... (cached) yes
+Checking for C header file gurt/telemetry_common.h... (cached) yes
+scons: done reading SConscript files.
+scons: Building targets ...
+cd /home/daos/docker/daos/src/control; /bin/go build -mod vendor -v -ldflags "-X github.com/daos-stack/daos/src/control/build.DaosVersion=2.0.1 -X github.com/daos-stack/daos/src/control/build.ConfigDir=/opt/daos/etc -B 0xbc627ad7c15c1d2fd35cf956a8e31b0d78aec976" -race -o /home/daos/docker/daos/build/debug/gcc/src/control/bin/daos github.com/daos-stack/daos/src/control/cmd/daos
+Install file: "build/debug/gcc/src/control/bin/daos" as "/opt/daos/bin/daos"
+gcc -o build/debug/gcc/src/control/lib/spdk/src/s_nvme_control_common.o -c -Werror -DDAOS_VERSION=\"2.0.1\" -DAPI_VERSION=\"2.0.0\" -g -Wshadow -Wall -fpic -Wno-missing-braces -fstack-usage -Wframe-larger-than=4096 -fno-strict-overflow -fno-delete-null-pointer-checks -fwrapv -fstack-protector-strong -fstack-clash-protection -Og -DNEED_EXPLICIT_BZERO -DCART_VERSION=\"4.9.0\" -DD_HAS_VALGRIND -DFAULT_INJECTION=1 -DCMOCKA_FILTER_SUPPORTED=0 -D_GNU_SOURCE -I/opt/daos/prereq/debug/openpa/include -Isrc/include/daos -Isrc/include -Ibuild/debug/gcc/src/include -Isrc/cart/test/utest -Isrc/gurt -Isrc/cart -Isrc/cart/include -I/opt/daos/prereq/debug/mercury/include -I/opt/daos/prereq/debug/isal/include -I/opt/daos/prereq/debug/isal_crypto/include -Isrc/mgmt -I/opt/daos/prereq/debug/protobufc/include -Isrc/cart/utils -Isrc/cart/utils/include -I/opt/daos/prereq/debug/ofi/include -I/opt/daos/prereq/debug/spdk/include -I/usr/include/dpdk -I/opt/daos/prereq/debug/spdk/opt/daos/prereq/debug/spdk/include/dpdk -I/usr/include/x86_64-linux-gnu/dpdk -I/opt/daos/prereq/debug/pmdk/include -Isrc/control/lib/spdk/include src/control/lib/spdk/src/nvme_control_common.c
+cd /home/daos/docker/daos/src/control; /bin/go build -mod vendor -v -ldflags "-X github.com/daos-stack/daos/src/control/build.DaosVersion=2.0.1 -X github.com/daos-stack/daos/src/control/build.ConfigDir=/opt/daos/etc -B 0x6717d30363c2889dc0f3cd95ad69f61d920a6b4d" -race -o /home/daos/docker/daos/build/debug/gcc/src/control/bin/daos_admin github.com/daos-stack/daos/src/control/cmd/daos_admin
+Install file: "build/debug/gcc/src/control/bin/daos_admin" as "/opt/daos/bin/daos_admin"
+cd /home/daos/docker/daos/src/control; /bin/go build -mod vendor -v -ldflags "-X github.com/daos-stack/daos/src/control/build.DaosVersion=2.0.1 -X github.com/daos-stack/daos/src/control/build.ConfigDir=/opt/daos/etc -B 0x46a26541d9e81d60b0f0e56ff4857978a0a8e2a1" -race -o /home/daos/docker/daos/build/debug/gcc/src/control/bin/daos_agent github.com/daos-stack/daos/src/control/cmd/daos_agent
+Install file: "build/debug/gcc/src/control/bin/daos_agent" as "/opt/daos/bin/daos_agent"
+gcc -o build/debug/gcc/src/bio/b_bio_device.os -c -Werror -DDAOS_VERSION=\"2.0.1\" -DAPI_VERSION=\"2.0.0\" -g -Wshadow -Wall -fpic -Wno-missing-braces -fstack-usage -Wframe-larger-than=4096 -fno-strict-overflow -fno-delete-null-pointer-checks -fwrapv -fstack-protector-strong -fstack-clash-protection -Og -DNEED_EXPLICIT_BZERO -DCART_VERSION=\"4.9.0\" -fPIC -DD_HAS_VALGRIND -DFAULT_INJECTION=1 -DCMOCKA_FILTER_SUPPORTED=0 -D_GNU_SOURCE -DDAOS_PMEM_BUILD -I/opt/daos/prereq/debug/openpa/include -Isrc/include/daos -Isrc/include -Ibuild/debug/gcc/src/include -Isrc/cart/test/utest -Isrc/gurt -Isrc/cart -Isrc/cart/include -I/opt/daos/prereq/debug/mercury/include -I/opt/daos/prereq/debug/isal/include -I/opt/daos/prereq/debug/isal_crypto/include -I/opt/daos/prereq/debug/pmdk/include -I/opt/daos/prereq/debug/spdk/include -I/usr/include/dpdk -I/opt/daos/prereq/debug/spdk/opt/daos/prereq/debug/spdk/include/dpdk -I/usr/include/x86_64-linux-gnu/dpdk -I/opt/daos/prereq/debug/argobots/include -I/opt/daos/prereq/debug/protobufc/include src/bio/bio_device.c
+gcc -o build/debug/gcc/src/bio/b_bio_xstream.os -c -Werror -DDAOS_VERSION=\"2.0.1\" -DAPI_VERSION=\"2.0.0\" -g -Wshadow -Wall -fpic -Wno-missing-braces -fstack-usage -Wframe-larger-than=4096 -fno-strict-overflow -fno-delete-null-pointer-checks -fwrapv -fstack-protector-strong -fstack-clash-protection -Og -DNEED_EXPLICIT_BZERO -DCART_VERSION=\"4.9.0\" -fPIC -DD_HAS_VALGRIND -DFAULT_INJECTION=1 -DCMOCKA_FILTER_SUPPORTED=0 -D_GNU_SOURCE -DDAOS_PMEM_BUILD -I/opt/daos/prereq/debug/openpa/include -Isrc/include/daos -Isrc/include -Ibuild/debug/gcc/src/include -Isrc/cart/test/utest -Isrc/gurt -Isrc/cart -Isrc/cart/include -I/opt/daos/prereq/debug/mercury/include -I/opt/daos/prereq/debug/isal/include -I/opt/daos/prereq/debug/isal_crypto/include -I/opt/daos/prereq/debug/pmdk/include -I/opt/daos/prereq/debug/spdk/include -I/usr/include/dpdk -I/opt/daos/prereq/debug/spdk/opt/daos/prereq/debug/spdk/include/dpdk -I/usr/include/x86_64-linux-gnu/dpdk -I/opt/daos/prereq/debug/argobots/include -I/opt/daos/prereq/debug/protobufc/include src/bio/bio_xstream.c
+gcc -o build/debug/gcc/src/bio/libbio.so -Wl,--enable-new-dtags -Wl,-rpath-link=build/debug/gcc/src/gurt -Wl,-rpath-link=build/debug/gcc/src/cart -Wl,-rpath-link=build/debug/gcc/src/common -Wl,--no-as-needed -shared -Wl,-rpath=\$ORIGIN -Wl,-rpath=\$ORIGIN/../../prereq/debug/openpa/lib -Wl,-rpath=\$ORIGIN/../../prereq/debug/mercury/lib -Wl,-rpath=\$ORIGIN/../../prereq/debug/isal/lib -Wl,-rpath=\$ORIGIN/../../prereq/debug/isal_crypto/lib -Wl,-rpath=\$ORIGIN/../../prereq/debug/pmdk/lib -Wl,-rpath=\$ORIGIN/../../prereq/debug/spdk/lib -Wl,-rpath=\$ORIGIN/../../prereq/debug/argobots/lib -Wl,-rpath=\$ORIGIN/../../prereq/debug/protobufc/lib -Wl,-rpath=\$ORIGIN/../../lib64 -Wl,-rpath=/opt/daos/prereq/debug/openpa/lib -Wl,-rpath=/opt/daos/prereq/debug/mercury/lib -Wl,-rpath=/opt/daos/prereq/debug/isal/lib -Wl,-rpath=/opt/daos/prereq/debug/isal_crypto/lib -Wl,-rpath=/opt/daos/prereq/debug/pmdk/lib -Wl,-rpath=/opt/daos/prereq/debug/spdk/lib -Wl,-rpath=/opt/daos/prereq/debug/argobots/lib -Wl,-rpath=/opt/daos/prereq/debug/protobufc/lib -Wl,-rpath=/opt/daos/lib64 build/debug/gcc/src/bio/b_bio_buffer.os build/debug/gcc/src/bio/b_bio_bulk.os build/debug/gcc/src/bio/b_bio_config.os build/debug/gcc/src/bio/b_bio_context.os build/debug/gcc/src/bio/b_bio_device.os build/debug/gcc/src/bio/b_bio_monitor.os build/debug/gcc/src/bio/b_bio_recovery.os build/debug/gcc/src/bio/b_bio_xstream.os build/debug/gcc/src/common/b_control.os -Lbuild/debug/gcc/src/gurt -Lbuild/debug/gcc/src/cart/swim -Lbuild/debug/gcc/src/cart -Lbuild/debug/gcc/src/common -L/opt/daos/prereq/debug/isal/lib -L/opt/daos/prereq/debug/isal_crypto/lib -Lbuild/debug/gcc/src/bio -Lbuild/debug/gcc/src/bio/smd -L/opt/daos/prereq/debug/pmdk/lib -L/opt/daos/prereq/debug/spdk/lib -L/opt/daos/prereq/debug/argobots/lib -L/opt/daos/prereq/debug/protobufc/lib -Lbuild/debug/gcc/src/bio/smd -Lsrc/bio/smd -lspdk_log -lspdk_env_dpdk -lspdk_thread -lspdk_bdev -lrte_mempool -lrte_mempool_ring -lrte_bus_pci -lrte_pci -lrte_ring -lrte_mbuf -lrte_eal -lrte_kvargs -lspdk_bdev_aio -lspdk_bdev_nvme -lspdk_blob -lspdk_nvme -lspdk_util -lspdk_json -lspdk_jsonrpc -lspdk_rpc -lspdk_trace -lspdk_sock -lspdk_log -lspdk_notify -lspdk_blob_bdev -lspdk_vmd -lspdk_event_bdev -lspdk_init -lnuma -ldl -lsmd
+cd /home/daos/docker/daos/src/control; /bin/go build -mod vendor -v -ldflags "-X github.com/daos-stack/daos/src/control/build.DaosVersion=2.0.1 -X github.com/daos-stack/daos/src/control/build.ConfigDir=/opt/daos/etc -B 0xfc7e0afa4122ac8909e5a4a8da596ce1f5612195" -race -o /home/daos/docker/daos/build/debug/gcc/src/control/bin/daos_server github.com/daos-stack/daos/src/control/cmd/daos_server
+Install file: "build/debug/gcc/src/control/bin/daos_server" as "/opt/daos/bin/daos_server"
+cd /home/daos/docker/daos/src/control; /bin/go build -mod vendor -v -ldflags "-X github.com/daos-stack/daos/src/control/build.DaosVersion=2.0.1 -X github.com/daos-stack/daos/src/control/build.ConfigDir=/opt/daos/etc -B 0x91f6251b89b1c52cf313f508cf03a5e05278d49f" -race -o /home/daos/docker/daos/build/debug/gcc/src/control/bin/dmg github.com/daos-stack/daos/src/control/cmd/dmg
+Install file: "build/debug/gcc/src/control/bin/dmg" as "/opt/daos/bin/dmg"
+cd /home/daos/docker/daos/src/control; /bin/go build -mod vendor -v -ldflags "-X github.com/daos-stack/daos/src/control/build.DaosVersion=2.0.1 -X github.com/daos-stack/daos/src/control/build.ConfigDir=/opt/daos/etc -B 0x5687b5ed002cae70b459f8c0fd4971989a800db4" -race -o /home/daos/docker/daos/build/debug/gcc/src/control/bin/drpc_test github.com/daos-stack/daos/src/control/cmd/drpc_test
+Install file: "build/debug/gcc/src/control/bin/drpc_test" as "/opt/daos/bin/hello_drpc"
+gcc -o build/debug/gcc/src/control/lib/spdk/ctests/s_c_nvme_control_ut.o -c -Werror -DDAOS_VERSION=\"2.0.1\" -DAPI_VERSION=\"2.0.0\" -g -Wshadow -Wall -fpic -Wno-missing-braces -fstack-usage -Wframe-larger-than=4096 -fno-strict-overflow -fno-delete-null-pointer-checks -fwrapv -fstack-protector-strong -fstack-clash-protection -Og -DNEED_EXPLICIT_BZERO -DCART_VERSION=\"4.9.0\" -DD_HAS_VALGRIND -DFAULT_INJECTION=1 -DCMOCKA_FILTER_SUPPORTED=0 -D_GNU_SOURCE -I/opt/daos/prereq/debug/openpa/include -Isrc/include/daos -Isrc/include -Ibuild/debug/gcc/src/include -Isrc/cart/test/utest -Isrc/gurt -Isrc/cart -Isrc/cart/include -I/opt/daos/prereq/debug/mercury/include -I/opt/daos/prereq/debug/isal/include -I/opt/daos/prereq/debug/isal_crypto/include -Isrc/mgmt -I/opt/daos/prereq/debug/protobufc/include -Isrc/cart/utils -Isrc/cart/utils/include -I/opt/daos/prereq/debug/ofi/include -I/opt/daos/prereq/debug/spdk/include -I/usr/include/dpdk -I/opt/daos/prereq/debug/spdk/opt/daos/prereq/debug/spdk/include/dpdk -I/usr/include/x86_64-linux-gnu/dpdk -I/opt/daos/prereq/debug/pmdk/include -Isrc/control/lib/spdk/include -Ibuild/external/debug/spdk/lib/nvme -Ibuild/external/debug/spdk/include src/control/lib/spdk/ctests/nvme_control_ut.c
+gcc -o build/debug/gcc/src/control/lib/spdk/ctests/nvme_control_ctests -Wl,--enable-new-dtags -Wl,-rpath-link=build/debug/gcc/src/gurt -Wl,-rpath-link=build/debug/gcc/src/cart -Wl,-rpath-link=build/debug/gcc/src/common -Wl,-rpath-link=build/debug/gcc/src/cart/utils -Wl,-rpath-link=build/debug/gcc/src/client/api -Wl,-rpath-link=build/debug/gcc/src/client/dfs -Wl,-rpath-link=build/debug/gcc/src/utils -Wl,-rpath-link=/opt/daos/prereq/debug/openpa/lib -Wl,-rpath-link=/opt/daos/prereq/debug/mercury/lib -Wl,-rpath-link=/opt/daos/prereq/debug/isal/lib -Wl,-rpath-link=/opt/daos/prereq/debug/isal_crypto/lib -Wl,-rpath-link=/opt/daos/prereq/debug/protobufc/lib -Wl,-rpath-link=/opt/daos/prereq/debug/ofi/lib -Wl,-rpath-link=/opt/daos/lib64 -Wl,-rpath-link=/opt/daos/prereq/debug/spdk/lib -Wl,-rpath-link=/opt/daos/prereq/debug/pmdk/lib -Wl,-rpath=/opt/daos/prereq/debug/openpa/lib -Wl,-rpath=/opt/daos/prereq/debug/mercury/lib -Wl,-rpath=/opt/daos/prereq/debug/isal/lib -Wl,-rpath=/opt/daos/prereq/debug/isal_crypto/lib -Wl,-rpath=/opt/daos/prereq/debug/protobufc/lib -Wl,-rpath=/opt/daos/prereq/debug/ofi/lib -Wl,-rpath=/opt/daos/lib64 -Wl,-rpath=/opt/daos/prereq/debug/spdk/lib -Wl,-rpath=/opt/daos/prereq/debug/pmdk/lib build/debug/gcc/src/control/lib/spdk/ctests/s_c_nvme_control_ut.o build/debug/gcc/src/control/lib/spdk/src/s_nvme_control_common.o build/debug/gcc/src/control/lib/spdk/src/s_nvme_control.o build/debug/gcc/src/common/s_c_control.o -Lbuild/debug/gcc/src/gurt -Lbuild/debug/gcc/src/cart/swim -Lbuild/debug/gcc/src/cart -Lbuild/debug/gcc/src/common -L/opt/daos/prereq/debug/isal/lib -L/opt/daos/prereq/debug/isal_crypto/lib -Lbuild/debug/gcc/src/bio -Lbuild/debug/gcc/src/bio/smd -Lbuild/debug/gcc/src/vea -Lbuild/debug/gcc/src/vos -Lbuild/debug/gcc/src/mgmt -Lbuild/debug/gcc/src/pool -Lbuild/debug/gcc/src/container -Lbuild/debug/gcc/src/placement -Lbuild/debug/gcc/src/dtx -Lbuild/debug/gcc/src/object -Lbuild/debug/gcc/src/rebuild -Lbuild/debug/gcc/src/security -L/opt/daos/prereq/debug/protobufc/lib -Lbuild/debug/gcc/src/cart/utils -Lbuild/debug/gcc/src/client/api -Lbuild/debug/gcc/src/utils -Lbuild/debug/gcc/src/control -L/opt/daos/prereq/debug/ofi/lib -L/opt/daos/prereq/debug/spdk/lib -Lbuild/debug/gcc/src/control/lib/spdk -L/opt/daos/prereq/debug/pmdk/lib -lspdk_env_dpdk -lspdk_nvme -lspdk_vmd -lrte_mempool -lrte_mempool_ring -lrte_bus_pci -lnvme_control -lnuma -ldl -lisal -lcmocka -lpthread
+Install file: "/opt/daos/prereq/debug/spdk/include/spdk/config.h" as "/opt/daos/include/spdk/config.h"
+Install file: ".build_vars.sh" as "/opt/daos/lib/daos/.build_vars.sh"
+make -C src/rdb/raft/ BUILDDIR=/home/daos/docker/daos/build/debug/gcc/src/rdb/raft/src GCOV_CCFLAGS= static
+make: Entering directory `/home/daos/docker/daos/src/rdb/raft'
+ar -r /home/daos/docker/daos/build/debug/gcc/src/rdb/raft/src/libraft.a /home/daos/docker/daos/build/debug/gcc/src/rdb/raft/src/raft_server.o /home/daos/docker/daos/build/debug/gcc/src/rdb/raft/src/raft_server_properties.o /home/daos/docker/daos/build/debug/gcc/src/rdb/raft/src/raft_node.o /home/daos/docker/daos/build/debug/gcc/src/rdb/raft/src/raft_log.o
+ar: creating /home/daos/docker/daos/build/debug/gcc/src/rdb/raft/src/libraft.a
+make: Leaving directory `/home/daos/docker/daos/src/rdb/raft'
+gcc -o build/debug/gcc/src/rdb/librdb.so -Wl,--enable-new-dtags -Wl,-rpath-link=build/debug/gcc/src/gurt -Wl,-rpath-link=build/debug/gcc/src/cart -Wl,-rpath-link=build/debug/gcc/src/common -Wl,-rpath-link=build/debug/gcc/src/cart/utils -Wl,-rpath-link=build/debug/gcc/src/client/api -Wl,-rpath-link=build/debug/gcc/src/client/dfs -shared -Wl,-rpath=\$ORIGIN -Wl,-rpath=\$ORIGIN/../../prereq/debug/openpa/lib -Wl,-rpath=\$ORIGIN/../../prereq/debug/mercury/lib -Wl,-rpath=\$ORIGIN/../../prereq/debug/isal/lib -Wl,-rpath=\$ORIGIN/../../prereq/debug/isal_crypto/lib -Wl,-rpath=\$ORIGIN/../../prereq/debug/protobufc/lib -Wl,-rpath=\$ORIGIN/../../prereq/debug/argobots/lib -Wl,-rpath=\$ORIGIN/../../lib64 -Wl,-rpath=/opt/daos/prereq/debug/openpa/lib -Wl,-rpath=/opt/daos/prereq/debug/mercury/lib -Wl,-rpath=/opt/daos/prereq/debug/isal/lib -Wl,-rpath=/opt/daos/prereq/debug/isal_crypto/lib -Wl,-rpath=/opt/daos/prereq/debug/protobufc/lib -Wl,-rpath=/opt/daos/prereq/debug/argobots/lib -Wl,-rpath=/opt/daos/lib64 build/debug/gcc/src/rdb/rdb_util.os build/debug/gcc/src/rdb/rdb_path.os build/debug/gcc/src/rdb/rdb_layout.os build/debug/gcc/src/rdb/rdb_kvs.os build/debug/gcc/src/rdb/rdb_rpc.os build/debug/gcc/src/rdb/rdb_raft.os build/debug/gcc/src/rdb/rdb_tx.os build/debug/gcc/src/rdb/rdb.os build/debug/gcc/src/rdb/rdb_module.os -Lbuild/debug/gcc/src/gurt -Lbuild/debug/gcc/src/cart/swim -Lbuild/debug/gcc/src/cart -Lbuild/debug/gcc/src/common -L/opt/daos/prereq/debug/isal/lib -L/opt/daos/prereq/debug/isal_crypto/lib -Lbuild/debug/gcc/src/bio -Lbuild/debug/gcc/src/bio/smd -Lbuild/debug/gcc/src/vea -Lbuild/debug/gcc/src/vos -Lbuild/debug/gcc/src/mgmt -Lbuild/debug/gcc/src/pool -Lbuild/debug/gcc/src/container -Lbuild/debug/gcc/src/placement -Lbuild/debug/gcc/src/dtx -Lbuild/debug/gcc/src/object -Lbuild/debug/gcc/src/rebuild -Lbuild/debug/gcc/src/security -L/opt/daos/prereq/debug/protobufc/lib -Lbuild/debug/gcc/src/cart/utils -Lbuild/debug/gcc/src/client/api -L/opt/daos/prereq/debug/argobots/lib -Lbuild/debug/gcc/src/rdb/raft/src -lraft
+/home/daos/docker/daos/build/debug/gcc/src/control/bin/daos manpage -o /home/daos/docker/daos/build/debug/gcc/src/control/daos.8
+Install file: "build/debug/gcc/src/control/daos.8" as "/opt/daos/share/man/man8/daos.8"
+/home/daos/docker/daos/build/debug/gcc/src/control/bin/dmg manpage -o /home/daos/docker/daos/build/debug/gcc/src/control/dmg.8
+Install file: "build/debug/gcc/src/control/dmg.8" as "/opt/daos/share/man/man8/dmg.8"
+Install file: "/opt/daos/prereq/debug/spdk/share/spdk/scripts/rpc/__pycache__/__init__.cpython-36.pyc" as "/opt/daos/share/spdk/scripts/rpc/__pycache__/__init__.cpython-36.pyc"
+Install file: "/opt/daos/prereq/debug/spdk/share/spdk/scripts/rpc/__pycache__/app.cpython-36.pyc" as "/opt/daos/share/spdk/scripts/rpc/__pycache__/app.cpython-36.pyc"
+Install file: "/opt/daos/prereq/debug/spdk/share/spdk/scripts/rpc/__pycache__/bdev.cpython-36.pyc" as "/opt/daos/share/spdk/scripts/rpc/__pycache__/bdev.cpython-36.pyc"
+Install file: "/opt/daos/prereq/debug/spdk/share/spdk/scripts/rpc/__pycache__/blobfs.cpython-36.pyc" as "/opt/daos/share/spdk/scripts/rpc/__pycache__/blobfs.cpython-36.pyc"
+Install file: "/opt/daos/prereq/debug/spdk/share/spdk/scripts/rpc/__pycache__/client.cpython-36.pyc" as "/opt/daos/share/spdk/scripts/rpc/__pycache__/client.cpython-36.pyc"
+Install file: "/opt/daos/prereq/debug/spdk/share/spdk/scripts/rpc/__pycache__/cmd_parser.cpython-36.pyc" as "/opt/daos/share/spdk/scripts/rpc/__pycache__/cmd_parser.cpython-36.pyc"
+Install file: "/opt/daos/prereq/debug/spdk/share/spdk/scripts/rpc/__pycache__/env_dpdk.cpython-36.pyc" as "/opt/daos/share/spdk/scripts/rpc/__pycache__/env_dpdk.cpython-36.pyc"
+Install file: "/opt/daos/prereq/debug/spdk/share/spdk/scripts/rpc/__pycache__/helpers.cpython-36.pyc" as "/opt/daos/share/spdk/scripts/rpc/__pycache__/helpers.cpython-36.pyc"
+Install file: "/opt/daos/prereq/debug/spdk/share/spdk/scripts/rpc/__pycache__/idxd.cpython-36.pyc" as "/opt/daos/share/spdk/scripts/rpc/__pycache__/idxd.cpython-36.pyc"
+Install file: "/opt/daos/prereq/debug/spdk/share/spdk/scripts/rpc/__pycache__/ioat.cpython-36.pyc" as "/opt/daos/share/spdk/scripts/rpc/__pycache__/ioat.cpython-36.pyc"
+Install file: "/opt/daos/prereq/debug/spdk/share/spdk/scripts/rpc/__pycache__/iscsi.cpython-36.pyc" as "/opt/daos/share/spdk/scripts/rpc/__pycache__/iscsi.cpython-36.pyc"
+Install file: "/opt/daos/prereq/debug/spdk/share/spdk/scripts/rpc/__pycache__/log.cpython-36.pyc" as "/opt/daos/share/spdk/scripts/rpc/__pycache__/log.cpython-36.pyc"
+Install file: "/opt/daos/prereq/debug/spdk/share/spdk/scripts/rpc/__pycache__/lvol.cpython-36.pyc" as "/opt/daos/share/spdk/scripts/rpc/__pycache__/lvol.cpython-36.pyc"
+Install file: "/opt/daos/prereq/debug/spdk/share/spdk/scripts/rpc/__pycache__/nbd.cpython-36.pyc" as "/opt/daos/share/spdk/scripts/rpc/__pycache__/nbd.cpython-36.pyc"
+Install file: "/opt/daos/prereq/debug/spdk/share/spdk/scripts/rpc/__pycache__/notify.cpython-36.pyc" as "/opt/daos/share/spdk/scripts/rpc/__pycache__/notify.cpython-36.pyc"
+Install file: "/opt/daos/prereq/debug/spdk/share/spdk/scripts/rpc/__pycache__/nvme.cpython-36.pyc" as "/opt/daos/share/spdk/scripts/rpc/__pycache__/nvme.cpython-36.pyc"
+Install file: "/opt/daos/prereq/debug/spdk/share/spdk/scripts/rpc/__pycache__/nvmf.cpython-36.pyc" as "/opt/daos/share/spdk/scripts/rpc/__pycache__/nvmf.cpython-36.pyc"
+Install file: "/opt/daos/prereq/debug/spdk/share/spdk/scripts/rpc/__pycache__/pmem.cpython-36.pyc" as "/opt/daos/share/spdk/scripts/rpc/__pycache__/pmem.cpython-36.pyc"
+Install file: "/opt/daos/prereq/debug/spdk/share/spdk/scripts/rpc/__pycache__/sock.cpython-36.pyc" as "/opt/daos/share/spdk/scripts/rpc/__pycache__/sock.cpython-36.pyc"
+Install file: "/opt/daos/prereq/debug/spdk/share/spdk/scripts/rpc/__pycache__/subsystem.cpython-36.pyc" as "/opt/daos/share/spdk/scripts/rpc/__pycache__/subsystem.cpython-36.pyc"
+Install file: "/opt/daos/prereq/debug/spdk/share/spdk/scripts/rpc/__pycache__/trace.cpython-36.pyc" as "/opt/daos/share/spdk/scripts/rpc/__pycache__/trace.cpython-36.pyc"
+Install file: "/opt/daos/prereq/debug/spdk/share/spdk/scripts/rpc/__pycache__/vhost.cpython-36.pyc" as "/opt/daos/share/spdk/scripts/rpc/__pycache__/vhost.cpython-36.pyc"
+Install file: "/opt/daos/prereq/debug/spdk/share/spdk/scripts/rpc/__pycache__/vmd.cpython-36.pyc" as "/opt/daos/share/spdk/scripts/rpc/__pycache__/vmd.cpython-36.pyc"
+scons: building associated VariantDir targets: build/debug/gcc
+make -C src/rdb/raft/ BUILDDIR=/home/daos/docker/daos/build/debug/gcc/src/rdb/raft/src GCOV_CCFLAGS= tests_main
+make: Entering directory `/home/daos/docker/daos/src/rdb/raft'
+cc -Iinclude -Werror -Werror=return-type -Werror=uninitialized -Wcast-align -Wno-pointer-sign -fno-omit-frame-pointer -fno-common -fsigned-char -Wunused-variable -Wshadow  -Icontrib/CLinkedListQueue -Iinclude -g -O2 -fPIC -o /home/daos/docker/daos/build/debug/gcc/src/rdb/raft/src/tests_main src/raft_server.c src/raft_server_properties.c src/raft_log.c src/raft_node.c tests/main_test.c tests/test_scenario.c tests/test_server.c tests/test_log.c tests/test_node.c tests/test_snapshotting.c tests/mock_send_functions.c tests/CuTest.c contrib/CLinkedListQueue/linked_list_queue.c
+make: Leaving directory `/home/daos/docker/daos/src/rdb/raft'
+scons: done building targets.
+
+build ok
+
+2023/03/19 16:22:37 172.17.0.3 
+
+2023/03/19 16:23:29 172.17.0.4 

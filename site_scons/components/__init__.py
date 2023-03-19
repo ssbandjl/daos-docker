@@ -308,15 +308,14 @@ def define_components(reqs):
 
     reqs.define('fuse', libs=['fuse3'], defines=["FUSE_USE_VERSION=35"],
                 headers=['fuse3/fuse.h'], package='fuse3-devel')
-
+    # 编译spdk
     retriever = GitRepoRetriever("https://github.com/spdk/spdk.git", True)
     reqs.define('spdk',
                 retriever=retriever,
                 commands=['./configure --prefix="$SPDK_PREFIX"'                \
-                          ' --disable-tests --disable-unit-tests '             \
-                          ' --disable-apps --without-vhost '                   \
-                          ' --without-crypto --without-pmdk --without-rbd '    \
-                          ' --with-rdma --without-iscsi-initiator '            \
+                          ' --without-crypto '    \
+                          ' --with-rdma '            \
+                          # ' --with-rdma --with-daos '            \
                           ' --without-isal --without-vtune --with-shared',
                           'make $JOBS_OPT', 'make install',
                           'cp -r -P dpdk/build/lib/* "$SPDK_PREFIX/lib"',
@@ -331,6 +330,27 @@ def define_components(reqs):
                                     # debian dpdk rpm puts rte_config.h here
                                     '/usr/include/x86_64-linux-gnu/dpdk'],
                 patch_rpath=['lib'])
+    # reqs.define('spdk',
+    #             retriever=retriever,
+    #             commands=['./configure --prefix="$SPDK_PREFIX"'                \
+    #                       ' --disable-tests --disable-unit-tests '             \
+    #                       ' --disable-apps --without-vhost '                   \
+    #                       ' --without-crypto --without-pmdk --without-rbd '    \
+    #                       ' --with-rdma --without-iscsi-initiator '            \
+    #                       ' --without-isal --without-vtune --with-shared',
+    #                       'make $JOBS_OPT', 'make install',
+    #                       'cp -r -P dpdk/build/lib/* "$SPDK_PREFIX/lib"',
+    #                       'mkdir -p "$SPDK_PREFIX/include/dpdk"',
+    #                       'cp -r -P dpdk/build/include/* '                     \
+    #                       '"$SPDK_PREFIX/include/dpdk"',
+    #                       'mkdir -p "$SPDK_PREFIX/share/spdk"',
+    #                       'cp -r include scripts "$SPDK_PREFIX/share/spdk"'],
+    #             headers=['spdk/nvme.h', 'dpdk/rte_eal.h'],
+    #             extra_include_path=['/usr/include/dpdk',
+    #                                 '$SPDK_PREFIX/include/dpdk',
+    #                                 # debian dpdk rpm puts rte_config.h here
+    #                                 '/usr/include/x86_64-linux-gnu/dpdk'],
+    #             patch_rpath=['lib'])
 
     retriever = GitRepoRetriever("https://github.com/protobuf-c/protobuf-c.git")
     reqs.define('protobufc',

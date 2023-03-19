@@ -608,4 +608,19 @@ dfuse
 
 git raft子项目: git submodule update && git submodule update
 
+编译spdk:
+cd build/external/debug/spdk
+./configure --help
+yum install ncurses-devel ncurses
+./configure --prefix="/opt/daos/prereq/debug/spdk" --disable-tests --disable-unit-tests --disable-apps --without-vhost --without-crypto --without-pmdk --without-rbd --with-rdma --without-iscsi-initiator --without-isal --without-vtune --with-shared
 
+qa:
+spdk缺elftools
+centos7
+pip3 install pyelftools
+
+spdk:
+Install CentOS SCLo RH repository:
+yum install centos-release-scl-rh
+Install CUnit rpm package:
+# yum install CUnit
