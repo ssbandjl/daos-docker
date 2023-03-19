@@ -1706,8 +1706,8 @@ class _Component():
         # 返回True表示已变化, 需要编译
         # if self.name == 'mercury':
         #   return True
-        if self.name == 'spdk':
-          return True
+        # if self.name == 'spdk':
+        #   return True
         #   return False
         # if self.name == 'ofi':
         #   return True
