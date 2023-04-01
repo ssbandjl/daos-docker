@@ -1248,10 +1248,10 @@ dss_srv_init(void)
 	if (rc != 0)
 		D_GOTO(failed, rc);
 	xstream_data.xd_init_step = XD_INIT_SYS_DB;
-
-	rc = bio_nvme_init(dss_nvme_conf, dss_nvme_shm_id, dss_nvme_mem_size,
-			   dss_nvme_hugepage_size, dss_tgt_nr, vos_db_get(),
-			   dss_nvme_bypass_health_check);
+	// /mnt/daos/daos_nvme.conf
+	rc = bio_nvme_init(dss_nvme_conf, dss_nvme_shm_id /* -1 */, dss_nvme_mem_size /* 8192 */,
+			   dss_nvme_hugepage_size /* 2 */, dss_tgt_nr /* 1 */, vos_db_get(),
+			   dss_nvme_bypass_health_check /* false */);
 	if (rc != 0)
 		D_GOTO(failed, rc);
 	xstream_data.xd_init_step = XD_INIT_NVME;

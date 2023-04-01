@@ -624,3 +624,10 @@ Install CentOS SCLo RH repository:
 yum install centos-release-scl-rh
 Install CUnit rpm package:
 # yum install CUnit
+
+
+调试手段
+gdb step
+1. add sleep 10s in init, src/engine/init.c:1093
+2. gdb attach, break, continue
+3. step
