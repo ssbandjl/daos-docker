@@ -13,3 +13,7 @@ dpdk:
 VFIO 是一个强大而安全的驱动程序，它依赖于 IOMMU 保护。 要使用 VFIO，必须加载 vfio-pci 模块：
 sudo modprobe vfio-pci
 要使用完整的 VFIO 功能，内核和 BIOS 都必须支持并配置为使用 IO 虚拟化（例如 Intel® VT-d）, 
+
+spdk_nvme_probe 发现nvme设备, 参考hello_world: https://blog.csdn.net/wade1010/article/details/128782710
+  probe(NULL, NULL, probe_cb, attach_cb, NULL)
+

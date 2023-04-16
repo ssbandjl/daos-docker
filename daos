@@ -62,7 +62,9 @@ func (cmd *startCmd) Execute(args []string)
       大页检查 hugePages, err := hpiGetter()  func GetHugePageInfo()  cat /proc/meminfo | grep -e "^Huge"
       srv.ctlSvc.Setup() -> func (scs *StorageControlService) Setup() -> scs.ScmScan(storage.ScmScanRequest{}) -> func (f *ScmAdminForwarder) Scan -> f.SendReq("ScmScan", req, res) -> 给daos_admin发送存储类扫描命令
         分层类型(tierCfg.Class)为file, 则跳过nvme流程, 分层类型为: Class type definitions中定义的dcpm, ram, nvme, kdev, file
-        否则执行nvme扫描: nvmeScanResp, err := scs.NvmeScan(storage.BdevScanRequest
+        否则执行nvme扫描: nvmeScanResp, err := scs.NvmeScan(storage.BdevScanRequest -> func (sb *spdkBackend) Scan
+        restoreOutput, err := sb.binding.init
+        sb.binding.Discover(sb.log)
         func (n *NvmMgmt) Discover()
         C.nvm_get_number_of_devices https://github.com/intel/ipmctl ipmctl is a utility for configuring and managing Intel® Optane™ Persistent Memory modules (PMem).
         C.nvm_get_devices
