@@ -1,0 +1,15 @@
+vfio与内核驱动, https://doc.dpdk.org/guides/linux_gsg/linux_drivers.html?highlight=vfio
+建议在所有情况下都将 vfio-pci 用作 DPDK 绑定端口的内核模块。 如果 IOMMU 不可用，则可以在 no-iommu 模式下使用 vfio-pci。 如果由于某种原因 vfio 不可用，则可以使用基于 UIO 的模块 igb_uio 和 uio_pci_generic。 有关详细信息，请参阅 UIO 部分
+
+dpdk:
+大多数设备要求 DPDK 使用的硬件与其使用的内核驱动程序解除绑定，而是在应用程序运行之前绑定到 vfio-pci 内核模块。 对于此类 PMD，任何受 Linux* 控制的网络端口或其他硬件都将被忽略，并且不能被应用程序使用。
+要将端口绑定到 vfio-pci 模块以供 DPDK 使用，或将端口返回给 Linux 控制，在 usertools 子目录中提供了一个名为 dpdk-devbind.py 的实用程序脚本。 该实用程序可用于提供系统上网络端口当前状态的视图，以及绑定和取消绑定来自不同内核模块（包括 VFIO 和 UIO 模块）的这些端口。 以下是如何使用该脚本的一些示例。 可以通过使用 --help 或 --usage 选项调用脚本来获取脚本及其参数的完整描述。 请注意，要使用的 UIO 或 VFIO 内核模块应在运行 dpdk-devbind.py 脚本之前加载到内核中。
+
+查看端口状态:
+./usertools/dpdk-devbind.py --status
+恢复原始绑定
+./usertools/dpdk-devbind.py --bind=ixgbe 82:00.*
+
+VFIO 是一个强大而安全的驱动程序，它依赖于 IOMMU 保护。 要使用 VFIO，必须加载 vfio-pci 模块：
+sudo modprobe vfio-pci
+要使用完整的 VFIO 功能，内核和 BIOS 都必须支持并配置为使用 IO 虚拟化（例如 Intel® VT-d）, 

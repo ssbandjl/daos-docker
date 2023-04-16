@@ -1086,12 +1086,12 @@ main(int argc, char **argv)
 	sigset_t	set;
 	int		sig;
 	int		rc;
-	int 	i;
+	// int 	i;
   	uint16_t	pid;
 
 	pid = getpid();
-  	printf("################## engine main pid=%d ##################\n", pid);
-  	sleep(30); // gdb step
+  	printf("################## engine main pid:%d ##################\n", pid);
+  	sleep(30); // for gdb step
 	// for(i = 30;i > 0;i--){
 	// 	// D_DEBUG(DB_ALL, "%d gdb attach %d\n", i, pid);
 	// 	printf("%d gdb attach %d\n", i, pid);

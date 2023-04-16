@@ -1807,7 +1807,7 @@ class _Component():
         has_changes = self._has_changes()
         has_miss_tgt = self.has_missing_targets(envcopy)
         if has_changes or has_miss_tgt:
-            print('rebuild %s for change %s,has_miss_tgt:%s' %(self.name,has_changes,has_miss_tgt))
+            print('\nrebuild:%s for change:%s, has_miss_tgt:%s' %(self.name,has_changes,has_miss_tgt))
             self._check_prereqs_build_deps()
 
             if not self.src_exists():

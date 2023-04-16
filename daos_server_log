@@ -1,0 +1,81 @@
+DEBUG 13:19:53.609786 start.go:90: Switching control log level to DEBUG
+DEBUG 13:19:53.609897 server.go:433: validating config file read from "/opt/daos/etc/daos_server.yml"
+c1f82c52f85d INFO 2023/04/16 13:19:53 engine 0: Legacy storage configuration detected. Please migrate to new-style storage configuration.
+DEBUG 13:19:53.611669 server.go:390: active config saved to /var/run/daos_server/.daos_server.active.yml (read-only)
+DEBUG 13:19:53.611753 server.go:66: fault domain: /c1f82c52f85d
+DEBUG 13:19:53.612330 database.go:279: set db replica addr: 172.17.0.2:10001
+c1f82c52f85d ERROR 2023/04/16 13:19:53 failed to create syslogger with priority %!s(syslog.Priority=24): Unix syslog delivery error
+c1f82c52f85d ERROR 2023/04/16 13:19:53 failed to create syslogger with priority %!s(syslog.Priority=27): Unix syslog delivery error
+c1f82c52f85d ERROR 2023/04/16 13:19:53 failed to create syslogger with priority %!s(syslog.Priority=28): Unix syslog delivery error
+c1f82c52f85d ERROR 2023/04/16 13:19:53 failed to create syslogger with priority %!s(syslog.Priority=29): Unix syslog delivery error
+DEBUG 13:19:53.635028 netdetect.go:285: network detection, system names: [lo eth0], hwloc names [renderD128 controlD64 card0 sda sdb]
+DEBUG 13:19:53.835245 netdetect.go:928: Device eth0 supports provider: ofi+sockets
+c1f82c52f85d INFO 2023/04/16 13:19:53 Network device class set to "ETHER"
+DEBUG 13:19:53.835481 server.go:125: time to init network: 221.874022ms
+c1f82c52f85d INFO 2023/04/16 13:19:53 prepReq.HugePageCount: 0
+DEBUG 13:19:53.835751 ctl_storage.go:80: calling bdev provider prepare: {ForwardableRequest:{Forwarded:false} HugePageCount:0 DisableCleanHugePages:false PCIAllowList: PCIBlockList: TargetUser:root Reset_:true DisableVFIO:false EnableVMD:false}
+DEBUG 13:19:53.914032 ctl_storage.go:80: calling bdev provider prepare: {ForwardableRequest:{Forwarded:false} HugePageCount:0 DisableCleanHugePages:false PCIAllowList: PCIBlockList: TargetUser:root Reset_:false DisableVFIO:false EnableVMD:false}
+DEBUG 13:19:54.013696 server_utils.go:230: MemSize:8192MB, HugepageSize:2MB
+DEBUG 13:19:54.013944 server.go:220: running storage setup on server start-up, scanning storage devices
+DEBUG 13:19:54.051141 server.go:125: time to init storage: 215.519414ms
+DEBUG 13:19:54.113292 server.go:281: waiting for engines to start...
+c1f82c52f85d INFO 2023/04/16 13:19:54 DAOS Control Server v2.0.1 (pid 8927) listening on 0.0.0.0:10001
+DEBUG 13:19:54.117755 instance_exec.go:37: instance 0: checking if storage is formatted
+c1f82c52f85d INFO 2023/04/16 13:19:54 Checking DAOS I/O Engine instance 0 storage ...
+DEBUG 13:19:54.117946 provider.go:161: /mnt/daos: checking formatting
+DEBUG 13:19:54.153774 provider.go:174: /mnt/daos (ram) needs format: true
+c1f82c52f85d INFO 2023/04/16 13:19:54 SCM format required on instance 0
+c1f82c52f85d INFO 2023/04/16 13:19:54 &&& RAS id: [engine_format_required] ts: [2023-04-16T13:19:54.153+02:00] host: [c1f82c52f85d] type: [INFO] sev: [NOTICE] msg: [DAOS engine 0 requires a SCM format] pid: [8927]
+DEBUG 13:19:58.670806 ctl_storage_rpc.go:194: received StorageFormat RPC 
+c1f82c52f85d INFO 2023/04/16 13:19:58 Formatting scm storage for DAOS I/O Engine instance 0 (reformat: false)
+c1f82c52f85d INFO 2023/04/16 13:19:58 Instance 0: starting format of SCM (ram:/mnt/daos)
+c1f82c52f85d INFO 2023/04/16 13:19:58 Instance 0: finished format of SCM (ram:/mnt/daos)
+c1f82c52f85d INFO 2023/04/16 13:19:58 Formatting nvme storage for DAOS I/O Engine instance 0
+DEBUG 13:19:58.752143 instance_storage_rpc.go:68: instance 0: calling into storage provider to format tiers
+c1f82c52f85d INFO 2023/04/16 13:19:58 Instance 0: starting format of file block devices [/tmp/daos-bdev]
+c1f82c52f85d INFO 2023/04/16 13:19:59 Instance 0: finished format of file block devices [/tmp/daos-bdev]
+c1f82c52f85d INFO 2023/04/16 13:19:59 Writing nvme config file for DAOS I/O Engine instance 0
+c1f82c52f85d INFO 2023/04/16 13:19:59 DAOS I/O Engine instance 0 storage ready
+DEBUG 13:19:59.182755 instance_superblock.go:152: index 0: creating /mnt/daos/superblock: (rank: NilRank, uuid: fb9cb231-a52c-4ebc-bfb2-3113088176cb)
+DEBUG 13:19:59.183625 database.go:378: system db start: isReplica: true, isBootstrap: true
+DEBUG 13:19:59.185050 api.go:549: initial configuration: index=0 servers=[%+v []]
+DEBUG 13:19:59.185374 raft.go:152: entering follower state: follower=Node at 172.17.0.2:10001 [Follower] leader=
+DEBUG 13:19:59.185466 raft.go:174: isBootstrap: true, newDB: true
+DEBUG 13:19:59.185631 raft.go:177: bootstrapping MS on 172.17.0.2:10001
+c1f82c52f85d INFO 2023/04/16 13:19:59 SCM @ /mnt/daos: 4.3 GB Total/4.3 GB Avail
+DEBUG 13:19:59.188235 exec.go:69: daos_engine:0 args: [-t 1 -x 0 -g daos_server -d /var/run/daos_server -T 2 -n /mnt/daos/daos_nvme.conf -I 0 -r 8192 -H 2 -s /mnt/daos]
+DEBUG 13:19:59.188383 exec.go:70: daos_engine:0 env: [DD_MASK=all OFI_PORT=31416 VOS_BDEV_CLASS=AIO FI_SOCKETS_CONN_TIMEOUT=2000 DD_SUBSYS=all CRT_TIMEOUT=0 OFI_INTERFACE=eth0 FI_LOG_LEVEL=warn FI_SOCKETS_MAX_CONN_RETRY=1 HG_LOG_LEVEL=debug D_LOG_FILE=/tmp/daos_engine.0.log CRT_PHY_ADDR_STR=ofi+sockets CRT_CTX_SHARE_ADDR=0 D_LOG_MASK=debug]
+c1f82c52f85d INFO 2023/04/16 13:19:59 Starting I/O Engine instance 0: /opt/daos/bin/daos_engine
+c1f82c52f85d INFO 2023/04/16 13:19:59 Engine pid 9086
+DEBUG 13:20:03.119614 raft.go:214: heartbeat timeout reached, starting election: last-leader=
+DEBUG 13:20:03.120134 raft.go:250: entering candidate state: node=Node at 172.17.0.2:10001 [Candidate] term=2
+DEBUG 13:20:03.123787 raft.go:268: votes: needed=1
+DEBUG 13:20:03.124016 raft.go:287: vote granted: from=172.17.0.2:10001 term=2 tally=1
+DEBUG 13:20:03.124158 raft.go:292: election won: tally=1
+DEBUG 13:20:03.124364 raft.go:367: entering leader state: leader=Node at 172.17.0.2:10001 [Leader]
+DEBUG 13:20:03.124626 database.go:468: node 172.17.0.2:10001 gained MS leader state
+c1f82c52f85d INFO 2023/04/16 13:20:03 MS leader running on c1f82c52f85d
+DEBUG 13:20:03.124813 mgmt_system.go:159: starting joinLoop
+DEBUG 13:20:03.125352 server.go:338: requesting sync GroupUpdate after leader change
+DEBUG 13:20:03.125768 mgmt_pool.go:442: checking 0 pools
+c1f82c52f85d INFO 2023/04/16 13:20:29 daos_engine:0 ################## engine main pid:9086 ##################
+Using legacy core allocation algorithm
+DEBUG 13:20:33.036681 instance_drpc.go:50: DAOS I/O Engine instance 0 drpc ready: uri:"ofi+sockets://172.17.0.2:31416" nctxs:3 drpcListenerSock:"/var/run/daos_server/daos_engine_9086.sock" ntgts:1 incarnation:1154957294300561408
+DEBUG 13:20:33.037083 server_utils.go:310: marking bootstrap instance as rank 0
+DEBUG 13:20:33.038764 system.go:147: DAOS system join request: sys:"daos_server" uuid:"fb9cb231-a52c-4ebc-bfb2-3113088176cb" uri:"ofi+sockets://172.17.0.2:31416" nctxs:3 addr:"0.0.0.0:10001" srvFaultDomain:"/c1f82c52f85d" incarnation:1154957294300561408
+DEBUG 13:20:33.039878 rpc.go:234: request hosts: [172.17.0.2:10001 172.17.0.3:10001 172.17.0.4:10001]
+DEBUG 13:20:33.120880 mgmt_system.go:398: MgmtSvc.Join dispatch, req:&mgmt.JoinReq{state:impl.MessageState{NoUnkeyedLiterals:pragma.NoUnkeyedLiterals{}, DoNotCompare:pragma.DoNotCompare{}, DoNotCopy:pragma.DoNotCopy{}, atomicMessageInfo:(*impl.MessageInfo)(0xc0000e63d8)}, sizeCache:0, unknownFields:[]uint8(nil), Sys:"daos_server", Uuid:"fb9cb231-a52c-4ebc-bfb2-3113088176cb", Rank:0x0, Uri:"ofi+sockets://172.17.0.2:31416", Nctxs:0x3, Addr:"0.0.0.0:10001", SrvFaultDomain:"/c1f82c52f85d", Idx:0x0, Incarnation:0x10073b8a39880000}
+DEBUG 13:20:33.126290 mgmt_system.go:202: processing 1 join requests
+DEBUG 13:20:33.129009 raft.go:283: member 0:10073b8a39880000 updated @ 2023-04-16 13:20:33.126409521 +0200 CEST m=+39.564718903
+DEBUG 13:20:33.130528 mgmt_system.go:276: new system member: rank 0, addr 172.17.0.2:10001, uri ofi+sockets://172.17.0.2:31416
+DEBUG 13:20:33.171223 instance_drpc.go:81: dRPC to index 0 (rank 0): SetRank/0B/40.10573ms
+DEBUG 13:20:33.173964 instance_drpc.go:81: dRPC to index 0 (rank 0): SetUp/0B/2.375442ms
+DEBUG 13:20:33.174292 mgmt_system.go:358: group update request: version: 1, ranks: 0
+c1f82c52f85d INFO 2023/04/16 13:20:33 daos_engine:0 DAOS I/O Engine (v2.0.1) process 9086 started on rank 0 with 1 target, 0 helper XS, firstcore 0, host c1f82c52f85d.
+DEBUG 13:20:33.188400 instance_drpc.go:81: dRPC to index 0 (rank 0): GroupUpdate/36B/13.940637ms
+DEBUG 13:20:33.188581 mgmt_system.go:230: sending 1 join responses
+DEBUG 13:20:33.189122 mgmt_system.go:429: MgmtSvc.Join dispatch, resp:&mgmt.JoinResp{state:impl.MessageState{NoUnkeyedLiterals:pragma.NoUnkeyedLiterals{}, DoNotCompare:pragma.DoNotCompare{}, DoNotCopy:pragma.DoNotCopy{}, atomicMessageInfo:(*impl.MessageInfo)(nil)}, sizeCache:0, unknownFields:[]uint8(nil), Status:0, Rank:0x0, State:0, FaultDomain:"", LocalJoin:true}
+DEBUG 13:20:33.190516 system.go:161: DAOS system join response: &{Rank:0 State:Unknown LocalJoin:true}
+DEBUG 13:20:33.191022 server.go:283: engines have started
+DEBUG 13:20:33.656342 mgmt_system.go:358: group update request: version: 2, ranks: 0
+DEBUG 13:20:33.657555 instance_drpc.go:81: dRPC to index 0 (rank 0): GroupUpdate/36B/1.043745ms

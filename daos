@@ -1,0 +1,733 @@
+启动服务器, 启动控制面, 
+server_start: /opt/daos/bin/daos_server start
+src/control/cmd/daos_server/main.go
+func main()
+  parseOpts(os.Args[1:], &opts, log) 解析参数
+    cfgCmd.loadConfig(opts.ConfigPath) 加载配置
+    cmd.Execute(cmdArgs)
+
+
+src/control/cmd/daos_server/start.go
+src/control/server/server.go
+func (cmd *startCmd) Execute(args []string)
+  func Start(log *logging.LeveledLogger, cfg *config.Server)
+    processConfig
+    newServer(ctx, log, cfg, faultDomain)
+    createServices
+    initNetwork 初始化网络
+      func netInit
+        netdetect.Init(ctx)
+          initLib  
+            version := C.hwloc_get_api_version()  hwloc.h 查看cpu拓扑: https://blog.csdn.net/whatday/article/details/106170613
+            https://www.open-mpi.org/projects/hwloc/doc/
+            topology, err := hpa.topology_init()
+              hwloc_topology_init
+          numNUMANodes
+          getCoreCount
+          initDeviceScan
+        netdetect.NumNumaNodes(ctx)
+        cfg.CheckFabric(ctx)
+          GetDeviceClassFn  func GetDeviceClass  cat /sys/class/net/enp2s0/type
+        updateFabricEnvars
+    initStorage -> func (srv *server) initStorage 初始化存储, 优化改造server.go
+    - 将只读活动配置文件写入运行时目录，而不是 /tmp/
+    - 在启动期间仅验证一次服务器配置
+    - 在启动期间仅初始化一次 netdetect 库
+      prepBdevStorage -> func (p *Provider) PrepareBdevs ->  func (f *BdevAdminForwarder) Prepare准备spdk块设备(bdev) iommuDetected iommu内存管理(有dmars条目,表示启用了iommu), 为自动生成功能的配置提供合理的 nr_hugepages。 这将考虑系统大页面大小、所有引擎上配置的最大目标数以及平均 I/O 工作负载所需的最小 1GB DMA 缓冲区上限, 为了以非根用户身份使用 NVMe 设备运行 DAOS 服务器，硬件必须支持虚拟化设备访问，并且必须在系统 BIOS 中启用它。 在 Intel® 系统上，此功能被命名为 Intel® Virtualization Technology for Directed I/O (VT-d)。 在 BIOS 中启用后，还必须在 Linux 内核中启用 IOMMU 支持, 要强制 SPDK 在 daos_server 运行时使用 UIO 而不是 VFIO，请在服务器配置文件中设置 disable_vfio ，但请注意，这需要以 root 身份运行 daos_server
+      hasBdevs := cfgHasBdevs(srv.cfg)
+      if hasBdevs 如果开启了spdk块设备层, 扫描nvme或scm设备: daos_server storage scan, 
+      srv.ctlSvc.NvmePrepare(prepReq) 准备nvme, -> func (scs *StorageControlService) NvmePrepare
+        p.bdev.Prepare(req) -> func (f *BdevAdminForwarder) Prepare -> f.SendReq("BdevPrepare", req, res) -> func (f *Forwarder) SendReq
+          pbinPath, err := common.FindBinary(f.pbinName) 找二进制daos_admin(/opt/daos/bin/daos_admin)
+            exec.LookPath(binName)
+            adjPath, err := GetAdjacentPath(binName)
+            os.Stat(adjPath)
+          res, err := ExecReq(ctx, f.log, pbinPath, req) 执行准备spdk块设备的BdevPrepare方法 -> func ExecReq(parent context.Context, log logging.Logger, binPath string, req *Request)
+            child := exec.CommandContext(ctx, binPath) p child.Path, p child.Args, p string(sendData) Method:Ping
+            conn := NewStdioConn("server", binPath, fromChild, toChild) 本地:server, 目标:daos_admin, 输入, 输出
+            os.Setenv("PATH", os.Getenv("PATH")+":/usr/sbin") 设置PATH
+            if err := child.Start() 启动子进程 daos_admin -> src/control/cmd/daos_admin/main.go
+            if _, err := conn.Write(sendData) 将请求数据通过管道写给daos_admin -> req, err := a.readRequest(conn)
+          src/control/cmd/daos_admin/handler.go
+          func (h *bdevPrepHandler) Handle
+            pRes, err := h.bdevProvider.Prepare(pReq)
+          func (p *Provider) Prepare 准备尝试执行所有必要的操作，以使 NVMe 组件可供 DAOS 使用。 如果设置了 Reset_，则将设备重新绑定到内核并重置大页的分配，否则将设备重新绑定到与 SPDK 兼容的用户空间驱动程序并分配大页
+            p.backend.Prepare(req) -> func (sb *spdkBackend) Prepare
+              sb.script.Prepare
+            BdevPrepare
+              func (h *bdevPrepHandler) Handle
+                h.bdevProvider.Prepare(pReq)
+                  func (s *spdkSetupScript) Prepare  spdkSetupPath      = "../share/daos/control/setup_spdk.sh", /opt/daos/share/daos/control/setup_spdk.sh, 初始化的时候, scriptPath: spdkSetupPath
+                  s.runCmd(s.log, env, s.scriptPath) 检查大页,为非root用户启用vfio权限, 最终调用spdk初始化脚本: spdk/scripts/setup.sh, 在运行 SPDK 应用程序之前，必须分配一些大页面，并且任何 NVMe 和 I/OAT 设备都必须与本机内核驱动程序解除绑定。 SPDK 包含一个脚本，可以在 Linux 和 FreeBSD 上自动执行此过程。 该脚本应以 root 身份运行。 它只需要在系统上运行一次, 参考spdk初始化文档: https://spdk.io/doc/getting_started.html
+      大页检查 hugePages, err := hpiGetter()  func GetHugePageInfo()  cat /proc/meminfo | grep -e "^Huge"
+      srv.ctlSvc.Setup() -> func (scs *StorageControlService) Setup() -> scs.ScmScan(storage.ScmScanRequest{}) -> func (f *ScmAdminForwarder) Scan -> f.SendReq("ScmScan", req, res) -> 给daos_admin发送存储类扫描命令
+        分层类型(tierCfg.Class)为file, 则跳过nvme流程, 分层类型为: Class type definitions中定义的dcpm, ram, nvme, kdev, file
+        否则执行nvme扫描: nvmeScanResp, err := scs.NvmeScan(storage.BdevScanRequest
+        func (n *NvmMgmt) Discover()
+        C.nvm_get_number_of_devices https://github.com/intel/ipmctl ipmctl is a utility for configuring and managing Intel® Optane™ Persistent Memory modules (PMem).
+        C.nvm_get_devices
+        func (cr *cmdRunner) GetPmemNamespaces()
+          ndctl list -N -v
+        scs.NvmeScan
+        scs.storage.SetBdevCache(*nvmeScanResp)
+    addEngines
+      registerTelemetryCallbacks
+      NvmeScan
+      createEngine
+      SetBdevCache
+      AddInstance
+    setupGrpc
+    registerEvents
+    srv.start(ctx, shutdown)
+      func (h *EngineHarness) Start
+        for _, ei := range h.Instances()
+          ei.Run
+
+func (ei *EngineInstance) Run
+  ei.format
+    awaitStorageReady
+    createSuperblock
+  ei.start
+  func (r *Runner) Start
+    r.Config.CmdLineArgs
+    r.Config.CmdLineEnv
+    return r.run(ctx, args, env, errOut)
+    func (r *Runner) run
+      binPath, err := common.FindBinary(engineBin) daos_engine
+      cmd := exec.Command(binPath, args...)
+      cmd.Env = env
+      cmd.Start() 启动engine
+
+
+processConfig
+  cfg.Validate(log)
+  checkFabricInterface(ec.Fabric.Interface, lookupNetIF)
+    net.InterfaceByName(name)
+  SaveActiveConfig
+    cfg.SaveToFile(activeConfig)
+  setDaosHelperEnvs
+     setenv(pbin.DaosAdminLogFileEnvVar, cfg.HelperLogFile) 特权帮助日志 DAOS_ADMIN_LOG_FILE DAOS_FIRMWARE_LOG_FILE
+  getFaultDomain
+    getDefaultFaultDomain
+      system.NewFaultDomainFromString(domainStr) /rack0/pdu1/hostname PDU（Power Distribution Unit） 电源分配单元
+
+
+type server struct
+newServer(ctx, log, cfg, faultDomain)
+  harness := NewEngineHarness(log).WithFaultDomain(faultDomain) type EngineHarness struct 引擎套子
+
+
+
+srv.createServices(ctx) scaffolding 创建rpc，事件服务等脚手架
+  dbReplicas, err := cfgGetReplicas 访问点
+  sysdb, err := system.NewDatabase  control_raft
+    RaftDir:    cfgGetRaftDir(srv.cfg)
+    db.setReplica(repAddr)
+  srv.membership = system.NewMembership
+  cliCfg := control.DefaultConfig localhost:10001
+  rpcClient := control.NewClient
+  srv.pubSub = events.NewPubSub(ctx, srv.log) 事件分发原语
+    go ps.eventLoop(ctx)
+      for
+        select
+          ps.handlers[newSub.topic]
+          ps.publish(ctx, event)
+          ps.updateFilter(fu)
+  srv.OnShutdown(srv.pubSub.Close)
+  srv.evtForwarder = control.NewEventForwarder(rpcClient, srv.cfg.AccessPoints)
+  srv.evtLogger = control.NewEventLogger(srv.log)
+    newSyslogger(sev.SyslogPriority(), flags)
+  srv.ctlSvc = NewControlService(srv.log, srv.harness, srv.cfg, srv.pubSub)
+    NewStorageControlService
+      newStorageControlService DefaultProvider
+  srv.mgmtSvc = newMgmtSvc(srv.harness, srv.membership, sysdb, rpcClient, srv.pubSub)
+
+
+
+启用引擎, daos_engine, 由server拉起engine, engine启动流程
+opts.name = "daos_engine"
+engine/init.c
+main(int argc, char **argv)
+parse 解析命令行参数: /usr/bin/ubip_engine -t 24 -x 2 -g ubip_server -d /var/run/ubip_server -T 2 -n /mnt/ubip0/ubip_nveme.conf -p 0 -I 0 -r 24567 -H 2 -s /mnt/ubip0
+-p 绑定到哪个numa节点(pinned_numa_node)
+-t 24 targets数量
+-x xshelpernr 2个辅助线程
+
+docker
+"/opt/daos/bin/daos_engine",  "-t",  "1",  "-x",  "0",  "-g",  "daos_server",  "-d",  "/var/run/daos_server",  "-T",  "2",  "-n",  "/mnt/daos/daos_nvme.conf",  "-I",  "0",  "-r",  "8192",  "-H",  "2",  "-s",  "/mnt/daos"
+
+禁用透明大页
+daos_register_sighand(SIGILL, print_backtrace); 注册自己的信号和打印堆栈
+server_init
+  hlc_recovery_begin
+  gethostname
+  daos_debug_set_id_cb(server_id_cb)
+  daos_debug_init 日志级别 d_debug_data dlog_fac d_log_open D_LOG_STDERR_IN_LOG 合并错误消息 如何接管fabric日志？ if （merge）客户端动态开日志
+  freopen setlinebuf fileno
+  d_tm_init 遥测指标初始化
+  dss_engine_metrics_init
+  d_tm_record_timestamp
+  drpc_init 初始化drpc客户端
+  register_dbtree_classes 注册数据库树, b树
+    dbtree_class_register
+  dss_topo_init 初始服务器拓扑, numa, cpu core, bitmap位图等
+  abt_init argobots初始化, 机器人,
+    atoi(env) 环境变量转整型
+    set_abt_max_num_xstreams(max(nrequested, nrequired)) 两者中的较大值, 设置环境变量 ABT_MAX_NUM_XSTREAMS, 输入整型, 转为字符串char*
+      D_ASPRINTF(value, "%d", n);
+    ABT_init(argc, argv)
+  dss_module_init 服务端模块初始化
+    drpc_hdlr_init 注册表 static drpc_handler_t *registry_table 静态 drpc_handler_t *注册表, 函数指针
+  dss_ctx_nr_get 获取cart上下文总数
+  crt_init_opt 初始化网络层
+  if (dss_mod_facs & DSS_FAC_LOAD_CLI) 如果需要加载客户端软件栈,默认不执行
+    daos_init 
+  daos_hhash_init 初始化hash表
+    daos_hhash_init_feats(D_HASH_FT_GLOCK | D_HASH_FT_LRU)
+      d_hhash_create(feats | D_HASH_FT_NO_KEYINIT_LOCK, D_HHASH_BITS, &daos_ht.dht_hhash) 创建全局hash表 daos_ht
+  pl_init 初始化放置模块, 创建放置映射hash表
+  d_hhash_set_ptrtype 服务端使用指针类型的控制器
+  ds_iv_init
+    D_INIT_LIST_HEAD(&ds_iv_ns_list) 初始化iv,ns链表头
+    D_INIT_LIST_HEAD(&ds_iv_class_list)
+    ds_iv_ns_tree_topo = crt_tree_topo(CRT_TREE_KNOMIAL, 4) 初始化树拓扑,位运算,移位,或
+  modules_load 加载模块信息: vos, rdb, rsvc, security, mgmt, dtx, pool, cont, obj, rebuild
+    dss_module_load
+      lmod->lm_dss_mod = smod 设置加载模块为动态打开的模块
+      d_list_add_tail(&lmod->lm_lk, &loaded_mod_list) 动态打开 dlopen,并加入链表
+  mem_leak_check_start();
+  hlc_recovery_end 结束 HLC 恢复
+  dss_set_start_epoch
+  dss_module_init_all
+    dss_register_key
+    d_list_for_each_entry_safe(lmod, tmp, &loaded_mod_list 遍历之前加载的模块链表
+      dss_module_init_one(lmod, &fac)
+        rc = smod->sm_init() // vos_mod_init, 
+  dss_srv_init 初始化服务(服务初始化)
+    dss_tls_init(DAOS_SERVER_TAG, 0, -1)
+    vos_db_init(dss_storage_path)  sys_db.c dss_storage_path=/mnt/daos
+    bio_nvme_init 全局nvme初始化
+      d_getenv_bool
+      open(nvme_conf, O_RDONLY, 0600) 打开nvme配置文件
+      smd_init(db) 服务元数据管理(每个服务) Per-Server Metadata Management (SMD),smd使用sysdb作为kv存储元数据
+      spdk_bs_opts_init 将 spdk_bs_opts 结构初始化为默认的 blobstore 选项值。
+      bio_spdk_env_init 环境初始化
+        spdk_env_opts_init(&opts) 初始化选项 lib/env_dpdk/init.c
+        bio_add_allowed_alloc
+          read_config
+            spdk_json_parse
+          spdk_json_find_array
+          check_vmd_status
+          add_bdevs_to_opts
+        spdk_env_init 初始化或重新初始化环境库。 对于初始化，必须在使用此库中的任何其他函数之前调用它。 对于重新初始化，参数 `opts` 必须设置为 NULL，并且必须在同一进程中通过 spdk_env_fini() 完成环境库后调用
+          pci_env_reinit
+          build_eal_cmdline
+            push_arg
+          rte_eal_init(g_eal_cmdline_argcount, dpdk_args)  初始化环境抽象层 (EAL)。 此函数将仅在 MAIN lcore 上执行，并尽快在应用程序的 main() 函数中执行。 它将 WORKER lcores 置于 WAIT 状态。
+          spdk_env_dpdk_post_init
+        spdk_unaffinitize_thread 移除当前线程cpu亲和性
+        spdk_thread_lib_init 初始化线程库。 必须在分配任何线程之前调用一次。
+    bio_register_bulk_ops(crt_bulk_create, crt_bulk_free)
+    dss_xstreams_init
+    bio_nvme_ctl  操纵全局 NVMe 配置/状态
+    drpc_listener_init 启动drpc监听
+      generate_socket_path 生成socket路径 drpc_listener_socket_path=/var/run/daos_server/daos_engine_pid_sock
+        drpc_listener_start_ult
+  server_init_state_init
+  drpc_notify_ready
+  server_init_state_wait
+  dss_module_setup_all 初始化服务端所有模块
+  crt_register_event_cb(dss_crt_event_cb, NULL)
+  crt_register_hlc_error_cb(dss_crt_hlc_error_cb, NULL)
+  dss_xstreams_open_barrier
+  d_tm_record_timestamp
+  d_tm_set_counter(metrics->rank_id, dss_self_rank())
+
+
+
+vos_db_init
+  vos_db.db_pub.sd_fetch	  = db_fetch
+  ...
+  db_open_create
+    mkdir(vdb->db_path, 0777)
+    vos_pool_create
+    vos_pool_open
+    vos_cont_create
+    db_upsert
+
+
+dss_xstreams_init
+  dss_start_xs_id 0,1..., 计算偏移, 如: xs_id = dss_sys_xs_nr + dss_tgt_nr + i;
+    hwloc_bitmap_first 计算位图中的第一个索引（最低有效位）
+    dss_start_one_xstream(obj->cpuset, xs_id) 用计算的cpu集启动, 内部绑核
+      dss_xstream_alloc(cpus)
+        dx->dx_cpuset = hwloc_bitmap_dup(cpus)
+      dss_sched_init
+        ABT_sched_def		sched_def
+        .init	= sched_init,
+        .run	= sched_run,
+        sched_info_init(dx)
+          info->si_cur_ts = daos_getmtime_coarse() 毫秒
+          d_hash_table_create si_pool_hash 创建hash表 大小为2的4次方=16
+          prealloc_requests(info, SCHED_PREALLOC_INIT_CNT) 预分配请求 8192
+            D_ALLOC_PTR(req)
+            D_INIT_LIST_HEAD(&req->sr_link)
+            d_list_add_tail(&req->sr_link, &info->si_idle_list) 插入链表 
+        sched_create_pools(dx); 创建3个池 从预定义类型创建新池。 ABT_pool_create_basic() 创建一个新池，由池类型 kind、访问类型 access 和自动标志 automatic 给出，并通过 newpool 返回其句柄。 kind 指定 newpool 的实现。 有关预定义池的详细信息，请参阅#ABT_pool_kind。 access 提示创建的池的使用。 Argobots 可以为具有更受限制的访问类型的池选择优化的实现（#ABT_POOL_ACCESS_PRIV 是最严格的访问类型）。 有关详细信息，请参阅#ABT_pool_access。 如果 automatic 为 ABT_FALSE，则 newpool 不会自动释放，因此 newpool 在使用后必须由 ABT_pool_free() 释放，除非 newpool 与主执行流的主调度程序相关联。
+          ABT_pool_create_basic(ABT_POOL_FIFO, ABT_POOL_ACCESS_MPSC 创建的池可能只被一个执行流弹出
+          ABT_sched_config_create
+          ABT_sched_create 
+          使用调度程序定义创建新的调度程序。ABT_sched_create() 创建一个新的调度器，由定义 def 和调度器配置 config 定义，并通过 newsched 返回它的句柄。def 必须定义所有非可选函数。 有关详细信息，请参阅 ABT_sched_def。newsched 与 pools 数组关联，它有 num_pools 个 ABT_pool 句柄。 如果池的第 i 个元素是 ABT_POOL_NULL，则新创建具有默认池配置的默认 FIFO 池并用作第 i 个池。
+      ABT_xstream_create_with_rank 创建具有特定等级的新执行流。 ABT_xstream_create_with_rank() 使用调度程序 sched 创建一个新的执行流，并通过 newxstream 返回其句柄。 如果 sched 为 ABT_SCHED_NULL，则使用具有基本 FIFO 队列和默认调度程序配置的默认调度程序。
+      ABT_thread_attr_create
+      ABT_thread_attr_set_stacksize 在 ULT 属性中设置堆栈大小。 ABT_thread_attr_set_stacksize() 设置 ULT 属性 attr 中的堆栈大小 stacksize（以字节为单位）。 如果堆栈内存已由 ABT_thread_attr_set_stack() 设置，此例程将更新堆栈大小，同时将堆栈内存保留在 attr 中。
+      ABT_thread_create dss_srv_handler
+
+
+dss_srv_handler 服务控制器，设置cpu亲和性，初始化TLS，crt， nvme，gc, nvme, 启动网络poll
+  dss_xstream_set_affinity 设置亲和性
+  hwloc_set_cpubind 绑核
+  hwloc_set_membind 将当前进程或线程的默认内存绑定策略设置为更喜欢由 set 指定的 NUMA 节点。 这是最便携的形式，因为它允许 hwloc 使用基于进程的操作系统功能或基于线程的操作系统功能，具体取决于可用的功能。 如果指定了 ::HWLOC_MEMBIND_BYNODESET，则集合被视为节点集。 否则它是一个cpuset。
+  dss_tls_init 初始化本地存储, 为特定线程分配 dss_thread_local_storage 并将指针存储在特定于线程的值中，该值可以随时使用 dss_tls_get() 获取。
+    dss_thread_local_storage_init obj_tls_init
+      dtls->dtls_values[i] = dmk->dmk_init(xs_id, tgt_id) 
+      dmk->dmk_init(xs_id, tgt_id) -> dss_srv_tls_init | vos_tls_init 
+    pthread_setspecific(dss_tls_key, dtls)
+  dss_get_module_info
+    dss_module_key_get
+  crt_context_create
+  crt_context_register_rpc_task dss_rpc_hdlr dss_iv_resp_hdlr 注册两个公共回调
+  crt_context_idx
+  tse_sched_init 使用可选的完成回调和指向用户数据的指针初始化调度程序。 调用者负责完成或取消调度程序。
+  bio_xsctxt_alloc 初始化spdk环境和nvme上下文 
+  dss_nvme_poll_ult
+  for (;;)
+    crt_progress
+
+vos_tls_init 初始化vos本地线程存储
+  D_INIT_LIST_HEAD(&tls->vtl_gc_pools)
+  vos_obj_cache_create(LRU_CACHE_BITS 创建lru
+  d_uhash_create vtl_pool_hhash vtl_cont_hhash
+  umem_init_txd(&tls->vtl_txd) 为避免为每个事务分配阶段数据，umem 用户应准备每个 xstream 阶段数据并通过 umem_init_txd() 对其进行初始化，此每个 xstream 阶段数据将用于同一 xstream 中的所有事务
+    txd->txd_magic = UMEM_TX_DATA_MAGIC
+  vos_ts_table_alloc
+    vos_ts_copy VOS_TS_TYPE_CONT 不执行此逻辑
+      daos_dti_copy
+        *des = *src 赋值
+        memset(des, 0, sizeof(*des)) 置0
+    lrua_array_alloc
+  d_tm_add_metric
+
+dss_nvme_poll_ult
+  dss_get_module_info
+  dss_current_xstream
+  bio_nvme_poll poll nvme完成事件
+    spdk_thread_poll
+    is_bbs_owner
+    bio_bs_monitor
+    is_init_xstream
+    scan_bio_bdevs
+    bio_led_event_monitor
+  ABT_thread_yield
+
+
+vos线程模型
+bio_nvme_poll
+
+
+nvme配置文件
+/mnt/ubip1/ubip_nvme.conf
+
+subsystem: bdev
+trtype: PCIe
+method: bdev_nvme_attach_controller
+
+
+核心数
+主线程XS
+首选线程数
+
+dss_topo_init 初始化拓扑
+  numa_obj = hwloc_get_obj_by_depth
+  dss_tgt_nr = dss_tgt_nr_get numa，核， 分配算法  超额认购 oversubscribe 计算每个引擎多少个target
+
+
+core 核。 一个计算单元（可以由多个 PU Processing Unit，也就是逻辑处理器共享）
+处理器单元的缩写（不是进程！）。 hwloc 识别的最小物理执行单元。 例如，一个核心上可能有多个 PU（例如，硬件线程）。
+当多台机器形成整体单一系统映像 (SSI) 时，可以使用附加系统类型，例如 Kerrighed。
+最后，请注意，一个对象可以由其在拓扑图中的数字“深度”表示。
+水平类型的宽度: 
+
+深度
+查看硬件信息 hwloc-info 
+depth 0:	1 Machine (type #1)
+depth 1:	2 NUMANode (type #2)
+depth 2:	2 Package (type #3) 
+depth 3:	2 L3Cache (type #4)
+depth 4:	56 L2Cache (type #4)
+depth 5:	56 L1dCache (type #4)
+depth 6:	56 L1iCache (type #4)
+depth 7:	56 Core (type #5)
+depth 8:	56 PU (type #6)
+Special depth -3:	9 Bridge (type #9)
+Special depth -4:	7 PCI Device (type #10)
+Special depth -5:	10 OS Device (type #11)
+
+
+
+学习路线:
+  初始化  *
+  格式化
+  创建池
+  创建容器
+  挂载
+  IO路径
+  故障后的重建,rebuild
+
+
+register_dbtree_classes
+  dbtree_class_register(DBTREE_CLASS_KV dbtree_kv_ops
+    if (!(tree_feats & (BTR_FEAT_UINT_KEY | BTR_FEAT_DIRECT_KEY))) 利用位运算判断, 如果没有设置唯一键或直接键
+    btr_class_registered[tree_class].tc_ops = ops 注册操作(利用数组index索引树的类型)
+    btr_class_registered[tree_class].tc_feats = tree_feats 注册树类型特征位
+
+
+dss_module_init_one
+  rc = smod->sm_init() 初始化单个模块 -> vos_mod_init
+  dss_register_key(smod->sm_key)
+  daos_rpc_register(smod->sm_proto_fmt[i], smod->sm_cli_count[i]... 注册RPC CRT_PROTO_OPC
+  drpc_hdlr_register_all(smod->sm_drpc_handlers) 注册所有控制器
+    drpc_hdlr_register
+      registry_table[module_id] = handler 注册drpc控制器, 模块id也就是对应的drpc枚举中的索引号
+
+
+模块列表, 模块初始化, vos,rdb,rsvc,security,mgmt,dtx,pool,cont,obj,rebuild
+关键字: .sm_name 模块名
+enum daos_module_id 模块ID
+vos_srv -> vos_srv_module
+vos_mod_init vos初始化
+  vos_pool_settings_init vos池初始化设置
+    pmemobj_ctl_set(NULL, "heap.arenas_assignment_type", &atype) 线程使用1个全局的arena POBJ_ARENAS_ASSIGNMENT_GLOBAL 全局模式
+  vos_cont_tab_register 注册容器 VOS_BTR_CONT_TABLE class: 14
+  vos_dtx_table_register
+    dbtree_class_register(VOS_BTR_DTX_ACT_TABLE 注册DTX活动表
+    dbtree_class_register(VOS_BTR_DTX_CMT_TABLE 注册提交表
+  vos_obj_tab_register
+    dbtree_class_register(VOS_BTR_OBJ_TABLE 注册对象索引表(OI) 
+  obj_tree_register
+    dbtree_class_register(ta->ta_class, ta->ta_feats 注册db树 vos_btr_attrs: VOS_BTR_DKEY, VOS_BTR_AKEY, VOS_BTR_SINGV, vos_dkey, vos_akey, singv
+  vos_ilog_init 初始化全局化身日志
+    ilog_init
+  d_getenv_int DAOS_VOS_AGG_THRESH 触发vos聚合的块数=256块, 总大小256*4K=1MB
+
+
+rdb初始化
+rdb_module_init
+  rdb_hash_init
+    d_hash_table_create_inplace rdb_hash 加锁创建rdb_hash表
+
+
+rsvc初始化
+rsvc_module_init
+  d_hash_table_create_inplace rsvc_hash
+
+安全模块security默认加载
+init
+  ds_sec_server_socket_path = /var/run/daos_server/daos_server.sock
+
+mgmt 管理模块初始化
+ds_mgmt_init
+  ds_mgmt_system_module_init
+    crt_group_lookup
+    d_iov_set
+    ds_rsvc_class_register(DS_RSVC_CLASS_MGMT, &mgmt_svc_rsvc_class)
+      rsvc_classes[id] = class 将类添加到rsvc类的数组中
+
+
+dtx 初始化
+dtx_init
+  设置阈值
+  dbtree_class_register(DBTREE_CLASS_DTX_CF
+  dbtree_class_register(DBTREE_CLASS_DTX_COS
+
+
+池初始化
+pool
+init(void) .sm_init	= init
+  ds_pool_cache_init 缓存初始化
+    daos_lru_cache_create 创建lru缓存,内存中
+      d_hash_table_create_inplace D_HASH_FT_LRU dlc_htable 创建lru_hash表
+      D_INIT_LIST_HEAD 初始化链表头 驱逐LRU缓存条目时避免全扫描
+  ds_pool_hdl_hash_init
+    d_hash_table_create pool_hdl_hash 创建池控制器哈希表
+  ds_pool_iv_init 添加服务器 iv 树以在服务器之间共享值。 通过iv tree共享pool map，只先做同步更新
+    ds_iv_class_register IV_POOL_MAP 通过iv传播属性
+  ds_pool_prop_default_init DAOS-7254 聚合：将 EC 聚合与 VOS 聚合分开 (#5667), 将 EC agg 和 VOS aggregate 分离成两个 ULT，避免 iv fetch，dsc_pool/container open 每次回调，同时保证 EC aggregation 可以在删除快照时触发。添加 DAOS_EC_AGG 环境以禁用 EC 聚合以进行测试
+    entry = daos_prop_entry_get(&pool_prop_default, DAOS_PROP_PO_ACL)
+    &prop->dpp_entries[i]
+    entry->dpe_val_ptr = ds_sec_alloc_default_daos_pool_acl()
+      alloc_default_daos_acl_with_perms
+        alloc_ace_with_access
+          daos_ace_create
+        daos_acl_create
+          flatten_aces 扁平化
+  ds_pool_rsvc_class_register DS_RSVC_CLASS_POOL 注册副本服务
+  bio_register_ract_ops 设置nvme操作表, 故障回调, 重新加入的回调, io错误的回调
+
+
+cont 初始化容器服务
+init(void)
+  ds_oid_iv_init
+    ds_iv_class_register 注册iv类
+  ds_cont_iv_init
+    ds_iv_class_register 注册各种类
+  ds_cont_prop_default_init
+
+obj 对象初始化
+obj_mod_init(void)
+  obj_utils_init
+  obj_class_init
+    D_ALLOC_ARRAY(oc_ident_array, OC_NR)
+  obj_ec_codec_init
+
+
+rebuild 重建初始化
+init(void)
+  D_INIT_LIST_HEAD rg_tgt_tracker_list 所有tagert
+  rg_global_tracker_list 主
+  ABT_mutex_create(&rebuild_gst.rg_lock) 重建全局锁
+  rebuild_iv_init
+    ds_iv_class_register
+
+启动drpc监听用户级线程
+drpc_listener_start_ult
+  setup_listener_ctx(&ctx)
+    unlink(sockpath)
+    listener = drpc_listen(sockpath, drpc_hdlr_process_msg)  unix domain socket 域套接字, 创建了一个新系统 XS (1)，绑定到与 XS 0 相同的 CPU 核心。dRPC 侦听器循环专门在这个 XS 上运行。 当 dRPC 消息到达时，drpc_progress 在 XS 0 上启动一个新的 ULT 来处理消息。 它必须在 XS 0 上才能与只能在 XS 0 上运行的服务进行交互。为 dRPC 上下文结构添加了引用计数。 drpc_close 现在要么减少引用计数，要么如果这是最后一个引用，则关闭/释放套接字。 删除了现在不再使用的 drpc_recv
+    drpc_hdlr_process_msg drpc处理消息的控制器
+      unixcomm_listen(sockaddr, O_NONBLOCK, &comm)
+        new_unixcomm_socket(flags, &comm)
+          comm->fd = socket(AF_UNIX, SOCK_SEQPACKET, 0) 创建socket , SOCK_SEQPACKET为固定最大长度的数据报提供有序的、可靠的、基于双向连接的数据传输路径； 消费者需要在每次输入系统调用时读取整个数据包, 协议参数, 该协议指定要与套接字一起使用的特定协议。 通常只存在一个协议来支持给定协议族中的特定套接字类型，在这种情况下 protocol 可以指定为 0。但是，可能存在许多协议，在这种情况下必须在此指定一个特定的协议 方式。要使用的协议号特定于要进行通信的“通信域”； 请参阅协议 (5)。 有关如何将协议名称字符串映射到协议编号的信息，请参阅 getprotoent(3)
+          fcntl(comm->fd, F_SETFL, flags)
+        fill_socket_address(sockaddr, &address)
+        bind(comm->fd 在 SOCK_STREAM 套接字可以接收连接之前，通常需要使用 bind() 分配本地地址（请参阅 accept(2)）
+        listen(comm->fd, SOMAXCONN) listen() 将 sockfd 引用的套接字标记为被动套接字，即，作为将用于使用 accept(2) 接受传入连接请求的套接字。
+sockfd 参数是一个文件描述符，它引用 SOCK_STREAM 或 SOCK_SEQPACKET 类型的套接字。
+backlog 参数定义了 sockfd 的挂起连接队列可能增长到的最大长度。 如果连接请求在队列已满时到达，则客户端可能会收到带有 ECONNREFUSED 指示的错误，或者，如果底层协议支持重传，则可能会忽略该请求，以便稍后重新尝试连接成功
+      init_drpc_ctx(ctx, comm, handler)
+        ctx->handler = handler 赋值 = drpc_hdlr_process_msg
+    *new_ctx = drpc_progress_context_create(listener)
+  dss_ult_create(drpc_listener_run
+    ult_create_internal(func
+      stream_id = sched_ult2xs(xs_type, tgt_idx) 获取执行流id, 根据映射关系
+      dx = dss_get_xstream(stream_id) 通过数组角标
+      ABT_thread_attr_set_stacksize(attr, stack_size)
+      sched_create_thread(dx, func, arg, attr, ult, flags)
+        sched_xstream_stopping?
+         daos_abt_thread_create(cur_dx->dx_sp, dss_free_stack_cb, abt_pool, func, arg, t_attr, thread)  max_map_count文件包含限制一个进程可以拥有的VMA(虚拟内存区域)的数量: sysctl vm.max_map_count 默认 64K
+         ABT_thread_create -> drpc_listener_run
+          set_listener_running(true)
+          while (is_listener_running()) 
+          rc = drpc_progress(ctx, 1000)
+            drpc_progress_context_to_unixcomms(ctx, &comms)
+              num_comms = get_open_drpc_session_count(ctx)
+            unixcomm_poll(comms, num_comms, timeout_ms)
+              fds[i].events = POLLIN | POLLPRI
+              poll_rc = poll(fds, num_comms, timeout_ms) 轮训
+              comms[i].activity = poll_events_to_unixcomm_activity 获取激活原因
+            process_activity(ctx, comms, num_comms) 处理激活的事件
+              process_all_session_activities(ctx, comms, num_comms)
+                process_session_activity
+                  handle_incoming_call
+                    drpc_recv_call
+                      get_incoming_call
+                        unixcomm_recv
+                        drpc__call__unpack
+                    drpc_response_create
+                    create_call_ctx
+                    dss_ult_create(drpc_handler_ult
+              process_listener_activity(ctx, comms, num_comms)
+                drpc_accept
+                d_list_add(&session_node->link
+          ABT_thread_yield()
+          drpc_progress_context_close(ctx)
+
+
+drpc_handler_ult 执行控制器
+  ctx->session->handler(ctx->call, ctx->resp) -> drpc_hdlr_process_msg
+  drpc_hdlr_process_msg
+    handler = drpc_hdlr_get_handler(request->module) 根据请求中的模块id, 获取请求对应的模块
+      handler = registry_table[module_id] 从注册表中获取控制器
+    handler(request, resp) 处理请求
+  rc = drpc_send_response(ctx->session, ctx->resp)
+free_call_ctx(ctx)
+
+
+static struct vos_sys_db	vos_db
+vos_db_init vos初始化 元数据初始化
+  vos_db_init_ex(db_path, NULL, false, false)
+  memset(&vos_db, 0, sizeof(vos_db)) 系统db置零 /mnt/daos/daos_sys/sys_db 系统数据库sys_db
+  vos_db.db_poh = DAOS_HDL_INVAL
+  vos_db.db_pub.sd_fetch	  = db_fetch ...
+  uuid_parse(SYS_DB_POOL, vos_db.db_pool) 保留系统池,容器的uuid
+  db_open_create(&vos_db.db_pub, !!create) 创建或打开 vos_pool_open
+    access 先检查文件是否存在 第二轮创建
+    vos_pool_create 创建vosp 系统scm池(128MB) jump
+    vos_cont_create(vdb->db_poh, vdb->db_cont) 在vos池中(vpool)创建一个容器
+      cont_df_lookup(vpool, &ukey, &args)
+        dbtree_lookup(vpool->vp_cont_th, &key, &value) b树搜索
+          dbtree_fetch(toh, BTR_PROBE_EQ, DAOS_INTENT_DEFAULT, key, NULL 探测键等于提供键的记录
+            btr_probe_key(tcx, opc, intent, key)
+              btr_hkey_gen(tcx, key, hkey)
+              btr_probe(tcx, probe_opc, intent, key, hkey) 查找b树
+                btr_context_set_depth
+                btr_cmp 二分查找
+                btr_node_is_leaf
+                btr_trace_set
+                btr_node_child_at
+                ... b树
+      umem_tx_begin(vos_pool2umm(vpool), NULL)
+      dbtree_update(vpool->vp_cont_th, &key, &value)
+        btr_upsert(tcx, BTR_PROBE_EQ, DAOS_INTENT_UPDATE, key, val) 更新或插入
+      umem_tx_end(vos_pool2umm(vpool), rc)
+    vos_cont_open(vdb->db_poh, vdb->db_cont, &vdb->db_coh)
+      cont_lookup(&ukey, &pkey, &cont)
+        d_uhash_link_lookup(vos_cont_hhash_get(), key, pkey)
+      cont_df_lookup(pool, &ukey, &args)
+      uuid_copy(cont->vc_id, co_uuid)
+      cont->vc_pool	 = pool 设置容器属性
+      D_INIT_LIST_HEAD(&cont->vc_dtx_act_list)
+      gc_check_cont(cont) 检查是否需要加入gc列表
+        D_INIT_LIST_HEAD(&cont->vc_gc_link)
+        d_list_add_tail(&cont->vc_gc_link, &cont->vc_pool->vp_gc_cont)
+      dbtree_open_inplace_ex(&cont->vc_cont_df->cd_obj_root
+      lrua_array_alloc(&cont->vc_dtx_array 分配LRU数组, 活动的dtx记录
+      dbtree_create_inplace_ex(VOS_BTR_DTX_ACT_TABLE
+      dbtree_create_inplace_ex(VOS_BTR_DTX_CMT_TABLE
+      vea_hint_load(&cont->vc_cont_df->cd_hint_df[i]
+      vos_dtx_act_reindex(cont)
+        lrua_allocx_inplace(cont->vc_dtx_array
+        dbtree_upsert(cont->vc_dtx_active_hdl
+        dae->dae_start_time = crt_hlc_get()
+        d_list_add_tail(&dae->dae_link, &cont->vc_dtx_act_list) dtx可能在其他线程中遍历此链表
+      cont_insert(cont, &ukey, &pkey, coh)
+        d_uhash_ulink_init(&cont->vc_uhlink, &co_hdl_uh_ops)
+        d_uhash_link_insert(vos_cont_hhash_get(), key 插入uuid hash表
+    rc = db_upsert(db, SYS_DB_MD, &key, &val) metadata元数据,做容器dkey
+      db_io_init(&io, table, key, val)
+        io->io_iod.iod_type = DAOS_IOD_SINGLE 一个不可分割的值以原子方式更新
+      vos_obj_update(vdb->db_coh 更新指定对象的记录。 如果sql中没有提供输入缓冲区，则该函数返回新分配的地址来存放记录，上层可以直接向这些地址写入数据（rdma模式）
+        vos_obj_update_ex
+          vos_update_begin
+            vos_check_akeys(iod_nr, iods)
+            vos_ioc_create
+              vos_ilog_fetch_init(&ioc->ic_dkey_info)
+                ilog_fetch_init(&info->ii_entries)
+              vos_ilog_fetch_init(&ioc->ic_akey_info)
+              vos_ioc_reserve_init(ioc, dth)
+              vos_ts_set_allocate
+                vos_kh_clear()
+                vos_ts_set_append_cflags(*ts_set, cflags)
+              bio_iod_alloc
+              bsgl = bio_iod_sgl(ioc->ic_biod, i)
+              rc = bio_sgl_init(bsgl, iov_nr)
+            vos_space_hold(vos_cont2pool
+              vos_space_query(pool, &vps, false)
+                pmemobj_ctl_get(pool->vp_umm.umm_pool stats.heap.curr_allocated
+                vea_query(pool->vp_vea_info, attr, stat) 查询nvme
+                  dbtree_iterate(vsi->vsi_md_free_btr count_free_persistent
+                    verify_free_entry
+                  dbtree_iterate count_free_transient
+                  d_binheap_size
+                  d_binheap_root
+                    d_binheap_find
+                      d_binheap_find_locked
+                        d_binheap_pointer
+              estimate_space 估计更新请求将消耗多少空间。 这个保守的估计总是假设新对象、dkey、akey 将被创建用于更新
+                umem_slab_usize
+                scm += estimate_space_key(umm, dkey)
+                vos_media_select
+            dkey_update_begin(ioc)
+              iod_set_cursor
+              akey_update_begin
+                vos_media_select(vos_cont2pool(ioc->ic_cont)
+                vos_reserve_single(ioc, media, size)
+                  reserve_space(ioc, DAOS_MEDIA_SCM, scm_size, &off)
+                    vos_reserve_scm
+                      umem_reserve
+                    vos_reserve_blocks
+                      vea_reserve
+                  vos_irec_init_csum(irec, value_csum)
+                  bio_addr_set_hole
+                vos_reserve_recx(ioc, media, size, recx_csum
+                  bio_addr_set_hole
+                  vos_dedup_lookup 去重
+                    d_hash_rec_find(pool->vp_dedup_hash
+                  iod_reserve
+                    bio_iod_sgl 获取 io 描述符的指定 SG 列表的辅助函数
+          vos_obj_copy
+            bio_iod_prep
+              iterate_biov(biod, arg ? bulk_map_one : dma_map_one, arg)
+              dma_rw(biod)
+            bio_iod_copy
+              iterate_biov(biod, copy_one, &arg)
+            bio_iod_post
+              dma_rw(biod)
+              bdb = iod_dma_buf(biod)
+              dma_drop_iod(bdb)
+                ABT_cond_broadcast(bdb->bdb_wait_iods)
+          vos_update_end
+            vos_dedup_verify_fini
+            vos_ts_set_add
+            vos_tx_begin
+            vos_dtx_commit_internal
+            vos_obj_hold(vos_obj_cache_current()
+            dkey_update
+            vos_ts_set_check_conflict
+            vos_space_unhold
+
+
+
+
+
+
+
+dss_srv_tls_init
+
+
+
+dsm_tls_init
+  ds_cont_child_cache_create
+  daos_lru_cache_create cont_child_cache_ops
+  ds_cont_hdl_hash_create
+
+obj_tls_init
+  每个IO指标
+
+
+daos_admin:
+src/control/cmd/daos_admin/main.go -> main
+  app := pbin.NewApp().WithAllowedCallers("daos_server")
+  addMethodHandlers(app)
+  app.Run() -> func (a *App) Run()
+    parentName, err := a.process.ParentProcessName() -> func (p *Process) ParentProcessName() 获取父进程名, 只允许daos_server调用
+      pPath, err := os.Readlink(fmt.Sprintf("/proc/%d/exe", os.Getppid()))
+    conn := NewStdioConn(a.Name(), parentName, a.input, a.output) 设置读写管道, 连通父子进程
+    req, err := a.readRequest(conn) 从连接中读父进程写过来的数据
+    resp := a.handleRequest(req) 调用控制器处理
+  func (a *App) handleRequest
+    reqHandler, ok := a.handlers[req.Method] 获取方法,如: BdevPrepare
+    reqHandler.Handle(a.log, req) -> app.AddHandler("BdevPrepare", &bdevPrepHandler{}) -> func (h *bdevPrepHandler) Handle
+    h.setupProvider(log) 设置后端默认提供者为spdk, spdkBackend struct
+    h.bdevProvider.Prepare(pReq) -> func (sb *spdkBackend) Prepare Prepare 将对请求的目标用户执行查找以验证是否存在，然后准备非 VMD NVMe 设备以与 SPDK 一起使用。 如果请求中的 EnableVmd 为真，则尝试使用 VMD NVMe 设备。 如果请求中的 DisableCleanHugePages 为 false，则清除目标用户拥有的所有剩余大页面。 后端调用执行 SPDK setup.sh 脚本以重新绑定由服务器配置文件中提供的 bdev_include 和 bdev_exclude 列表过滤器选择的 PCI 设备
+      return sb.prepare -> func (sb *spdkBackend) prepare
+        sb.script.Prepare(&req) -> func (s *spdkSetupScript) Prepare Prepare执行设置脚本以分配大页面并从通用内核驱动程序中取消绑定 PCI 设备（没有活动挂载点）以与 SPDK 一起使用。 如果不设置允许列表参数，则默认情况下将所有 PCI 设备解除绑定，否则可以通过传入 PCI 地址的允许列表来指定 PCI 设备。注意：控制器将从 /dev 中消失，直到 reset() 被调用
+          out, err := s.runCmd(s.log, env, s.scriptPath) -> func run(log logging.Logger, env []string, cmdStr string, args ...string)
+            exec.Command(cmdPath, args...)
+            cmd.Env = env 将初始化参数设置到环境变量中
+
+
+setup_spdk.sh通过scons脚本在编译的时候进行安装:
+# Copy setup_spdk.sh script to be executed at daos_server runtime.
+senv.Install(join('$PREFIX', 'share/daos/control'),
+              join(gosrc, 'server/init/setup_spdk.sh'))

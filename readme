@@ -614,6 +614,8 @@ cd build/external/debug/spdk
 yum install ncurses-devel ncurses
 ./configure --prefix="/opt/daos/prereq/debug/spdk" --disable-tests --disable-unit-tests --disable-apps --without-vhost --without-crypto --without-pmdk --without-rbd --with-rdma --without-iscsi-initiator --without-isal --without-vtune --with-shared
 
+
+
 qa:
 spdk缺elftools
 centos7
@@ -626,8 +628,15 @@ Install CUnit rpm package:
 # yum install CUnit
 
 
+
+
+
 调试手段
 gdb step
 1. add sleep 10s in init, src/engine/init.c:1093
 2. gdb attach, break, continue
 3. step
+
+
+dlv调试go:
+dlv exec /opt/daos/bin/daos_server -- start

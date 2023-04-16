@@ -119,7 +119,7 @@ func (s *spdkSetupScript) Prepare(req *storage.BdevPrepareRequest) error {
 	}
 
 	s.log.Debugf("spdk setup env: %v", env)
-	out, err := s.runCmd(s.log, env, s.scriptPath)
+	out, err := s.runCmd(s.log, env, s.scriptPath) // -> func run(log logging.Logger, env []string, cmdStr string, args ...string)
 	s.log.Debugf("spdk setup stdout:\n%s\n", out)
 
 	return errors.Wrapf(err, "spdk setup failed (%s)", out)

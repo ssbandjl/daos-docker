@@ -189,6 +189,7 @@ func (h *bdevPrepHandler) Handle(log logging.Logger, req *pbin.Request) *pbin.Re
 	if req == nil {
 		return getNilRequestResp()
 	}
+	// time.Sleep(30)
 
 	var pReq storage.BdevPrepareRequest
 	if err := json.Unmarshal(req.Payload, &pReq); err != nil {
