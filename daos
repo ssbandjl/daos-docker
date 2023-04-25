@@ -103,19 +103,29 @@ func (cmd *startCmd) Execute(args []string)
             C.spdk_log_set_print_level(C.SPDK_LOG_ERROR) -> spdk_log_set_print_level(enum spdk_log_level level)
             opts.sanitizeAllowList -> newSet, err := o.PCIAllowList.BackingToVMDAddresses(log) DPDK 不接受 VMD 支持设备地址，因此转换为 VMD 地址 -> [5d0505:01:00.0, 5d0505:03:00.0] -> [0000:5d:05.5]
             retPtr := C.daos_spdk_init -> daos_spdk_init(int mem_sz, char *env_ctx, size_t nr_pcil, char **pcil)
-              spdk_env_opts_init(&opts)
-              opts_add_pci_addr(&opts, &opts.pci_allowed
-              spdk_env_init(&opts)
+              spdk_env_opts_init(&opts) -> spdk_env_opts_init(struct spdk_env_opts *opts) -> opts->name ...
+              opts_add_pci_addr(&opts, &opts.pci_allowed -> opts_add_pci_addr(struct spdk_env_opts *opts,
+                is_addr_in_allowlist
+                  spdk_pci_addr_parse
+                  spdk_pci_addr_compare -> spdk_pci_addr_compare(const struct spdk_pci_addr *a1, const struct spdk_pci_addr *a2)
+                realloc
+                spdk_pci_addr_parse -> spdk_pci_addr_parse(struct spdk_pci_addr *addr, const char *bdf) -> sscanf(bdf, "%x:%x:%x.%x", &domain, &bus, &dev, &func) == 4)
+              spdk_env_init(&opts) -> spdk_env_init(const struct spdk_env_opts *opts) 对于重新初始化，参数 `opts` 必须设置为 NULL，并且必须在同一进程中通过 spdk_env_fini() 完成环境库后调用
+                printf("Starting %s / %s reinitialization...\n", SPDK_VERSION_STRING, rte_version())
+                pci_env_reinit
+                build_eal_cmdline
+                DPDK EAL parameters 打印dpdk参数
+                rte_eal_init(g_eal_cmdline_argcount, dpdk_args)
+                spdk_env_dpdk_post_init(legacy_mem)
             checkRet(retPtr, "daos_spdk_init()")
             if opts.EnableVMD
               C.spdk_vmd_init()
-        sb.binding.Discover(sb.log)
-        func (n *NvmMgmt) Discover()
-        C.nvm_get_number_of_devices https://github.com/intel/ipmctl ipmctl is a utility for configuring and managing Intel® Optane™ Persistent Memory modules (PMem).
-        C.nvm_get_devices
-        func (cr *cmdRunner) GetPmemNamespaces()
-          ndctl list -N -v
-        scs.NvmeScan
+          sb.binding.Discover(sb.log) -> func (n *NvmMgmt) Discover()
+            C.nvm_get_number_of_devices https://github.com/intel/ipmctl ipmctl is a utility for configuring and managing Intel® Optane™ Persistent Memory modules (PMem).
+            C.nvm_get_devices
+            func (cr *cmdRunner) GetPmemNamespaces()
+              ndctl list -N -v, Manage "libnvdimm" subsystem devices (Non-volatile Memory) 非易失内存, 非易失内存双通道控制器
+            outBdevs, err := groomDiscoveredBdevs(requestedBdevs, discoveredBdevs, req.VMDEnabled)
         scs.storage.SetBdevCache(*nvmeScanResp)
     addEngines
       registerTelemetryCallbacks
