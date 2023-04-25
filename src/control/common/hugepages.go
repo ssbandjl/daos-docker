@@ -18,9 +18,10 @@ import (
 type GetHugePageInfoFn func() (*hugePageInfo, error)
 
 type hugePageInfo struct {
-	Total      int
-	Free       int
-	Reserved   int
+	Total    int
+	Free     int
+	Reserved int
+	/* 剩余 */
 	Surplus    int
 	PageSizeKb int
 }

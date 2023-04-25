@@ -431,7 +431,7 @@ func (f *ScmAdminForwarder) CheckFormat(req ScmFormatRequest) (*ScmFormatRespons
 // Scan forwards an SCM scan request.
 func (f *ScmAdminForwarder) Scan(req ScmScanRequest) (*ScmScanResponse, error) {
 	req.Forwarded = true
-
+	fmt.Printf("SendReq ScmScan\n")
 	res := new(ScmScanResponse)
 	if err := f.SendReq("ScmScan", req, res); err != nil {
 		return nil, err

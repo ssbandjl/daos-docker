@@ -220,6 +220,7 @@ func prepBdevStorage(srv *server, iommuEnabled bool, hpiGetter common.GetHugePag
 		}
 	}
 
+	srv.log.Debugf("req_hp_cnt:%d, free_hp_cnt:%d", prepReq.HugePageCount, hugePages.Free)
 	for _, engineCfg := range srv.cfg.Engines {
 		// Calculate mem_size per I/O engine (in MB)
 		PageSizeMb := hugePages.PageSizeKb >> 10
@@ -227,7 +228,7 @@ func prepBdevStorage(srv *server, iommuEnabled bool, hpiGetter common.GetHugePag
 		engineCfg.MemSize *= PageSizeMb
 		// Pass hugepage size, do not assume 2MB is used
 		engineCfg.HugePageSz = PageSizeMb
-		srv.log.Debugf("MemSize:%dMB, HugepageSize:%dMB, TargetCount:%d(every target at least 1024MB hugepage)", engineCfg.MemSize, engineCfg.HugePageSz, engineCfg.TargetCount)
+		srv.log.Debugf("MemSize:%dMB, HugepageSize:%dMB, TargetCount:%d (every target at least 1024MB hugepage)", engineCfg.MemSize, engineCfg.HugePageSz, engineCfg.TargetCount)
 		// Warn if hugepages are not enough to sustain average
 		// I/O workload (~1GB), ignore warning if only using SCM backend
 		if !hasBdevs {

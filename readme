@@ -95,7 +95,8 @@ docker build  . -f utils/docker/Dockerfile.centos.7 -t daos
 docker stop server && docker rm server
 docker run -it -d --privileged --cap-add=ALL --name server -v /root/github/storage/daos/origin/docker:/home/daos/docker -v /dev:/dev -v /dev/hugepages:/dev/hugepages -v /sys/fs/cgroup:/sys/fs/cgroup:ro daos:2.0.1
 
-docker run -it -d --privileged --cap-add=ALL --name daos -v /root/github/storage/daos/origin/docker:/home/daos/docker -v /dev:/dev -v /dev/hugepages:/dev/hugepages -v /sys/fs/cgroup:/sys/fs/cgroup:ro daos:2.0.1
+docker run -it -d --privileged --cap-add=ALL --name daos1 -v /root/github/storage/daos/origin/docker:/home/daos/docker -v /dev:/dev -v /dev/hugepages:/dev/hugepages -v /sys/fs/cgroup:/sys/fs/cgroup:ro daos:2.0.1
+docker run -it -d --privileged --cap-add=ALL --name daos1 -v /root/github/storage/daos/origin/docker:/root/github/storage/daos/origin/docker -v /dev:/dev -v /dev/hugepages:/dev/hugepages -v /sys/fs/cgroup:/sys/fs/cgroup:ro daos:2.0.1
 
 docker run -it -d --privileged --cap-add=ALL --name daos2  -p 22223:22 -p 31436:31416 -v /root/github/storage/daos/origin/docker:/home/daos/docker -v /dev:/dev -v /dev/hugepages:/dev/hugepages -v /sys/fs/cgroup:/sys/fs/cgroup:ro daos:2.0.1
 
@@ -112,6 +113,12 @@ mkdir -p /etc/daos/certs
 rm -f /opt/daos/etc/*.yml && cp utils/config/*.yml /opt/daos/etc/ && cp -r utils/config/examples/certs /etc/daos/
 source /root/.bashrc
 
+改权限:
+chmod 0700 /etc/daos/certs/agent.key
+chmod 0700 /etc/daos/certs/server.key
+chmod 0700 /etc/daos/certs/admin.key
+
+
 dmg sto scan
 dmg net scan
 dmg -i storage format
@@ -123,6 +130,11 @@ dmg system erase
 docker run -it -d --privileged --cap-add=ALL --name server -v /dev:/dev -v /dev/hugepages:/dev/hugepages daos
 docker exec server daos_server start -o /home/daos/daos/utils/config/examples/daos_server_local.yml
 docker exec server dmg -i storage format
+
+daos1(){
+	
+  docker exec -u root -it daos bash -c 'cd /root/github/storage/daos/origin/docker/daos;exec "${SHELL:-sh}"'
+}
 
 vim /home/daos/daos/utils/config/examples/daos_server_local.yml
 - D_LOG_MASK=DEBUG
@@ -640,3 +652,24 @@ gdb step
 
 dlv调试go:
 dlv exec /opt/daos/bin/daos_server -- start
+
+证书:
+container: mkdir -p /etc/daos/certs/
+ubuntu: docker cp /root/github/storage/daos/origin/docker/daos/utils/config/examples/certs daos:/etc/daos/certs/
+
+分配rpc:
+crt_rpc_priv_alloc
+crt_rpc_inout_buff_init
+
+代码规范: 注释
+/**
+ * Set the timeout value for an RPC request.
+ *
+ * \param[in] timeout_sec      timeout value in seconds. value of zero will be
+ *                             treated as invalid parameter.
+ *
+ * \return                     DER_SUCCESS on success, negative value if error
+ */
+int
+crt_req_set_timeout(crt_rpc_t *req, uint32_t timeout_sec);
+

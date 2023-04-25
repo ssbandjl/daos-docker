@@ -30,10 +30,11 @@ func (cmd *startCmd) Execute(args []string)
           GetDeviceClassFn  func GetDeviceClass  cat /sys/class/net/enp2s0/type
         updateFabricEnvars
     initStorage -> func (srv *server) initStorage 初始化存储, 优化改造server.go
+      time.Since(start) golang统计耗时
     - 将只读活动配置文件写入运行时目录，而不是 /tmp/
     - 在启动期间仅验证一次服务器配置
     - 在启动期间仅初始化一次 netdetect 库
-      prepBdevStorage -> func (p *Provider) PrepareBdevs ->  func (f *BdevAdminForwarder) Prepare准备spdk块设备(bdev) iommuDetected iommu内存管理(有dmars条目,表示启用了iommu), 为自动生成功能的配置提供合理的 nr_hugepages。 这将考虑系统大页面大小、所有引擎上配置的最大目标数以及平均 I/O 工作负载所需的最小 1GB DMA 缓冲区上限, 为了以非根用户身份使用 NVMe 设备运行 DAOS 服务器，硬件必须支持虚拟化设备访问，并且必须在系统 BIOS 中启用它。 在 Intel® 系统上，此功能被命名为 Intel® Virtualization Technology for Directed I/O (VT-d)。 在 BIOS 中启用后，还必须在 Linux 内核中启用 IOMMU 支持, 要强制 SPDK 在 daos_server 运行时使用 UIO 而不是 VFIO，请在服务器配置文件中设置 disable_vfio ，但请注意，这需要以 root 身份运行 daos_server
+      prepBdevStorage func prepBdevStorage -> func (p *Provider) PrepareBdevs ->  func (f *BdevAdminForwarder) Prepare准备spdk块设备(bdev) iommuDetected iommu内存管理(有dmars条目,表示启用了iommu), 为自动生成功能的配置提供合理的 nr_hugepages。 这将考虑系统大页面大小、所有引擎上配置的最大目标数以及平均 I/O 工作负载所需的最小 1GB DMA 缓冲区上限, 为了以非根用户身份使用 NVMe 设备运行 DAOS 服务器，硬件必须支持虚拟化设备访问，并且必须在系统 BIOS 中启用它。 在 Intel® 系统上，此功能被命名为 Intel® Virtualization Technology for Directed I/O (VT-d)。 在 BIOS 中启用后，还必须在 Linux 内核中启用 IOMMU 支持, 要强制 SPDK 在 daos_server 运行时使用 UIO 而不是 VFIO，请在服务器配置文件中设置 disable_vfio ，但请注意，这需要以 root 身份运行 daos_server
       hasBdevs := cfgHasBdevs(srv.cfg)
       if hasBdevs 如果开启了spdk块设备层, 扫描nvme或scm设备: daos_server storage scan, 
       srv.ctlSvc.NvmePrepare(prepReq) 准备nvme, -> func (scs *StorageControlService) NvmePrepare
@@ -59,11 +60,55 @@ func (cmd *startCmd) Execute(args []string)
                 h.bdevProvider.Prepare(pReq)
                   func (s *spdkSetupScript) Prepare  spdkSetupPath      = "../share/daos/control/setup_spdk.sh", /opt/daos/share/daos/control/setup_spdk.sh, 初始化的时候, scriptPath: spdkSetupPath
                   s.runCmd(s.log, env, s.scriptPath) 检查大页,为非root用户启用vfio权限, 最终调用spdk初始化脚本: spdk/scripts/setup.sh, 在运行 SPDK 应用程序之前，必须分配一些大页面，并且任何 NVMe 和 I/OAT 设备都必须与本机内核驱动程序解除绑定。 SPDK 包含一个脚本，可以在 Linux 和 FreeBSD 上自动执行此过程。 该脚本应以 root 身份运行。 它只需要在系统上运行一次, 参考spdk初始化文档: https://spdk.io/doc/getting_started.html
-      大页检查 hugePages, err := hpiGetter()  func GetHugePageInfo()  cat /proc/meminfo | grep -e "^Huge"
-      srv.ctlSvc.Setup() -> func (scs *StorageControlService) Setup() -> scs.ScmScan(storage.ScmScanRequest{}) -> func (f *ScmAdminForwarder) Scan -> f.SendReq("ScmScan", req, res) -> 给daos_admin发送存储类扫描命令
-        分层类型(tierCfg.Class)为file, 则跳过nvme流程, 分层类型为: Class type definitions中定义的dcpm, ram, nvme, kdev, file
-        否则执行nvme扫描: nvmeScanResp, err := scs.NvmeScan(storage.BdevScanRequest -> func (sb *spdkBackend) Scan
-        restoreOutput, err := sb.binding.init
+        err := hpiGetter() -> func GetHugePageInfo() -> func parseHugePageInfo 解析大页配置, cat /proc/meminfo | grep -e "^Huge" 大页检查,hugePages
+      srv.ctlSvc.Setup() -> func (scs *StorageControlService) Setup() -> scs.ScmScan(storage.ScmScanRequest{}) -> func (f *ScmAdminForwarder) Scan -> f.SendReq("ScmScan", req, res) -> 给 daos_admin 发送存储类扫描命令, 在存储扫描中显示 vmd 后端地址 -> func (h *scmScanHandler) Handle
+        sRes, err := h.scmProvider.Scan(sReq) -> func (p *Provider) Scan(req storage.ScmScanRequest)
+          modules, err := p.backend.Discover() -> func (cr *cmdRunner) Discover()
+            discovery, err := cr.binding.Discover() -> func (n *NvmMgmt) Discover()
+              if err = Rc2err C.nvm_get_number_of_devices(&count)) 错误码转换 -> nm -a /opt/daos/bin/daos_admin |grep nvm_get_number_of_devices -> https://github.com/intel/ipmctl/blob/master/src/os/nvm_api/nvm_management.c -> NVM_API int nvm_get_number_of_devices
+                nvm_init() -> nvm_internal_init -> static int nvm_internal_init
+                  SetFisTransportAttributes
+                  os_mutex_init
+                  init_protocol_bs
+                  init_protocol_simple_file_system_protocol
+                  preferences_init ipmctl.ini -> nvm_ini_load_dictionary -> dictionary *nvm_ini_load_dictionary 打开/创建ini文件, 解析, ipmctl使用手册: https://docs.pmem.io/ipmctl-user-guide/
+                  NvmDimmDriverDriverEntryPoint
+                    SetSerialAttributes()
+                    NVDIMM_ENTRY()
+                    ReturnCode = PbrInit()
+                    gNvmDimmData = AllocateZeroPool(sizeof(NVMDIMMDRIVER_DATA))
+                    ReturnCode = GetDriverHandle
+                    PMEMDEV_INITIALIZER(&gNvmDimmData->PMEMDev)
+                  os_check_admin_permissions
+                  NvmDimmDriverDriverBindingStart
+                  EfiLibInstallAllDriverProtocols2
+                  LocateProtocol
+                  InstallMultipleProtocolInterfaces
+                  InstallProtoEfiDevicePathProtocolToNfitBinding
+                GetDimmCount
+              C.nvm_get_devices(&devs[0], C.NVM_UINT8(count))) -> NVM_API int nvm_get_devices
+                nvm_init 验证目标 DIMM ID 列表。 填充指向 dimm 的指针的输出列表。 如果指定了插槽，则从这些插槽中获取所有 DIMM。 如果提供了 DIMM ID，则检查这些 DIMM 是否存在。 如果存在重复的 DIMM/插槽 ID，则报告错误。 如果指定的 DIMM 计数为 0，则获取所有可管理的 DIMM。 使用发现的任何警告/错误更新 CommandStatus 结构
+                nvm_get_number_of_devices
+                AllocatePool
+                GetDimms
+          namespaces, err := p.backend.GetPmemNamespaces()
+          state, err := p.backend.GetPmemState()
+        if tierCfg.Class != storage.ClassNvme 分层类型(tierCfg.Class)为file, 则跳过nvme流程, 分层类型为: Class type definitions中定义的dcpm, ram, nvme, kdev, file 否则执行nvme扫描: 
+        nvmeScanResp, err := scs.NvmeScan(storage.BdevScanRequest -> func (sb *spdkBackend) Scan
+        restoreOutput, err := sb.binding.init -> func (w *spdkWrapper) init
+          restore, err := w.suppressOutput() -> func (w *spdkWrapper) suppressOutput() 抑制输出 是一个可怕的、可怕的 hack，因为 SPDK 对 stdout 喋喋不休，导致控制台垃圾邮件并扰乱我们在服务器和特权助手之间的安全通信通道
+            realStdout, dErr := syscall.Dup(syscall.Stdout)
+            devNull, oErr := os.OpenFile(os.DevNull, os.O_WRONLY, 0)
+          w.InitSPDKEnv(log, spdkOpts) -> func (e *EnvImpl) InitSPDKEnv 每个控制器使用多个 nvme 命名空间
+            C.spdk_log_set_print_level(C.SPDK_LOG_ERROR) -> spdk_log_set_print_level(enum spdk_log_level level)
+            opts.sanitizeAllowList -> newSet, err := o.PCIAllowList.BackingToVMDAddresses(log) DPDK 不接受 VMD 支持设备地址，因此转换为 VMD 地址 -> [5d0505:01:00.0, 5d0505:03:00.0] -> [0000:5d:05.5]
+            retPtr := C.daos_spdk_init -> daos_spdk_init(int mem_sz, char *env_ctx, size_t nr_pcil, char **pcil)
+              spdk_env_opts_init(&opts)
+              opts_add_pci_addr(&opts, &opts.pci_allowed
+              spdk_env_init(&opts)
+            checkRet(retPtr, "daos_spdk_init()")
+            if opts.EnableVMD
+              C.spdk_vmd_init()
         sb.binding.Discover(sb.log)
         func (n *NvmMgmt) Discover()
         C.nvm_get_number_of_devices https://github.com/intel/ipmctl ipmctl is a utility for configuring and managing Intel® Optane™ Persistent Memory modules (PMem).
