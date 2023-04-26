@@ -72,7 +72,8 @@ else:
     import configparser as ConfigParser
 
 # cache_dir = '/home/daos/pre/cache'
-cache_dir = '/home/daos/docker/daos/cache'
+# cache_dir = '/home/daos/docker/daos/cache'
+cache_dir = 'cache' #相对项目root的目录
 # cache_dir = '/home/daos/docker/cache'
 
 class DownloadFailure(Exception):
@@ -451,7 +452,7 @@ class WebRetriever():
         # Retry download a few times if it fails
         for i in range(0, retries + 1):
             command = ['curl -L -O %s' % self.url]
-
+            print("download_cmd:%s" % command)
             failure_reason = "Download command failed"
             if RUNNER.run_commands(command):
                 if self.check_md5(basename):
@@ -1406,6 +1407,7 @@ class _Component():
               print(f'\x1b[6;30;42m\npatch_name_cache:{patch_name_cache}\x1b[0m')
               command = ['cp %s %s' %(patch_name_cache, patch_path)]
             else:
+              print(f'not find in {patch_name_cache}')
               command = ['rm -f %s' % patch_path,
                        'curl -sSfL --retry 10 --retry-max-time 60 -o %s %s'
                        % (patch_path, raw)]
@@ -1704,13 +1706,13 @@ class _Component():
         # print(self.__dict__)
         # print('%s build_cmd:%s' %(self.name, ' '.join(self.build_commands)))
         # 返回True表示已变化, 需要编译
-        # if self.name == 'mercury':
-        #   return True
-        # if self.name == 'spdk':
-        #   return True
+        if self.name == 'mercury':
+          return False
+        if self.name == 'spdk':
+          return True
         #   return False
-        # if self.name == 'ofi':
-        #   return True
+        if self.name == 'ofi':
+          return False
         #   return False
         # if self.name == 'argobots':
         #   return False

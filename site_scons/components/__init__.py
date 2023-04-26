@@ -316,6 +316,8 @@ def define_components(reqs):
                           ' --without-crypto '    \
                           ' --with-rdma '            \
                           # ' --with-rdma --with-daos '            \
+                          ' --disable-unit-tests '            \
+                          ' --enable-examples '            \
                           ' --without-isal --without-vtune --with-shared',
                           'make $JOBS_OPT', 'make install',
                           'cp -r -P dpdk/build/lib/* "$SPDK_PREFIX/lib"',
