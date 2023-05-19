@@ -315,10 +315,10 @@ def define_components(reqs):
                 commands=['./configure --prefix="$SPDK_PREFIX"'                \
                           ' --without-crypto '    \
                           ' --with-rdma '            \
-                          # ' --with-rdma --with-daos '            \
+                        #   ' --with-rdma --with-daos '            \
                           ' --disable-unit-tests '            \
                           ' --enable-examples '            \
-                          ' --without-isal --without-vtune --with-shared',
+                          ' --without-vtune --with-shared',
                           'make $JOBS_OPT', 'make install',
                           'cp -r -P dpdk/build/lib/* "$SPDK_PREFIX/lib"',
                           'mkdir -p "$SPDK_PREFIX/include/dpdk"',

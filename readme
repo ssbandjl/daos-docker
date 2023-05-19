@@ -699,3 +699,9 @@ crt_rpc_inout_buff_init
 int
 crt_req_set_timeout(crt_rpc_t *req, uint32_t timeout_sec);
 
+
+openssl/kdf.h, yum install -y openssl11-devel
+
+安装依赖
+source "$scriptsdir/pkgdep/$id.sh" -> centos.sh
+
