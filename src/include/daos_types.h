@@ -199,6 +199,7 @@ enum {
  *
  * See daos_obj.h for more details
  * It is put here because it's almost used by everyone.
+ *  高32位: 为daos保留, 低96位: 标识容器中不同用户访问同一对象的唯一标识
  */
 typedef struct {
 	uint64_t	lo;

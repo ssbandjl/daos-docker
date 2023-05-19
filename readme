@@ -100,7 +100,9 @@ docker run -it -d --privileged --cap-add=ALL --name daos1 -v /root/github/storag
 
 docker run -it -d --privileged --cap-add=ALL --name daos2  -p 22223:22 -p 31436:31416 -v /root/github/storage/daos/origin/docker:/home/daos/docker -v /dev:/dev -v /dev/hugepages:/dev/hugepages -v /sys/fs/cgroup:/sys/fs/cgroup:ro daos:2.0.1
 
-docker run -it -d --privileged --cap-add=ALL --name daos3  -p 22224:22 -p 31446:31416 -v /root/github/storage/daos/origin/docker:/home/daos/docker -v /dev:/dev -v /dev/hugepages:/dev/hugepages -v /sys/fs/cgroup:/sys/fs/cgroup:ro daos:2.0.1
+docker run -it -d --privileged --cap-add=ALL --name centos  -p 22222:22 -p 5555:5555 -v /root/project/stor/ceph/xb/docker/ceph:/root/project/stor/ceph/xb/docker/ceph 
+
+/root/project/stor/ceph/xb/docker/ceph
 
 61:
 docker run -it -d --privileged --cap-add=ALL --name daos1 -v /home/xb/project/stor/daos/origin/docker/daos:/home/xb/project/stor/daos/origin/docker/daos -v /dev:/dev -v /dev/hugepages:/dev/hugepages -v /sys/fs/cgroup:/sys/fs/cgroup:ro daos:2.0.1
@@ -705,3 +707,19 @@ openssl/kdf.h, yum install -y openssl11-devel
 安装依赖
 source "$scriptsdir/pkgdep/$id.sh" -> centos.sh
 
+code_flow
+dfs_mount 挂载daos文件系统
+spdk -> dfs_mount(ch->pool, ch->cont, O_RDWR, &ch->dfs)
+	prop = daos_prop_alloc(0)
+	daos_cont_query(coh, NULL, prop, NULL)
+	entry = daos_prop_entry_get(prop, DAOS_PROP_CO_LAYOUT_TYPE)
+	daos_acl_principal_to_uid(entry->dpe_str, &dfs->uid)
+	DAOS_PROP_CO_ROOTS superblock or root
+	open_sb(coh, false, dfs->super_oid, &dfs->attr, &dfs->super_oh)
+	open_dir(dfs, NULL, amode | S_IFDIR, 0, &root_dir, 1, &dfs->root)
+	if (amode == O_RDWR)
+		daos_cont_alloc_oids(coh, 1, &dfs->oid.lo, NULL) 超级块OID=0, 根OID=1
+	
+打开文件系统
+dfs_open(ch->dfs, NULL, daos->disk.name, mode, fd_oflag, daos->oclass, 0, NULL, &ch->obj)
+	dfs_open_stat

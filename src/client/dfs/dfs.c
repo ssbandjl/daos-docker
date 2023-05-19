@@ -1652,6 +1652,7 @@ dfs_mount(daos_handle_t poh, daos_handle_t coh, int flags, dfs_t **_dfs)
 		/*
 		 * if this is the first time we allocate on this container,
 		 * account 0 for SB, 1 for root obj.
+		 * 超级块OID=0, 根OID=1
 		 */
 		if (dfs->oid.lo == RESERVED_LO)
 			dfs->oid.hi = ROOT_HI + 1;
