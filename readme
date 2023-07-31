@@ -723,3 +723,14 @@ spdk -> dfs_mount(ch->pool, ch->cont, O_RDWR, &ch->dfs)
 打开文件系统
 dfs_open(ch->dfs, NULL, daos->disk.name, mode, fd_oflag, daos->oclass, 0, NULL, &ch->obj)
 	dfs_open_stat
+ofi编译参数:
+site_scons/components/__init__.py
+
+
+
+信用积分
+cg_credit_ep_ctx
+等待队列: epi_req_waitq
+发送完成后, 判断信用分和等待队列, 然后决定是否从等待队列搬运请求到发送队列
+
+

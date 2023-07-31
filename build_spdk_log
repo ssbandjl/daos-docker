@@ -16,6 +16,7 @@ Checking for C header file spdk/nvme.h... (cached) yes
 Checking for C header file dpdk/rte_eal.h... (cached) yes
 rebuild spdk for change True,has_miss_tgt:False
 Checking whether patchelf program exists.../bin/patchelf
+
 Running commands in /home/daos/docker/daos/build/external/debug/spdk
 command:./configure --prefix="/opt/daos/prereq/debug/spdk" --without-crypto --with-rdma --without-isal --without-vtune --with-shared
 Notice: ISA-L, compression & crypto require NASM version 2.14 or newer. Turning off default ISA-L and crypto features.

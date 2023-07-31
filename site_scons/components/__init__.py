@@ -316,6 +316,8 @@ def define_components(reqs):
                           ' --without-crypto '    \
                           ' --with-rdma '            \
                         #   ' --with-rdma --with-daos '            \
+                        #   ' --with-rdma '            \
+                        #   ' --with-rdma --with-daos '            \
                           ' --disable-unit-tests '            \
                           ' --enable-examples '            \
                           ' --without-vtune --with-shared',
